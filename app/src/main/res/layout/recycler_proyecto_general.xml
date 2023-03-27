@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/proyectoConstraintLayaut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    <View
+            android:id="@+id/borderProyectoView"
+            android:layout_width="@dimen/pm50"
+            android:layout_height="@dimen/pm50"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/circle_images_white_bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+            android:id="@+id/view11"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="2dp"
+            android:background="@drawable/circle_images_white_bg"
+            app:layout_constraintBottom_toBottomOf="@+id/borderProyectoView"
+            app:layout_constraintEnd_toEndOf="@+id/borderProyectoView"
+            app:layout_constraintStart_toStartOf="@id/borderProyectoView"
+            app:layout_constraintTop_toTopOf="@id/borderProyectoView" />
+
+    <ImageView
+            android:id="@+id/asignadoImageView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="2dp"
+            app:layout_constraintBottom_toBottomOf="@+id/borderProyectoView"
+            app:layout_constraintEnd_toEndOf="@+id/borderProyectoView"
+            app:layout_constraintStart_toStartOf="@id/borderProyectoView"
+            app:layout_constraintTop_toTopOf="@id/borderProyectoView"
+            app:srcCompat="@drawable/ic_proyectos" />
+
+    <TextView
+            android:id="@+id/proyectoTextView"
+            style="@style/fontBlackBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/borderProyectoView" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6ABF1B</color>
+    <color name="colorPrimaryDark">#338e00</color>
+    <color name="colorAccent">#9ef254</color>
+
+    <color name="colorBackground">#D7E2CE</color>
+
+    <color name="red_app">#FF595E</color>
+    <color name="yellow_app">#FFCA3A</color>
+    <color name="green_app">#6ABF1B</color>
+    <color name="blue_app">#1982C4</color>
+    <color name="purple_app">#6A4C93</color>
+
+    <color name="color_sin_abierta">#47d1fb</color>
+    <color name="color_abierta">#71d052</color>
+    <color name="color_en_proceso">#ff8f45</color>
+    <color name="color_en_revision">#f8d053</color>
+    <color name="color_terminada">#ff5f5f</color>
+    <color name="color_default">#A0A0A0</color>
+
+    <color name="soporte_abierto">#F7BE81</color>
+    <color name="soporte_sin_abrir">#F5A9A9</color>
+
+
+    <color name="fondo_tabla">#E5E5E5</color>
+    <color name="fondo_tabla_abierta">#CCCCCC</color>
+
+    <color name="red_app_out">#77FF595E</color>
+    <color name="yellow_app_out">#77FFCA3A</color>
+    <color name="green_app_out">#778AC926</color>
+    <color name="blue_app_out">#771982C4</color>
+    <color name="purple_app_out">#776A4C93</color>
+
+    <color name="transBlack">#77000000</color>
+    <color name="almostBlack">#191919</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <color name="transparente">#00000000</color>
+</resources>

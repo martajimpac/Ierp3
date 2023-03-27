@@ -1,0 +1,242 @@
+<resources>
+    <string name="app_name">ierp</string>
+
+    <string name="title_font">fonts/bold.ttf</string>
+    <string name="default_font">fonts/regular.ttf</string>
+
+    <string name="app_name_with_version">IERP v.%1$s</string>
+
+    <string name="drawer_open">drawerOpen</string>
+    <string name="drawer_close">draweClose…</string>
+    <string name="app_notification_channel_description">Canal de notificaciones de IERP</string>
+
+    <!--Secciones-->
+    <string name="fichajes">FICHAJES</string>
+    <string name="guardias_seccion">GUARDIAS</string>
+    <string name="tareas">TAREAS</string>
+    <string name="tareas_asignadas">TAREAS ASIGNADAS</string>
+    <string name="proyectos">PROYECTOS</string>
+    <string name="soportes">SOPORTES</string>
+    <string name="notificaciones">NOTIFICACIONES</string>
+    <string name="respuestas">RESPUESTAS</string>
+
+    <!--Alerts-->
+    <string name="loading">Cargando…</string>
+    <string name="next">Siguiente</string>
+    <string name="accept">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">OK</string>
+    <string name="ups">Ups…</string>
+    <string name="retry">Reintentar</string>
+    <string name="yes">Sí</string>
+    <string name="not_now">Más adelante</string>
+    <string name="see">Ver</string>
+    <string name="shortly_available">Próximamente</string>
+    <string name="no">No</string>
+
+    <string name="not_session">Sesión caducada</string>
+    <string name="desc_not_session">La sesión ha caducado, vuelva a iniciar sesión</string>
+
+
+    <!--transiciones-->
+    <string name="trans_img_ierp">imgIerp</string>
+    <string name="trans_img_toools">imgToools</string>
+    <string name="trans_text_app">textApp</string>
+
+
+    <!--Activity login-->
+    <string name="entrar_en_tu_cuenta">Entrar en tu cuenta</string>
+    <string name="entrar">ENTRAR</string>
+    <string name="contrase_a">Contraseña</string>
+    <string name="usuario">Usuario</string>
+    <string name="cliente">Cliente</string>
+    <string name="organizacion">Organización</string>
+    <string name="user_email">usuario@correo</string>
+    <string name="insert_company">Introduzca la empresa</string>
+    <string name="insert_user">Introduzca el usuario</string>
+    <string name="insert_pass">Introduzca la contraseña</string>
+    <string name="error_login">No se ha podido iniciar sesión</string>
+    <string name="password">**********</string>
+
+    <!--    <string name="alert_user">Debe introducir el cliente, el usuario y la contraseña primero.</string>-->
+    <string name="alert_user">Debe rellenar todos los campos correctamente para iniciar sesión.</string>
+
+    <string name="titu_localizacion">Permiso de localización</string>
+    <string name="desc_localizacion">Es necesario activar el permiso de localización para poder usar la aplicación.
+    </string>
+
+
+    <string name="title_aler_session">¿Guardar sesión?</string>
+    <string name="desc_aler_session">¿Desea iniciar sesión automáticamente con este usuario?</string>
+
+    <!--Activity Main-->
+    <string name="title_aler_notifi">Notificaciones</string>
+    <string name="desc_aler_notifi">¿Desea dejar de recibir notificaciones?</string>
+    <string name="notifi_off">Notificaciones desactivadas</string>
+    <string name="notifi_on">Notificaciones activadas</string>
+
+
+    <!--FicharFragment-->
+    <string name="url_base_img">"http://ierp.es/images/usuarios/%1$s.png"</string>
+    <string name="start_accion">"Empezar a trabajar"</string>
+    <string name="finish_accion">"Dejar de trabajar"</string>
+    <string name="entra_sal">"Entradas/Salidas"</string>
+    <string name="txt_horas">"Las horas que se muestran a continuación coinciden con la zona horaria del servidor (%1$s)"
+    </string>
+    <string name="time_trabajo">"Total tiempo: %1$s"</string>
+    <string name="not_entradas">"¡Sin registros!"</string>
+    <string name="desc_not_entradas">"Todavía no se han registrado entradas/salidas en el día de hoy."</string>
+
+    <string name="entrada">Entrada:</string>
+    <string name="salida">Salida:</string>
+
+    <string name="warn_casa">Actualmente estás a %1$d metros de TOOOLS. Si estás en Toools
+        espera a que la ubicación de tu dispositivo se sincronice con tu posición actual y vuelve a intentarlo.
+    </string>
+    <string name="desde_casa">Desde casa</string>
+    <string name="titulo_casa">No estás en toools</string>
+    <string name="warn_sin_localizacion">Para poder fichar hace falta la obtener la localización</string>
+
+    <string name="ini_trabajo">Inicio de la jornada. ¡¡¡Ánimo!!!</string>
+    <string name="fin_trabajo">Finaliza la jornada. ¡¡¡Bien hecho!!!</string>
+    <string name="cargando">Cargando…</string>
+
+    <!--    <string name="txt_entrar_casa">Actualmente está a %1$d metros de %2$s. El trabajo desde casa está terminantemente-->
+    <!--        prohibido salvo autorización expresa de la dirección. Tras presionar el botón \'Empezar a trabajar\', inserte el-->
+    <!--        código que le han facilitado para poder fichar desde casa.-->
+    <!--    </string>-->
+    <string name="txt_entrar_casa">Actualmente está a %1$d metros de %2$s. Recuerda que este fichaje
+        se realizara fuera de las instalaciones de la empresa. Indique el motivo de esta situación.</string>
+    <!--    <string name="txt_salir_casa">Actualmente está a %1$d metros de %2$s. El trabajo desde casa está terminantemente-->
+    <!--        prohibido salvo autorización expresa de la dirección. Tras presionar el botón \'Dejar de trabajar\', inserte el-->
+    <!--        código que le han facilitado para poder fichar desde casa.-->
+    <!--    </string>-->
+    <string name="txt_salir_casa">Actualmente está a %1$d metros de %2$s. Recuerda que este fichaje
+        se realizara fuera de las instalaciones de la empresa.</string>
+
+    <string name="centro_no_asignado">Este no es su centro de trabajo asociado, ¿desea fichar de todos modos?</string>
+    <string name="distinto_centro">Distinto centro de trabajo</string>
+    <string name="trabajando_centro">Estás trabajando en %1$s</string>
+    <string name="insert_code_title">Motivo</string>
+
+    <string name="title_aler_codigo">Código</string>
+    <string name="desc_aler_codigo">Inserte el código proporcionado para trabajar desde casa.</string>
+    <!--    <string name="desc_aler_casa">Inserte una breve descripción del motivo por el que trabaja desde casa:</string>-->
+    <string name="insert_code_description">Inserte el motivo por el cual no se encuentra en el lugar de trabajo:</string>
+
+    <!--Notificaciones-->
+    <string name="notifi_titulo">¡iERP Fichaje!</string>
+    <string name="notifi_desc_entrar">Comienza tu turno de trabajo, acuerdate de fichar</string>
+    <string name="notifi_desc_salir">Finaliza tu turno de trabajo, acuerdate de fichar</string>
+
+
+    <!--GuardiasFragments-->
+    <string name="guar_entrada">Comenzar actuación</string>
+    <string name="guar_salida">Finalizar actuación</string>
+    <string name="sin_guardias">¡Sin guardias!</string>
+    <string name="guardias">Guardias</string>
+    <string name="not_guardias">No hay actuaciones guardadas en el día seleccionado</string>
+
+    <string name="guardias_correcta">Guardias insertada correctamente</string>
+
+    <string name="warn_guardias">Recuerde que las actuaciones sólo están permitidas durante el fin de semana y festivos. ¿Desea continuar?</string>
+
+    <string name="descripcion">Descripción</string>
+    <string name="desc_aler_desc">Inserte una breve descripción del motivo de su actuación:</string>
+
+    <!--Estados-->
+    <string name="aceptar_tarea">Aceptar tarea</string>
+    <string name="abierta">Abierta</string>
+    <string name="en_progreso">En progreso</string>
+    <string name="en_revision">En revisión</string>
+    <string name="terminada">Terminada</string>
+    <string name="sin_abrir">Sin Abrir</string>
+    <string name="completada">Completada</string>
+    <string name="cerrar_tarea">Cerrar tarea</string>
+
+    <!--dialog-->
+    <string name="guardar">Guardar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="observaciones">Observaciones</string>
+    <string name="title_observacion">Observación</string>
+    <string name="desc_observacion">Inserta la observación (Opcional)</string>
+    <string name="cerrar">Cerrar</string>
+
+    <!--tareas-->
+    <string name="sin_tareas">¡Sin tareas!</string>
+    <string name="sin_tareas_desc">No hay tareas para el proyecto seleccionado.</string>
+    <string name="cambio_tarea_ok">La tarea se actualizó correctamente.</string>
+    <string name="add_tarea_sin_proyecto">¡¡¡Sin proyecto!!!</string>
+    <string name="add_tarea_sin_proyecto_desc">Para poder añadir una tarea primero seleccione un proyecto en el selector superior.</string>
+
+    <!--Soportes-->
+    <string name="todos">Todos</string>
+    <string name="propios">Propios</string>
+    <string name="asignarme_el_soporte">Asignarme el soporte</string>
+    <string name="sin_soportes_desc">No hay soportes pendientes para el proyecto seleccionado.</string>
+    <string name="sin_soportes">¡Sin soportes!</string>
+    <string name="soporte_asignado">Soporte asignado correctamente</string>
+
+    <!--Respuestas-->
+    <string name="descripcion_del_soporte">Descripción del soporte:</string>
+    <string name="respuestas_titu">Respuestas:</string>
+    <string name="nueva_respuesta">Nueva respuesta</string>
+    <string name="cerrar_soporte">El soporte se cerro correctamente</string>
+    <string name="send_repuesta_ok">Respuesta enviada correctamente</string>
+    <string name="desc_respuesta">Inserte el texto de la respuesta en el campo de texto</string>
+    <string name="texto_respuesta">Texto de la respuesta</string>
+
+    <!--dialog add tarea-->
+    <string name="seleccione_el_empleado">Seleccione el empleado:</string>
+    <string name="inserte_tarea">Inserte el título de la tarea:</string>
+    <string name="inserte_descripcion_tarea">Inserte la descripción de la tarea:</string>
+    <string name="indique_el_plazo">Indique el plazo:</string>
+    <string name="error_add_tarea">Debe seleccionar un empleado e insertar el título para poder insertar una tarea</string>
+    <string name="t_tulo">Título</string>
+    <string name="titulo_add_proyecto">Insertar nueva tarea en el proyecto %1$s</string>
+
+    <string name="tarea_insertada">¡¡¡Tarea insertada!!!</string>
+    <string name="desc_tarea_insertada">Se inserto correctamente a tarea en el proyecto seleccionado.</string>
+    <string name="cambiar_el_estado_de_la_tarea">Cambiar el estado de la tarea:</string>
+
+    <!--transiciones-->
+    <string name="trans_proyecto">Proyecto-%1$s</string>
+
+    <!--image descriptions-->
+    <string name="img_splash_ierp">IMG ierp</string>
+    <string name="img_splash_toools">IMG toools</string>
+    <string name="img_user">IMG user</string>
+    <string name="img_calendario">IMG calendario</string>
+    <string name="img_accion">IMG accion</string>
+
+    <!--ERRORES -->
+
+    <!-- ISPOT -->
+    <string name="ispot_add_user_default_error">Ha ocurrido un error a la hora de realizar el registro para las notificaciones PUSH.</string>
+    <string name="ispot_client_data_default_error">Ha ocurrido un error al obtener los datos iniciales de carga de la app.</string>
+    <string name="ispot_direct_ads_default_error">Ha ocurrido un error al obtener los datos iniciales de carga de la app.</string>
+    <string name="ispot_notifications_default_error">Ha ocurrido un error al obtener el listado de notificaciones asociadas al curso.</string>
+
+    <!--    <string name="login_user_pass_error">El usuario o la contraseña no son correctos.</string>-->
+    <string name="login_user_pass_error">El usuario o la contraseña no son correctos para la organización %1$s.</string>
+    <string name="login_conexion">Ha ocurrido un error al tratar de validar el login.</string>
+    <string name="momentos_conexion">Ha ocurrido un error al tratar de buscar las entradas y salidas.</string>
+
+    <string name="eventos_conexion">Ha ocurrido un error al tratar insertar el evento.</string>
+
+    <string name="guardias_conexion">Ha ocurrido un error al tratar de obtener las actuaciones de guardia del dia seleccionado.</string>
+    <string name="add_guardias_conexion">Ha ocurrido un error al tratar de insertar la actuación.</string>
+    <string name="proyectos_error">Ha ocurrido un error al obtener los datos de los proyectos.</string>
+    <string name="tareas_error">Ha ocurrido un error al obtener las tareas del usuario.</string>
+    <string name="cambio_sin_aceptar">Para poder realizar un cambio de estado primero hay que aceptar la tarea.</string>
+    <string name="cambio_estado_error">Ha ocurrido un error al enviar el cambio de estado.</string>
+    <string name="soportes_error">Ha ocurrido un error al obtener los soportes del usuario.</string>
+    <string name="respuestas_error">Ha ocurrido un error al obtener las respuestas del soporte seleccionado.</string>
+    <string name="asignar_soporte_error">Ha ocurrido un error al asignar el soporte al usuario.</string>
+    <string name="enviar_respuesta_error">Ha ocurrido un error al enviar la respuesta al soporte seleccionado.</string>
+    <string name="cerrar_soporte_error">Ha ocurrido un error al cerrar el soporte seleccionado.</string>
+    <string name="tareas_asignadas_error">Ha ocurrido un error al obtener las tareas que has creado.</string>
+    <string name="insertar_tarea_error">Ha ocurrido un error al insertar la tarea en el proyecto seleccionado.</string>
+
+
+</resources>

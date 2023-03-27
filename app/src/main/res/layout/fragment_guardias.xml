@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.guardiasFragment.GuardiasFragment">
+
+
+    <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" android:id="@+id/contentBtnGuar"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp" android:layout_marginStart="16dp" android:background="@drawable/btn_accion"
+            app:cardBackgroundColor="@color/colorPrimary" app:cardElevation="@dimen/pm5"
+            app:cardCornerRadius="@dimen/pm15">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp">
+
+                <ImageView
+                        android:src="@drawable/swords"
+                        android:layout_width="@dimen/pm35"
+                        android:layout_height="@dimen/pm35"
+                        android:id="@+id/imgAccionGuar"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:contentDescription="@string/img_accion"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+                <TextView
+                        style="@style/fontWhiteBold"
+                        android:text="@string/guar_entrada"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtBtnAccionGuar"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imgAccionGuar"
+                        android:layout_marginStart="8dp"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="@dimen/pm15"
+            app:cardElevation="@dimen/pm5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/contentCalendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/white">
+
+            <ImageView
+                    android:id="@+id/imgCalendarGuar"
+                    android:layout_width="@dimen/pm50"
+                    android:layout_height="@dimen/pm50"
+                    android:layout_marginTop="8dp"
+                    android:contentDescription="@string/img_calendario"
+                    android:src="@drawable/calendar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                    android:id="@+id/txtFechaGuar"
+                    style="@style/fontBlackBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:textSize="@dimen/ts12"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imgCalendarGuar" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+            style="@style/fontWhiteBold"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/ts18"
+            android:text="@string/sin_guardias"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtTituGuardias" android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/cardView" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="16dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
+    <TextView
+            style="@style/fontBlackBold"
+            android:textSize="@dimen/ts12"
+            android:text="@string/not_guardias"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtDescGuardias" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/txtTituGuardias" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="16dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerGuardias"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/txtDescGuardias" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/contentBtnGuar"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,73 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+
+    <!--Padding/margin-->
+    <dimen name="pm03">0.3dp</dimen>
+    <dimen name="pm05">0.3dp</dimen>
+    <dimen name="pm1">1dp</dimen>
+    <dimen name="pm2">2dp</dimen>
+    <dimen name="pm3">3dp</dimen>
+    <dimen name="pm8">8dp</dimen>
+    <dimen name="pm10">10dp</dimen>
+    <dimen name="pm5">5dp</dimen>
+    <dimen name="pm15">15dp</dimen>
+    <dimen name="pm20">20dp</dimen>
+    <dimen name="pm25">25dp</dimen>
+    <dimen name="pm30">30dp</dimen>
+    <dimen name="pm35">35dp</dimen>
+    <dimen name="pm40">40dp</dimen>
+    <dimen name="pm44">44dp</dimen>
+    <dimen name="pm48">48dp</dimen>
+    <dimen name="pm50">50dp</dimen>
+    <dimen name="pm60">60dp</dimen>
+    <dimen name="pm70">70dp</dimen>
+    <dimen name="pm74">74dp</dimen>
+    <dimen name="pm80">80dp</dimen>
+    <dimen name="pm100">100dp</dimen>
+    <dimen name="pm120">120dp</dimen>
+    <dimen name="pm150">150dp</dimen>
+    <dimen name="pm180">180dp</dimen>
+    <dimen name="pm250">250dp</dimen>
+
+    <!--textSize-->
+    <dimen name="ts8">8sp</dimen>
+    <dimen name="ts10">10sp</dimen>
+    <dimen name="ts12">12sp</dimen>
+    <dimen name="ts13">13sp</dimen>
+    <dimen name="ts14">14sp</dimen>
+    <dimen name="ts16">16sp</dimen>
+    <dimen name="ts15">15sp</dimen>
+    <dimen name="ts18">18sp</dimen>
+    <dimen name="ts20">20sp</dimen>
+    <dimen name="ts25">25sp</dimen>
+    <dimen name="ts30">30sp</dimen>
+    <dimen name="ts35">35sp</dimen>
+    <dimen name="ts40">40sp</dimen>
+    <dimen name="ts50">50sp</dimen>
+    <dimen name="ts100">100sp</dimen>
+
+    <dimen name="padding_btn">5dp</dimen>
+
+
+    <!--default-->
+    <dimen name="default_loading_view_size">60dp</dimen>
+    <dimen name="default_mini_button_height">40dp</dimen>
+    <dimen name="default_button_height">50dp</dimen>
+    <dimen name="default_elevation">4dp</dimen>
+    <dimen name="left_menu_section_height">50dp</dimen>
+    <dimen name="double_double_margin">32dp</dimen>
+    <dimen name="toolbar_items_vertical_padding">6dp</dimen>
+    <dimen name="lottie_loading_size">50dp</dimen>
+    <dimen name="default_corner_radius">12dp</dimen>
+    <dimen name="default_corner_radius_mini">8dp</dimen>
+    <dimen name="default_corner_radius_tiny">4dp</dimen>
+
+    <!--margins & paddings-->
+    <dimen name="default_min_margin">8dp</dimen>
+    <dimen name="default_tiny_margin">4dp</dimen>
+    <dimen name="double_margin">16dp</dimen>
+</resources>
