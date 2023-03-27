@@ -1,67 +1,67 @@
 package com.toools.ierp.ui.login
 
+
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.toools.ierp.entities.Resource
-import com.toools.ierp.entities.RestBaseObject
-import com.toools.ierp.entities.ierp.LoginResponse
-import com.toools.ierp.entities.ierp.MomentosResponse
-import com.toools.ierp.helpers.rest.AppException
-import com.toools.ierp.helpers.rest.RestApiCallback
-import com.toools.ierp.helpers.rest.RestRepository
+import androidx.lifecycle.viewModelScope
+import com.toools.ierp.core.ErrorHelper
+import com.toools.ierp.core.Resource
+import com.toools.ierp.data.ConstantHelper
+import com.toools.ierp.data.Repository
+import com.toools.ierp.data.model.MomentosResponse
+import com.toools.ierp.data.model.BaseResponse
+import com.toools.ierp.data.model.LoginResponse
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel  @Inject constructor(private val repository: Repository): ViewModel() {
 
-    val loginIerpRecived: MutableLiveData<Resource<LoginResponse>> = MutableLiveData()
+    val loginLiveData: MutableLiveData<Resource<LoginResponse>> = MutableLiveData()
+    val momentosLiveData: MutableLiveData<Resource<MomentosResponse>> = MutableLiveData()
+    val addTokenFirebaseLiveData: MutableLiveData<Resource<BaseResponse>> = MutableLiveData()
 
-    fun callLoginIerp(client: String, user: String, password: String){
+    fun login(client: String, user: String, password: String){
 
-        RestRepository.getInstance().login(client, user, password, object : RestApiCallback<LoginResponse> {
-
-
-            override fun onSuccess(response: LoginResponse) {
-                loginIerpRecived.value = Resource.success(response)
+        viewModelScope.launch {
+            loginLiveData.value = Resource.loading()
+            val response = repository.login(client,user,password)
+            if (response != null) {
+                if (response.isOK() && response.userId != null) {
+                    loginLiveData.value = Resource.success(response)
+                } else {
+                    loginLiveData.value = Resource.error(ErrorHelper.loginNoValido)
+                }
+            }else{
+                loginLiveData.value = Resource.error(ErrorHelper.loginError)
             }
-
-            override fun onFailure(throwable: Throwable) {
-                loginIerpRecived.value = Resource.error(AppException(string = if (throwable.localizedMessage.isNullOrEmpty()) throwable.toString() else throwable.localizedMessage))
-
-            }
-        })
+        }
     }
 
-    val momentosRecived: MutableLiveData<Resource<MomentosResponse>> = MutableLiveData()
+    fun momentos(usuario: String){
 
-    fun callMomentos(token: String){
-
-        RestRepository.getInstance().momentos(token, object : RestApiCallback<MomentosResponse> {
-
-
-            override fun onSuccess(response: MomentosResponse) {
-                momentosRecived.value = Resource.success(response)
+        viewModelScope.launch {
+            momentosLiveData.value = Resource.loading()
+            val response = repository.momentos(ConstantHelper.clientREST,usuario)
+            if (response != null && response.isOK()) {
+                momentosLiveData.value = Resource.success(response)
+                if(response.error != null &&
+                    Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED){
+                    momentosLiveData.value = Resource.error(ErrorHelper.notSession)
+                }else {
+                    momentosLiveData.value = Resource.error(ErrorHelper.momentosError)
+                }
+            }else{
+                momentosLiveData.value = Resource.error(ErrorHelper.momentosError)
             }
-
-            override fun onFailure(throwable: Throwable) {
-                momentosRecived.value = Resource.error(AppException(string = if (throwable.localizedMessage.isNullOrEmpty()) throwable.toString() else throwable.localizedMessage))
-
-            }
-        })
-
+        }
     }
+    fun addTokenFirebase(token: String, tokenFirebase: String){
 
-    val sendTokenFirebaseRecived: MutableLiveData<Resource<RestBaseObject>> = MutableLiveData()
-    fun sendTokenFirebase(token: String, tokenFirebase: String){
-
-        RestRepository.getInstance().addTokenFirebase(token, tokenFirebase, object : RestApiCallback<RestBaseObject> {
-
-            override fun onSuccess(response: RestBaseObject) {
-                sendTokenFirebaseRecived.value = Resource.success(response)
-            }
-
-            override fun onFailure(throwable: Throwable) {
-
-            }
-        })
+        viewModelScope.launch {
+            addTokenFirebaseLiveData.value = Resource.loading()
+            val response = repository.addTokenFirebase(ConstantHelper.clientREST, token, tokenFirebase)
+            addTokenFirebaseLiveData.value = Resource.success(response)
+        }
 
     }
 }

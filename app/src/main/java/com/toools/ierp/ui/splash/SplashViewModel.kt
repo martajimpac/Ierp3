@@ -2,28 +2,29 @@ package com.toools.ierp.ui.splash
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.toools.ierp.core.ErrorHelper
+import com.toools.ierp.core.Resource
+import com.toools.ierp.data.Repository
+import com.toools.ierp.data.model.BaseResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModel  @Inject constructor(private val getMenuClienteUserCase: GetMenuClienteUserCase): ViewModel() {
+class SplashViewModel  @Inject constructor(private val repository: Repository): ViewModel() {
 
-    val addUserRecived: MutableLiveData<Resource<String>> = MutableLiveData()
+    val addUserLiveData: MutableLiveData<Resource<BaseResponse>> = MutableLiveData()
 
-    fun callAddUserFirebase(token: String) {
-
-        RestRepository.getInstance().addUser(object : NoParametersRestApiCallback {
-
-            override fun onSuccess() {
-                addUserRecived.value = Resource.success(token)
+    fun addUser(token: String) {
+        viewModelScope.launch {
+            addUserLiveData.value = Resource.loading()
+            val response = repository.addUser(token)
+            if (response != null && response.isOK()) {
+                addUserLiveData.value = Resource.success(response)
+            } else {
+                addUserLiveData.value = Resource.error(ErrorHelper.iSpotAddUserError)
             }
-
-            override fun onFailure(throwable: Throwable) {
-                addUserRecived.value =
-                    Resource.error(AppException(string = if (throwable.localizedMessage.isNullOrEmpty()) throwable.toString() else throwable.localizedMessage))
-
-            }
-        }, token)
-
+        }
     }
 }

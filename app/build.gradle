@@ -80,23 +80,30 @@ dependencies {
     implementation 'com.google.dagger:hilt-android:2.43'
     kapt 'com.google.dagger:hilt-android-compiler:2.43'
 
-    //firebase
+    //Firebase
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.3.6'
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.2.1'
     implementation 'com.google.firebase:firebase-messaging:23.1.2'
-    //implementation 'com.google.firebase:firebase-crashlytics:18.3.0'
-    implementation 'com.google.firebase:firebase-analytics:21.2.1'
 
     //material dialogs
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
     implementation 'com.afollestad.material-dialogs:input:3.3.0'
 
     //Toasty
-    implementation 'com.github.GrenderG:Toasty:1.5.0'
+    // implementation 'com.github.GrenderG:Toasty:1.5.0' TODO: Ver porque esto da problemas
 
-    //lottie
+    //lottie (animaciones)
     implementation "com.airbnb.android:lottie:5.2.0"
 
     //localization
     implementation "com.google.android.gms:play-services-location:21.0.1"
+
+    //multidex
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    //calligraphy
+    implementation 'io.github.inflationx:calligraphy3:3.1.1'
+    implementation 'io.github.inflationx:viewpump:2.0.3'
 
 
     constraints { //solucionar lo de clases duplicadas

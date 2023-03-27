@@ -76,7 +76,6 @@ object ConstantHelper {
         const val broadCastFragmentIndexChange = "broadCastFragmentIndexChange"
         const val backToRoot = "backToRoot"
 
-
         //BUNDLE EXTRAS
         const val type = "type"
 
@@ -123,7 +122,6 @@ object ConstantHelper {
         }
 }
 
-//TODO: todo esto lo quito??
 
     enum class Seccion (var nombre: Int, var icono: Int) {
 

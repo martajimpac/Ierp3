@@ -10,6 +10,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
+import java.util.*
 
 fun Fragment.hideKeyboard() {
 
@@ -51,9 +52,10 @@ fun String.capitalizeEachWord(): String {
     return this.split(' ').joinToString(" ") {
 
         if (!it.contains(".") && !it.contains("'"))
-        it.toLowerCase().capitalize()//TODO: actualizar deprecated
+            it.lowercase(Locale.ROOT)
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }//TODO: actualizar deprecated
         else
-            it.capitalize()
+            it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
     }
 }
 
@@ -70,7 +72,7 @@ fun ConstraintSet.match(view: View, parentView: View) {
     this.connect(view.id, ConstraintSet.END, parentView.id, ConstraintSet.END)
 }
 
-class doAsync(val handler: () -> Unit) : AsyncTask<Void, Void, Void>() {
+class doAsync(val handler: () -> Unit) : AsyncTask<Void, Void, Void>() { //todo deprecated
 
     override fun doInBackground(vararg params: Void?): Void? {
         handler()

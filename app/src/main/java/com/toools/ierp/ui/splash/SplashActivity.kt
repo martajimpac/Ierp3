@@ -10,11 +10,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
-import androidx.lifecycle.Observer
 import androidx.viewbinding.BuildConfig
 import com.toools.ierp.R
 import com.toools.ierp.data.ConstantHelper
-import com.toools.ierp.databinding.ActivityLoginBinding
 import com.toools.ierp.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +20,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.google.firebase.messaging.FirebaseMessaging
+import com.toools.ierp.core.Resource
 import com.toools.ierp.core.prefs
 import com.toools.ierp.databinding.ActivitySplashBinding
 
@@ -43,8 +42,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel.addUserRecived.observe(this, addUserObserver)
+        setUpObservers()
 
         binding.apply{
             try {
@@ -72,11 +70,10 @@ class SplashActivity : AppCompatActivity() {
                         null
                     ) != instanceIdResult
                 )
-                    viewModel.callAddUserFirebase(tokenFirebase)
+                    viewModel.addUser(tokenFirebase)
             }
 
             isLoad = false
-
             toLogin()
         }
     }
@@ -99,47 +96,25 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
-    private val addUserObserver = Observer<Resource<String>> { resource ->
-
-        if (BuildConfig.DEBUG)
-            Log.e(TAG, "addUser: {${resource.status}}")
-
-        when (resource.status) {
-
-            Resource.Status.LOADING -> {
-
-            }
-            Resource.Status.SUCCESS -> {
-
-                val editor = prefs.edit()
-                editor.putString(ConstantsHelper.registeredFirebaseToken, resource.data)
-                editor.apply()
-
-            }
-            Resource.Status.ERROR -> {
-                if (intentosIspot < 3 && !tokenFirebase.isEmpty())
-                    viewModel.callAddUserFirebase(tokenFirebase)
-                intentosIspot++
-            }
-        }
-    }
 
     fun setUpObservers() {
-        viewModel.get
-        mainViewModel.getMenuClienteLiveData.observe(this) {
-            when (it.status) {
+        viewModel.addUserLiveData.observe(this){ response ->
+
+            when (response.status) {
                 Resource.Status.LOADING -> {}
+
                 Resource.Status.SUCCESS -> {
-                    it.data?.let { response ->
-                        if (response.isOK()) {
-                            listEventos = response.clientes
-                            loadMenuDerecho()
-                        } else {
-                            //TODO mostrar error obtener datos eventos
-                        }
-                    }
+                    //pasar el token a login por shared preferences
+                    val editor = prefs.edit()
+                    editor.putString(ConstantHelper.registeredFirebaseToken, tokenFirebase)
+                    editor.apply()
                 }
-                Resource.Status.ERROR -> {}
+                Resource.Status.ERROR -> {
+                    //si falla intentamos llamar otra vez, al tercer intento ya no llamamos más
+                    if (intentosIspot < 3 && !tokenFirebase.isEmpty())
+                        viewModel.addUser(tokenFirebase)
+                    intentosIspot++
+                }
             }
         }
     }

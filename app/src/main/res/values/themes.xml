@@ -52,23 +52,23 @@
     </style>
 
     <!--Fuentes-->
-    <style name="fontWhiteBold">
-        <item name="fontPath">@string/title_font</item>
+    <style name="fontWhiteBold"> <!--TODO  fontPath?? -->
+        <item name="font">@string/title_font</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="fontBlackBold">
-        <item name="fontPath">@string/title_font</item>
+        <item name="font">@string/title_font</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
 
     <style name="fontWhite">
-        <item name="fontPath">@string/default_font</item>
+        <item name="font">@string/default_font</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="fontBlack">
-        <item name="fontPath">@string/default_font</item>
+        <item name="font">@string/default_font</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
 

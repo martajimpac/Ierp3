@@ -3,7 +3,7 @@ package com.toools.ierp.core
 import com.toools.ierp.IerpApp
 import com.toools.ierp.R
 
-/*
+
 class ErrorHelper {
 
     companion object {
@@ -82,4 +82,4 @@ class AppException(val string: String? = null, val throwable: Throwable? = null)
             errorString
         } ?: throwable?.localizedMessage ?: ""
     }
-}*/
+}

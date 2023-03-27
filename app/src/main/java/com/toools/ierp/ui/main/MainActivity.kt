@@ -35,7 +35,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
 import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
-import com.toools.ierp.alarm.Alarms
+import com.toools.ierp.core.Alarms
 import com.toools.ierp.helpers.ConstantsHelper
 import com.toools.ierp.helpers.DialogHelper
 import com.toools.ierp.helpers.prefs

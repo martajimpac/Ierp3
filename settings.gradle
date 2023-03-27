@@ -2,8 +2,7 @@ pluginManagement {
     repositories {
         google()
         mavenCentral()
-        jcenter()
-        maven {url = "libs//repository"}
+        maven {url = "libs//repository"} //esto es para dagger
     }
 }
 dependencyResolutionManagement {
@@ -11,7 +10,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        jcenter()
         maven {url = "libs//repository"}
     }
 }
