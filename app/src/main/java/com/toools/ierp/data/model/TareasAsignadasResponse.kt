@@ -6,17 +6,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 data class TareasAsignadasResponse (
-    val status: String? = null,
-    val error: String?,
     val tareas: List<TareaAsignada>? = null,
-
     @SerializedName("server_time_zone")
     val serverTimeZone: String? = null
-) {
-    fun isOK(): Boolean {
-        return status != null && status.lowercase(Locale.ROOT) == "ok" //NON-NLS
-    }
-}
+): BaseResponse()
 
 data class TareaAsignada (
     val idTarea: String? = null,

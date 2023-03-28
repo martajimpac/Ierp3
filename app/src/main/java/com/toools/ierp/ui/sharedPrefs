@@ -1,0 +1,7 @@
+        val sharedPreferences = getSharedPreferences("datos", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
+        val gson = Gson()
+        val json = gson.toJson(data)
+        editor.putString("datos_login", json)
+        editor.apply()

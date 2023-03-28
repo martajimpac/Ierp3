@@ -9,6 +9,7 @@
     <string name="drawer_open">drawerOpen</string>
     <string name="drawer_close">draweClose…</string>
     <string name="app_notification_channel_description">Canal de notificaciones de IERP</string>
+    <string name="version_app">Versión de la app</string>
 
     <!--Secciones-->
     <string name="fichajes">FICHAJES</string>

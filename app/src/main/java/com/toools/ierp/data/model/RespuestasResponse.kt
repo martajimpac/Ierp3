@@ -6,17 +6,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 data class RespuestasResponse (
-    val status: String?,
-    val error: String?,
     val respuestas: List<Respuesta>,
 
     @SerializedName("server_time_zone")
     val serverTimeZone: String
-) {
-    fun isOK(): Boolean {
-        return status != null && status.lowercase(Locale.getDefault()) == "ok" //NON-NLS
-    }
-}
+): BaseResponse() { }
 
 data class Respuesta (
     val idRespuesta: String?,
@@ -36,7 +30,7 @@ data class Respuesta (
 
             fecha?.let { fecha ->
                 val date = format.parse(fecha)
-                return date?.let {
+                return date.let {
                     formatResult.format(it)?.let {
                         it
                     }
@@ -44,10 +38,7 @@ data class Respuesta (
                     ""
                 }
             }
-        }catch (exception: Exception){
-
-        }
-
+        }catch (exception: Exception){ }
         return ""
     }
 }

@@ -6,18 +6,12 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class SoportesResponse ( //TODO: creo que todas estas funciones deberian heredar de rest base object y quetar esto
-    val status: String?,
-    val error: String?,
+data class SoportesResponse (
     val soportes: List<Soporte>? = null,
 
     @SerializedName("server_time_zone")
     val serverTimeZone: String
-) {
-    fun isOK(): Boolean {
-        return status != null && status.lowercase(Locale.ROOT) == "ok" //NON-NLS
-    }
-}
+): BaseResponse()
 
 data class Soporte (
     val idIncidencia: String?,

@@ -3,13 +3,7 @@ package com.toools.ierp.data.model
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
-//TODO HEREDAR DE BASE RESPONSE
-data class ISpotDirectAdsResponse ( val status: String?, val error: String?,  @SerializedName("imagenes") val ads: List<ISpotDirectAd>?) {
-
-    fun isOK(): Boolean {
-
-        return status?.lowercase(Locale.ROOT) == "ok" || ads != null
-    }
+data class ISpotDirectAdsResponse (@SerializedName("imagenes") val ads: List<ISpotDirectAd>?): BaseResponse() {
 }
 
 enum class ISpotAdType {

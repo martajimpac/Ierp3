@@ -11,9 +11,11 @@ import com.toools.ierp.data.Repository
 import com.toools.ierp.data.model.MomentosResponse
 import com.toools.ierp.data.model.BaseResponse
 import com.toools.ierp.data.model.LoginResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class LoginViewModel  @Inject constructor(private val repository: Repository): ViewModel() {
 
     val loginLiveData: MutableLiveData<Resource<LoginResponse>> = MutableLiveData()
@@ -29,7 +31,11 @@ class LoginViewModel  @Inject constructor(private val repository: Repository): V
                 if (response.isOK() && response.userId != null) {
                     loginLiveData.value = Resource.success(response)
                 } else {
-                    loginLiveData.value = Resource.error(ErrorHelper.loginNoValido)
+                    if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                        loginLiveData.value = Resource.error(ErrorHelper.notSession)
+                    }else{
+                        loginLiveData.value = Resource.error(ErrorHelper.loginNoValido)
+                    }
                 }
             }else{
                 loginLiveData.value = Resource.error(ErrorHelper.loginError)
@@ -42,13 +48,16 @@ class LoginViewModel  @Inject constructor(private val repository: Repository): V
         viewModelScope.launch {
             momentosLiveData.value = Resource.loading()
             val response = repository.momentos(ConstantHelper.clientREST,usuario)
-            if (response != null && response.isOK()) {
-                momentosLiveData.value = Resource.success(response)
-                if(response.error != null &&
-                    Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED){
-                    momentosLiveData.value = Resource.error(ErrorHelper.notSession)
+
+            if(response != null) {
+                if(response.isOK()) {
+                    momentosLiveData.value = Resource.success(response)
                 }else {
-                    momentosLiveData.value = Resource.error(ErrorHelper.momentosError)
+                    if(response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED){
+                        momentosLiveData.value = Resource.error(ErrorHelper.notSession)
+                    }else {
+                        momentosLiveData.value = Resource.error(ErrorHelper.momentosError)
+                    }
                 }
             }else{
                 momentosLiveData.value = Resource.error(ErrorHelper.momentosError)

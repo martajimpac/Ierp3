@@ -4,12 +4,9 @@ import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
-import android.os.Build
 import android.os.PersistableBundle
-import androidx.annotation.RequiresApi
 import com.toools.ierp.R
 import java.util.*
-
 
 class Alarms {
 
@@ -64,32 +61,7 @@ class Alarms {
     }
 
     fun deleteAllAlarms(context: Context){
-
             removeAllAlarmaJob(context)
-        
-            /*removeAlarmaJob(context, alarmLunes1)
-            removeAlarmaJob(context, alarmLunes2)
-            removeAlarmaJob(context, alarmLunes3)
-            removeAlarmaJob(context, alarmLunes4)
-
-            removeAlarmaJob(context, alarmMartes1)
-            removeAlarmaJob(context, alarmMartes2)
-            removeAlarmaJob(context, alarmMartes3)
-            removeAlarmaJob(context, alarmMartes4)
-
-            removeAlarmaJob(context, alarmMiercoles1)
-            removeAlarmaJob(context, alarmMiercoles2)
-            removeAlarmaJob(context, alarmMiercoles3)
-            removeAlarmaJob(context, alarmMiercoles4)
-
-            removeAlarmaJob(context, alarmJueves1)
-            removeAlarmaJob(context, alarmJueves2)
-            removeAlarmaJob(context, alarmJueves3)
-            removeAlarmaJob(context, alarmJueves4)
-
-            removeAlarmaJob(context, alarmViernes1)
-            removeAlarmaJob(context, alarmViernes2)*/
-
     }
 
 
@@ -144,11 +116,7 @@ class Alarms {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private fun setAlarmaJob(context: Context, desc: String, requestCode: Int, dia: Int, type: Int){
-
-
-
         val cal = Calendar.getInstance()
 
         val now = Calendar.getInstance()
@@ -214,7 +182,6 @@ class Alarms {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private fun removeAlarmaJob(context: Context, requestCode: Int){
 
         val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
@@ -222,7 +189,6 @@ class Alarms {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private fun removeAllAlarmaJob(context: Context){
 
         val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler

@@ -4,12 +4,7 @@ import com.google.gson.annotations.SerializedName
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class ISpotNotificationsResponse(val status: String, val error: String?, @SerializedName("mensajes") val messages: List<ISpotNotification>) {
-
-    fun isOK(): Boolean {
-
-        return status.lowercase(Locale.ROOT) == "ok"
-    }
+data class ISpotNotificationsResponse(@SerializedName("mensajes") val messages: List<ISpotNotification>): BaseResponse() {
 }
 
 data class ISpotNotification(@SerializedName("mensaje") val message: String, @SerializedName("fecha") val date: String) {

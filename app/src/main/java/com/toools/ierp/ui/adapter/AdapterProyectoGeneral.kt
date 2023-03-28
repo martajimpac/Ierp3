@@ -1,5 +1,6 @@
 package com.toools.ierp.ui.adapter
 
+/*
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.toools.ierp.R
 
-/*
+
 class AdapterProyectoGeneral (context: Context, listProyectos: MutableList<Proyecto>, itemClick: ((position: Int) -> Unit)) :
     RecyclerView.Adapter<AdapterProyectoGeneral.ProyectoHolder>() {
 

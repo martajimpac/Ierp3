@@ -1,6 +1,7 @@
 package com.toools.ierp.ui.splash
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.viewbinding.BuildConfig
+import com.google.firebase.FirebaseApp
 import com.toools.ierp.R
 import com.toools.ierp.data.ConstantHelper
 import com.toools.ierp.ui.login.LoginActivity
@@ -25,8 +27,6 @@ import com.toools.ierp.core.prefs
 import com.toools.ierp.databinding.ActivitySplashBinding
 
 const val TAG = "SplashActivity"
-
-//TODO QUE SIGNIFICA SUPPRESS LINT
 @SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
@@ -46,7 +46,7 @@ class SplashActivity : AppCompatActivity() {
 
         binding.apply{
             try {
-                val pInfo = packageManager.getPackageInfo(packageName, 0)
+                val pInfo = packageManager.getPackageInfo(packageName, 0) //todo quitar deprecated
                 txtVersionApp.text =
                     String.format(getString(R.string.app_name_with_version), pInfo.versionName)
 
@@ -54,7 +54,7 @@ class SplashActivity : AppCompatActivity() {
 
                 if (BuildConfig.DEBUG)
                     e.printStackTrace()
-                txtVersionApp.text = "Version de la app" //TODO: HACER QUE ESTO NO SEA UN STRING LITERAL
+                txtVersionApp.text = "${R.string.version_app}"
             }
         }
 

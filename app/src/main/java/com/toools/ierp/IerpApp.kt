@@ -15,7 +15,6 @@ import java.util.*
 
 
 @HiltAndroidApp
-//TODO: multidexApplication o aplication?
 class IerpApp : MultiDexApplication() {
 
     override fun onCreate() {
@@ -37,7 +36,7 @@ class IerpApp : MultiDexApplication() {
                 CalligraphyInterceptor(
                     CalligraphyConfig.Builder()
                         .setDefaultFontPath(getString(R.string.default_font))
- //                       .setFontAttrId(R.attr.fontPath TODO: PORQEU NO TENGO ESE ATRIBUTO?
+                         // .setFontAttrId(R.attr.fontPath TODO: PORQEU NO TENGO ESE ATRIBUTO?
                         .build()
                 )
             )
@@ -79,7 +78,7 @@ class IerpApp : MultiDexApplication() {
 
     //region STATIC ACCESS
     companion object {
-        private lateinit var mInstance: Application //TODO: para que sirve esto??
+        private lateinit var mInstance: Application
         fun getInstance(): Application {
             return mInstance
         }

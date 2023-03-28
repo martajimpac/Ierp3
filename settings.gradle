@@ -1,17 +1,2 @@
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        maven {url = "libs//repository"} //esto es para dagger
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-        maven {url = "libs//repository"}
-    }
-}
 rootProject.name = "Ierp"
 include ':app'

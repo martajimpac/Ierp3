@@ -10,6 +10,8 @@ class ErrorHelper {
 
         const val SESSION_EXPIRED = 302
 
+        //ispot
+
         val iSpotAddUserError: String
             get() = IerpApp.getInstance().getString(R.string.ispot_add_user_default_error)
 
@@ -21,6 +23,8 @@ class ErrorHelper {
 
         val iSpotNotificationsError: String
             get() = IerpApp.getInstance().getString(R.string.ispot_notifications_default_error)
+
+        //ierp
 
         val loginNoValido: String
             get() = IerpApp.getInstance().getString(R.string.login_user_pass_error)
@@ -70,16 +74,5 @@ class ErrorHelper {
         val insertarTareaError: String
             get() = IerpApp.getInstance().getString(R.string.insertar_tarea_error)
 
-    }
-}
-
-class AppException(val string: String? = null, val throwable: Throwable? = null) {
-
-    fun message(): String {
-
-        return string?.let { errorString ->
-
-            errorString
-        } ?: throwable?.localizedMessage ?: ""
     }
 }

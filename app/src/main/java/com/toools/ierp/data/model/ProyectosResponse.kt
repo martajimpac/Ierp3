@@ -2,20 +2,12 @@ package com.toools.ierp.data.model
 
 import com.google.gson.annotations.SerializedName
 import java.util.*
-
 data class ProyectosResponse (
-    val status: String?,
-    val error: String?,
     val proyectos: List<Proyecto>?,
 
     @SerializedName("server_time_zone")
     val serverTimeZone: String
-) {
-    fun isOK(): Boolean {
-        return status != null && status.lowercase(Locale.ROOT) == "ok" //NON-NLS
-    }
-}
-
+): BaseResponse()
 data class Proyecto (
     val id: String?,
     val nombre: String?,

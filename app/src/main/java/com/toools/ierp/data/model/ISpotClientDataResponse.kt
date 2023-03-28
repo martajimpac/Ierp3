@@ -4,12 +4,8 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 import kotlin.collections.ArrayList
 
-data class ISpotClientDataResponse(val status: String?, val error: String?, @SerializedName("attributes") val menuItems: List<ISpotClientDataMenuItem>) {
+data class ISpotClientDataResponse(@SerializedName("attributes") val menuItems: List<ISpotClientDataMenuItem>): BaseResponse() {
 
-    fun isOK(): Boolean {
-
-        return status?.lowercase(Locale.ROOT) == "ok"
-    }
 
     fun isLive(): Boolean {
         return menuItems.isNotEmpty() && menuItems.any { item -> item.type == "2" }

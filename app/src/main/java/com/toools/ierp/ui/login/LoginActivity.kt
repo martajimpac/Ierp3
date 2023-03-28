@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.viewbinding.BuildConfig
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -25,15 +24,16 @@ import com.toools.ierp.R
 import com.toools.ierp.core.*
 import com.toools.ierp.data.ConstantHelper
 import com.toools.ierp.data.Repository
-import com.toools.ierp.data.model.BaseResponse
 import com.toools.ierp.data.model.LoginResponse
-import com.toools.ierp.data.model.MomentosResponse
 import com.toools.ierp.databinding.ActivityLoginBinding
 import com.toools.ierp.ui.main.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 import java.util.*
 
 const val TAG = "LoginActivity"
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
@@ -60,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
 
                 if (BuildConfig.DEBUG)
                     e.printStackTrace()
-                txtVersionApp.text = "Version de la app" //TODO: hacer string para esto
+                txtVersionApp.text = "${R.string.version_app}"
             }
 
             if (BuildConfig.DEBUG) {
@@ -89,7 +89,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        ConstantHelper.clientREST = prefs.getString(ConstantHelper.client, "").toString() //TODO QUE ESTA HACIENDO AQUI??
+        ConstantHelper.clientREST = prefs.getString(ConstantHelper.client, "").toString()
 
         Handler(Looper.getMainLooper()).postDelayed({
             
@@ -143,7 +143,7 @@ class LoginActivity : AppCompatActivity() {
                 ) {
                     Toasty.warning(this@LoginActivity, R.string.alert_user, Toast.LENGTH_LONG).show()
                 } else {
-                    DialogHelper.getInstance().showLoadingAlert(this, null, true)
+                    DialogHelper.getInstance().showLoadingAlert(this@LoginActivity, null, true)
                     viewModel.login(
                         editClient.text.toString(),
                         editUsuario.text.toString(),
@@ -165,9 +165,9 @@ class LoginActivity : AppCompatActivity() {
                 Resource.Status.SUCCESS -> {
                     DialogHelper.getInstance().showLoadingAlert(this, null, false)
 
-                    //pasar los datos a mainv TODO hace falta hacer esto?? porqeu ya he guardado los datos en repositorio
+                    //Guardar el cliente en shared preferences
                     val edit = prefs.edit()
-                    edit.putString(ConstantHelper.client, binding.editClient.text.toString()) //todo no enitnedo que hace aqui
+                    edit.putString(ConstantHelper.client, binding.editClient.text.toString())
                     edit.apply()
 
                     //mostrar mensaje de guardar session
@@ -200,26 +200,19 @@ class LoginActivity : AppCompatActivity() {
                 Resource.Status.ERROR -> {
                     DialogHelper.getInstance().showLoadingAlert(this, null, false)
 
-                    if (response.data?.error != null &&
-                        Integer.parseInt(response.data.error) == ErrorHelper.SESSION_EXPIRED
-                    ) {
-
+                    if (response.exception == ErrorHelper.notSession) {
                         DialogHelper.getInstance().showOKAlert(activity = this,
                             title = R.string.not_session,
                             text = R.string.desc_not_session,
                             icon = R.drawable.ic_toools_rellena,
-                            completion = {
-
-                            })
+                            completion = {})
 
                     } else {
                         DialogHelper.getInstance().showOKAlert(activity = this,
                             title = R.string.error_login,
-                            text = response.exception?.message() ?: ErrorHelper.loginError,
+                            text = response.exception ?: ErrorHelper.loginError,
                             icon = R.drawable.ic_toools_rellena,
-                            completion = {
-
-                            })
+                            completion = {})
                     }
                 }
             }
@@ -227,72 +220,55 @@ class LoginActivity : AppCompatActivity() {
 
         //momentos
         viewModel.momentosLiveData.observe(this) { response ->
-        }
+            if (BuildConfig.DEBUG)
+                Log.e(TAG, "momentos: {${response.status}}")
+            when (response.status) {
+                Resource.Status.LOADING -> {
+                    //DialogHelper.getInstance().showLoadingAlert(this, null, true)
+                }
+                Resource.Status.SUCCESS -> {
+                    DialogHelper.getInstance().showLoadingAlert(this, null, false)
 
-        //
-    }
+                    usuario!!.momentos = response.data!!.momentos
+                    toMain(usuario!!)
 
-
-    private val momentosObserver = Observer<Resource<MomentosResponse>> { resource ->
-
-        if (BuildConfig.DEBUG)
-            Log.e(TAG, "momentos: {${resource.status}}")
-        when (resource.status) {
-            Resource.Status.LOADING -> {
-                //DialogHelper.getInstance().showLoadingAlert(this, null, true)
-            }
-            Resource.Status.SUCCESS -> {
-                DialogHelper.getInstance().showLoadingAlert(this, null, false)
-
-                usuario!!.momentos = resource.data!!.momentos
-                toMain(usuario!!)
-
-            }
-            Resource.Status.ERROR -> {
-                DialogHelper.getInstance().showLoadingAlert(this, null, false)
-                if (resource.data?.error != null &&
-                    Integer.parseInt(resource.data.error) == ErrorHelper.SESSION_EXPIRED
-                ) {
-
-                    DialogHelper.getInstance().showOKAlert(activity = this,
-                        title = R.string.not_session,
-                        text = R.string.desc_not_session,
-                        icon = R.drawable.ic_toools_rellena,
-                        completion = {
-
-                        })
-
-                } else {
-                    DialogHelper.getInstance().showOKAlert(activity = this,
-                        title = R.string.ups,
-                        text = resource.exception?.message() ?: ErrorHelper.momentosError,
-                        icon = R.drawable.ic_toools_rellena,
-                        completion = {
-
-                        })
+                }
+                Resource.Status.ERROR -> {
+                    DialogHelper.getInstance().showLoadingAlert(this, null, false)
+                    if (response.data?.error == ErrorHelper.notSession) {
+                        DialogHelper.getInstance().showOKAlert(activity = this,
+                            title = R.string.not_session,
+                            text = R.string.desc_not_session,
+                            icon = R.drawable.ic_toools_rellena,
+                            completion = {})
+                    } else {
+                        DialogHelper.getInstance().showOKAlert(activity = this,
+                            title = R.string.ups,
+                            text = response.exception ?: ErrorHelper.momentosError,
+                            icon = R.drawable.ic_toools_rellena,
+                            completion = {})
+                    }
                 }
             }
         }
-    }
 
-    private val addTokenFirebaseObserver = Observer<Resource<BaseResponse>> { resource ->
-
-        if (BuildConfig.DEBUG)
-            Log.e(TAG, "addTokenFirebase: {${resource.status}}")
-        when (resource.status) {
-            Resource.Status.LOADING -> {
-
-            }
-            Resource.Status.SUCCESS -> {
-                val edit = prefs.edit()
-                edit.putBoolean(ConstantHelper.addTokenFirebase, true)
-                edit.apply()
-            }
-            Resource.Status.ERROR -> {
-
+        //addTokenFirebase
+        viewModel.momentosLiveData.observe(this) { response ->
+            if (BuildConfig.DEBUG)
+                Log.e(TAG, "addTokenFirebase: {${response.status}}")
+            when (response.status) {
+                Resource.Status.LOADING -> { }
+                Resource.Status.SUCCESS -> {
+                    val edit = prefs.edit()
+                    edit.putBoolean(ConstantHelper.addTokenFirebase, true)
+                    edit.apply()
+                }
+                Resource.Status.ERROR -> { }
             }
         }
     }
+
+
 
     private fun toMain(usuario: LoginResponse) {
 
