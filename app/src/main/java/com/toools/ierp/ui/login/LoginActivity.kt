@@ -62,12 +62,10 @@ class LoginActivity : AppCompatActivity() {
                     e.printStackTrace()
                 txtVersionApp.text = "${R.string.version_app}"
             }
-
-            if (BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) { //todo porque esto no funciona??
                 editClient.setText("toools")
                 editUsuario.setText("martapracticas@toools.es")
                 editPassword.setText("4rfv5tgb")
-
             }
         }
 

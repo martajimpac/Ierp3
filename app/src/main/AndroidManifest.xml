@@ -12,13 +12,14 @@
     <application
         android:name=".IerpApp"
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:targetApi="31">
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
         <activity
             android:name=".ui.main.MainActivity"
             android:launchMode="singleTop"
@@ -48,6 +49,7 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notifi" />
 
+        <!-- todo probar a quitar esto -->
         <service
             android:name=".data.network.FirebaseMessagingService"
             tools:ignore="ExportedService"
@@ -57,14 +59,6 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".core.DeviceBootRecived"
-            android:enabled="true"
-            android:exported="false">
-        </receiver>
-
-        <service
-            android:name=".core.AlarmJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 
 </manifest>
