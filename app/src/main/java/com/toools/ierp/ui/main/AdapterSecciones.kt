@@ -1,6 +1,5 @@
 package com.toools.ierp.ui.main
 
-/*
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -8,14 +7,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.toools.ierp.R
-import com.toools.ierp.helpers.ConstantsHelper
-import kotlinx.android.synthetic.main.recycler_secciones.view.*
+import com.toools.ierp.data.ConstantHelper
+import com.toools.ierp.databinding.RecyclerSeccionesBinding
 
-class AdapterSecciones (context: Context, listSecciones: MutableList<ConstantsHelper.Seccion>, isNotificaciones: Boolean, listener: SeccionesListener) :
+class AdapterSecciones (context: Context, listSecciones: MutableList<ConstantHelper.Seccion>, isNotificaciones: Boolean, listener: SeccionesListener) :
     RecyclerView.Adapter<AdapterSecciones.SeccionHolder>() {
 
+    private lateinit var binding: RecyclerSeccionesBinding
 
-    private var listSecciones: MutableList<ConstantsHelper.Seccion> = mutableListOf()
+    private var listSecciones: MutableList<ConstantHelper.Seccion> = mutableListOf()
     private var context: Context
     private var isNotificaciones: Boolean
     private var listener: SeccionesListener
@@ -28,7 +28,7 @@ class AdapterSecciones (context: Context, listSecciones: MutableList<ConstantsHe
         this.listener = listener
     }
 
-    fun setList(listSecciones: MutableList<ConstantsHelper.Seccion>?) {
+    fun setList(listSecciones: MutableList<ConstantHelper.Seccion>?) {
         this.listSecciones.clear()
         this.listSecciones.addAll(listSecciones!!)
 
@@ -42,25 +42,22 @@ class AdapterSecciones (context: Context, listSecciones: MutableList<ConstantsHe
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SeccionHolder {
-        val inflater = LayoutInflater.from(this.context)
-        val view = inflater.inflate(R.layout.recycler_secciones, parent, false)
-        return SeccionHolder(view)
+        binding = RecyclerSeccionesBinding.inflate(LayoutInflater.from(parent.context),parent,false) //esto creo que es asi pero no se porque
+        return SeccionHolder(binding)
     }
 
-    override fun getItemCount(): Int {
-        return listSecciones.size
-    }
+    override fun getItemCount() = listSecciones.size
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
 
     override fun onBindViewHolder(holder: SeccionHolder, position: Int) {
-        holder.bind(listSecciones[position])
+        holder.bind(listSecciones[position],context)
 
         val seccion = listSecciones[position]
 
-        if (seccion == ConstantsHelper.Seccion.notificaciones) {
+        if (seccion == ConstantHelper.Seccion.notificaciones) {
 
             holder.switchNotificaciones.isChecked = isNotificaciones
 
@@ -78,23 +75,25 @@ class AdapterSecciones (context: Context, listSecciones: MutableList<ConstantsHe
         }
     }
 
-    class SeccionHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class SeccionHolder(val binding: RecyclerSeccionesBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        var switchNotificaciones = view.notificacionSwitch
-        var seccionConstrainLayout = view.seccionConstrainLayout
+        var switchNotificaciones = binding.notificacionSwitch
+        var seccionConstrainLayout = binding.seccionConstrainLayout
 
-        fun bind(item: ConstantsHelper.Seccion) = with(itemView) {
-            Glide.with(context).load(context.getDrawable(item.icono)).into(iconoImageView)
-            iconoImageView.setColorFilter(context.getColor(R.color.white))
-            seccionTextView.text = context.getString(item.nombre)
+        fun bind(item: ConstantHelper.Seccion, context: Context) {
+            binding.apply{
+                Glide.with(context).load(context.getDrawable(item.icono)).into(iconoImageView)
+                iconoImageView.setColorFilter(context.getColor(R.color.white))
+                seccionTextView.text = context.getString(item.nombre)
 
-            if (item == ConstantsHelper.Seccion.notificaciones) {
-                notificacionSwitch.visibility = View.VISIBLE
-            } else {
-                notificacionSwitch.visibility = View.GONE
+                if (item == ConstantHelper.Seccion.notificaciones) {
+                    notificacionSwitch.visibility = View.VISIBLE
+                } else {
+                    notificacionSwitch.visibility = View.GONE
+                }
             }
         }
 
     }
 
-}*/
+}

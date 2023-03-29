@@ -1,32 +1,43 @@
 package com.toools.ierp.ui.main
 
-/*
+
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.toools.ierp.entities.Resource
-import com.toools.ierp.entities.ierp.MomentosResponse
-import com.toools.ierp.helpers.rest.AppException
-import com.toools.ierp.helpers.rest.RestApiCallback
-import com.toools.ierp.helpers.rest.RestRepository
+import androidx.lifecycle.viewModelScope
+import com.toools.ierp.core.ErrorHelper
+import com.toools.ierp.core.Resource
+import com.toools.ierp.data.ConstantHelper
+import com.toools.ierp.data.Repository
+import com.toools.ierp.data.model.MomentosResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
-    val momentosRecived: MutableLiveData<Resource<MomentosResponse>> = MutableLiveData()
+    val momentosLiveData: MutableLiveData<Resource<MomentosResponse>> = MutableLiveData()
 
-    fun callLoginIerp(token: String){
+    //todo porque llama aqui a momentos de nuevo?
+    fun momentos(usuario: String){
 
-        RestRepository.getInstance().momentos(token, object : RestApiCallback<MomentosResponse> {
+        viewModelScope.launch {
+            momentosLiveData.value = Resource.loading()
+            val response = repository.momentos(ConstantHelper.clientREST,usuario)
 
-
-            override fun onSuccess(response: MomentosResponse) {
-                momentosRecived.value = Resource.success(response)
+            if(response != null) {
+                if(response.isOK()) {
+                    momentosLiveData.value = Resource.success(response)
+                }else {
+                    if(response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED){
+                        momentosLiveData.value = Resource.error(ErrorHelper.notSession)
+                    }else {
+                        momentosLiveData.value = Resource.error(ErrorHelper.momentosError)
+                    }
+                }
+            }else{
+                momentosLiveData.value = Resource.error(ErrorHelper.momentosError)
             }
-
-            override fun onFailure(throwable: Throwable) {
-                momentosRecived.value = Resource.error(AppException(string = if (throwable.localizedMessage.isNullOrEmpty()) throwable.toString() else throwable.localizedMessage))
-
-            }
-        })
-
+        }
     }
-}*/
+}

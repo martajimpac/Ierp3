@@ -1,5 +1,8 @@
 package com.toools.ierp.ui.respuestasFragment
 
+import androidx.fragment.app.Fragment
+class RespuestasFragment : Fragment(){ }
+
 /*
 import android.app.Activity
 import android.content.Context

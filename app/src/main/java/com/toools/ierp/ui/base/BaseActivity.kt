@@ -1,11 +1,12 @@
 package com.toools.ierp.ui.base
 
-/*
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
 
 @SuppressLint("Registered")
 open class BaseActivity: AppCompatActivity() {
@@ -36,4 +37,4 @@ open class BaseActivity: AppCompatActivity() {
         super.onPause()
         mIsRunning = false
     }
-}*/
+}

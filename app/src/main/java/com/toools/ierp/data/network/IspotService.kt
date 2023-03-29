@@ -13,7 +13,7 @@ class IspotService @Inject constructor(private val api: IspotApiClient) {
 
     suspend fun addUser(token: String): BaseResponse? {
         return withContext(Dispatchers.IO) {
-            val response = api.addUser(ConstantHelper.iSpotId, ConstantHelper.iSpotSystem, token)
+            val response = api.addUser(ConstantHelper.iSpotClientId, ConstantHelper.iSpotSystem, token)
             response.body()
         }
     }

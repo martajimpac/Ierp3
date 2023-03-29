@@ -1,7 +1,13 @@
 package com.toools.ierp.ui.tareasFragment
 
+import androidx.fragment.app.Fragment
+
+class TareasFragment : Fragment() {
+}
+
 /*
-import android.app.Activity
+
+    import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -16,25 +22,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.*
 import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
-import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
-import com.toools.ierp.custom.AddTareaDialog
-import com.toools.ierp.custom.AddTareaDialogListener
-import com.toools.ierp.entities.Resource
-import com.toools.ierp.entities.RestBaseObject
-import com.toools.ierp.entities.ierp.Proyecto
-import com.toools.ierp.entities.ierp.ProyectosResponse
-import com.toools.ierp.entities.ierp.Tarea
-import com.toools.ierp.entities.ierp.TareasResponse
-import com.toools.ierp.helpers.ConstantsHelper
-import com.toools.ierp.helpers.DialogHelper
-import com.toools.ierp.helpers.rest.ErrorHelper
-import com.toools.ierp.ui.adapter.AdapterProyectoGeneral
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.dialog_observaciones.view.*
-import kotlinx.android.synthetic.main.empty_view.view.*
-import kotlinx.android.synthetic.main.fragment_tareas.*
-import kotlinx.android.synthetic.main.recycler_tareas.view.emailTextView
+
 
 const val TAG = "TareasFragment"
 
@@ -481,4 +471,4 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
             }
         }
     }
-}*/
+} */

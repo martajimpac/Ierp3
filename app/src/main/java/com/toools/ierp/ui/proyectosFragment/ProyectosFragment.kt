@@ -1,5 +1,9 @@
 package com.toools.ierp.ui.proyectosFragment
 
+import androidx.fragment.app.Fragment
+class ProyectosFragment : Fragment(){
+
+}
 /*
 import android.app.Activity
 import android.content.Context

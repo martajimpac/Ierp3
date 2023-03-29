@@ -1,7 +1,6 @@
 package com.toools.ierp.ui.splash
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -12,19 +11,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.viewbinding.BuildConfig
-import com.google.firebase.FirebaseApp
 import com.toools.ierp.R
 import com.toools.ierp.data.ConstantHelper
 import com.toools.ierp.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import com.google.firebase.messaging.FirebaseMessaging
 import com.toools.ierp.core.Resource
 import com.toools.ierp.core.prefs
 import com.toools.ierp.databinding.ActivitySplashBinding
+import kotlinx.coroutines.*
 
 const val TAG = "SplashActivity"
 @SuppressLint("CustomSplashScreen")
@@ -60,6 +55,7 @@ class SplashActivity : AppCompatActivity() {
 
         GlobalScope.launch(Dispatchers.Main) {
             delay(1500)
+            //crear el token
             val fcmToken = FirebaseMessaging.getInstance().getToken()
             fcmToken.addOnSuccessListener(this@SplashActivity) { instanceIdResult ->
                 tokenFirebase = instanceIdResult
@@ -99,6 +95,9 @@ class SplashActivity : AppCompatActivity() {
 
     fun setUpObservers() {
         viewModel.addUserLiveData.observe(this){ response ->
+
+            if (com.toools.ierp.BuildConfig.DEBUG)
+                Log.e(TAG, "addUser: {${response.status}}")
 
             when (response.status) {
                 Resource.Status.LOADING -> {}

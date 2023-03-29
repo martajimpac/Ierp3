@@ -64,7 +64,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             if (BuildConfig.DEBUG) {
-                editClient.setText("TOOOLS")
+                editClient.setText("toools")
                 editUsuario.setText("martapracticas@toools.es")
                 editPassword.setText("4rfv5tgb")
 
@@ -271,9 +271,6 @@ class LoginActivity : AppCompatActivity() {
 
 
     private fun toMain(usuario: LoginResponse) {
-
-        cargarAlarmas()
-
         DialogHelper.getInstance().showLoadingAlert(this, null, true)
 
         Handler(Looper.getMainLooper()).postDelayed({
@@ -359,31 +356,4 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-
-    fun cargarAlarmas() {
-        if (prefs.getBoolean(ConstantHelper.sendNotificacion, true)) {
-
-            //comprobar si es horario de verano o no
-            val now = Calendar.getInstance()
-            val junio = Calendar.getInstance()
-            junio.set(now.get(Calendar.YEAR), 5, 15)
-            val septiembre = Calendar.getInstance()
-            septiembre.set(now.get(Calendar.YEAR), 8, 15)
-
-            var isVerano = false
-            if (now.after(junio) && now.before(septiembre)) {
-                isVerano = true
-            }
-
-            Alarms.getInstance().createAlarmn(this, isVerano)
-
-            val editor = prefs.edit()
-            editor.putBoolean(ConstantHelper.sendNotificacion, true)
-            editor.putBoolean(ConstantHelper.horarioVerano, isVerano)
-            editor.apply()
-
-        } else {
-            Alarms.getInstance().deleteAllAlarms(this)
-        }
-    } 
 }

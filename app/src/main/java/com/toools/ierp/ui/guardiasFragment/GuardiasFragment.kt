@@ -1,5 +1,7 @@
 package com.toools.ierp.ui.guardiasFragment
 
+import androidx.fragment.app.Fragment
+class GuardiasFragment : Fragment(){ }
 /*
 import android.annotation.SuppressLint
 import android.app.Activity

@@ -2,4 +2,83 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph" />
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fichajeFragment">
+
+    <fragment
+        android:id="@+id/fichajeFragment"
+        android:name="com.toools.ierp.ui.fichajesFragment.FichajeFragment"
+        android:label="fragment_fichaje"
+        tools:layout="@layout/fragment_fichaje" >
+        <action
+            android:id="@+id/action_fichajeFragment_to_guardiasFragment"
+            app:destination="@id/guardiasFragment" />
+        <action
+            android:id="@+id/action_fichajeFragment_to_proyectosFragment"
+            app:destination="@id/proyectosFragment" />
+        <action
+            android:id="@+id/action_fichajeFragment_to_tareasFragment"
+            app:destination="@id/tareasFragment" />
+        <action
+            android:id="@+id/action_fichajeFragment_to_soportesFragment"
+            app:destination="@id/soportesFragment" />
+        <action
+            android:id="@+id/action_fichajeFragment_to_tareasAsignadasFragment"
+            app:destination="@id/tareasAsignadasFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/guardiasFragment"
+        android:name="com.toools.ierp.ui.guardiasFragment.GuardiasFragment"
+        android:label="fragment_guardias"
+        tools:layout="@layout/fragment_guardias" />
+    <fragment
+        android:id="@+id/proyectosFragment"
+        android:name="com.toools.ierp.ui.proyectosFragment.ProyectosFragment"
+        android:label="fragment_proyectos"
+        tools:layout="@layout/fragment_proyectos" >
+        <action
+            android:id="@+id/navToTareasFragmentFromProyectosFragment"
+            app:destination="@id/tareasFragment"/>
+        <action
+            android:id="@+id/navToSoportesFragmentFromProyectosFragment"
+            app:destination="@id/soportesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tareasFragment"
+        android:name="com.toools.ierp.ui.tareasFragment.TareasFragment"
+        android:label="TareasFragment" >
+        <argument
+            android:name="idProyecto"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="-1" />
+    </fragment>
+    <fragment
+        android:id="@+id/soportesFragment"
+        android:name="com.toools.ierp.ui.soportesFragment.SoportesFragment"
+        android:label="fragment_soportes"
+        tools:layout="@layout/fragment_soportes" >
+        <argument
+            android:name="idProyecto"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/navToRespuestasFragment"
+            app:destination="@id/respuestasFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/respuestasFragment"
+        android:name="com.toools.ierp.ui.respuestasFragment.RespuestasFragment"
+        android:label="fragment_respuestas"
+        tools:layout="@layout/fragment_respuestas" >
+        <argument
+            android:name="soporte"
+            app:argType="com.toools.ierp.data.model.Soporte" />
+    </fragment>
+    <fragment
+        android:id="@+id/tareasAsignadasFragment"
+        android:name="com.toools.ierp.ui.tareasAsignadasFragment.TareasAsignadasFragment"
+        android:label="TareasAsignadasFragment" />
+
+</navigation>

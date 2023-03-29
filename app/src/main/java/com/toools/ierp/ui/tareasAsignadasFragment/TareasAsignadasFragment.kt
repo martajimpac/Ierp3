@@ -1,5 +1,7 @@
 package com.toools.ierp.ui.tareasAsignadasFragment
 
+import androidx.fragment.app.Fragment
+class TareasAsignadasFragment : Fragment(){ }
 /*
 import android.app.Activity
 import android.content.Context

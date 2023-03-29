@@ -1,5 +1,7 @@
 package com.toools.ierp.ui.soportesFragment
 
+import androidx.fragment.app.Fragment
+class SoportesFragment : Fragment(){ }
 /*
 import android.app.Activity
 import android.content.Context

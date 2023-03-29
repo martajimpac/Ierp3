@@ -1,6 +1,5 @@
 package com.toools.ierp.ui.fichajesFragment
 
-/*
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
@@ -22,25 +21,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.*
-import com.google.gson.Gson
-import com.toools.ierp.Application
-import com.toools.ierp.BuildConfig
-import com.toools.ierp.R
-import com.toools.ierp.entities.Resource
-import com.toools.ierp.entities.ierp.LoginResponse
-import com.toools.ierp.entities.ierp.MomentosResponse
-import com.toools.ierp.helpers.ConstantsHelper
-import com.toools.ierp.helpers.DialogHelper
-import com.toools.ierp.helpers.EditTextDialogListener
-import com.toools.ierp.helpers.prefs
-import com.toools.ierp.helpers.rest.ErrorHelper
-import com.toools.ierp.helpers.rest.RestRepository
 import com.toools.ierp.ui.base.BaseFragment
 import com.toools.ierp.ui.main.MainActivity
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_desde_casa.view.*
-import kotlinx.android.synthetic.main.fragment_fichaje.*
+
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -48,6 +32,8 @@ import java.util.*
 const val TAG = "FichajeFragment"
 
 class FichajeFragment : BaseFragment() {
+
+    /*
 
     private var act: Activity? = null
     var usuario: LoginResponse? = null
@@ -725,4 +711,6 @@ class FichajeFragment : BaseFragment() {
             }
         }
     }
-} */
+
+     */
+}

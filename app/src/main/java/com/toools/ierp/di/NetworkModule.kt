@@ -22,7 +22,6 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideRetrofit(): OkHttpClient {
-        //Timber.tag("Client").e("Carga retrofit")
 
         val httpBuilder = OkHttpClient.Builder()
         return httpBuilder.readTimeout(60, TimeUnit.SECONDS)
@@ -34,7 +33,7 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideIerpApiClient(cliente: OkHttpClient): IerpApiClient{
-        return Retrofit.Builder()  //esto lo ponemos aqui porque si lo pusieramos en provide retrofit seria cada vez distinto el url
+        return Retrofit.Builder()
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(ConstantHelper.ierpBaseUrl) //urlIerp urlIspot

@@ -1,12 +1,13 @@
 package com.toools.ierp.ui.base
 
-/*
+
 import android.content.Context
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.airbnb.lottie.LottieAnimationView
 import com.toools.ierp.R
 
 abstract class BaseFragment: Fragment() {
@@ -59,4 +60,4 @@ abstract class BaseFragment: Fragment() {
             }
         }
     }
-}*/
+}

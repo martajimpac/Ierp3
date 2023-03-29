@@ -10,21 +10,21 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
 interface IspotApiClient {
+    @FormUrlEncoded
+    @POST("adduser")
+    suspend fun addUser(@Field("pid") clientID: String, @Field("sistem") so: String, @Field("token") token: String): Response<BaseResponse>
 
     @FormUrlEncoded
     @POST("getappdirectpubli")
-    fun directAds(@Field("pid") clientID: String): Response<ISpotDirectAdsResponse>
+    suspend fun directAds(@Field("pid") clientID: String): Response<ISpotDirectAdsResponse>
 
-    @FormUrlEncoded
-    @POST("adduser")
-    fun addUser(@Field("pid") clientID: String, @Field("sistem") so: String, @Field("token") token: String): Response<BaseResponse>
 
     @FormUrlEncoded
     @POST("getdataclient")
-    fun clientData(@Field("pid") clientID: String): Response<ISpotClientDataResponse>
+    suspend fun clientData(@Field("pid") clientID: String): Response<ISpotClientDataResponse>
 
     @FormUrlEncoded
     @POST("getPushes")
-    fun notifications(@Field("pid") clientID: String): Response<ISpotNotificationsResponse>
+    suspend fun notifications(@Field("pid") clientID: String): Response<ISpotNotificationsResponse>
 
 }
