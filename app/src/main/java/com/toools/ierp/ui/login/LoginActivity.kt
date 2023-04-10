@@ -7,6 +7,8 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.InputType
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -127,9 +129,22 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.apply{
+
+            //activar botón para mostrar o ocultar contraseña
+            var passwordVisible = false
+            btnShowPassword.setOnClickListener {
+                passwordVisible = !passwordVisible
+                if (passwordVisible) {
+                    editPassword.transformationMethod = null
+                    btnShowPassword.setImageResource(R.drawable.ic_eye_open)
+                } else {
+                    editPassword.transformationMethod = PasswordTransformationMethod()
+                    btnShowPassword.setImageResource(R.drawable.ic_eye_closed)
+                }
+            }
+
             btnEntrar.setOnClickListener {
-                if (editPassword.text.toString().isBlank() || editPassword.text.toString()
-                        .isBlank() || editClient.text.toString().isBlank()
+                if (editClient.text.toString().isBlank() || editUsuario.text.toString().isBlank() || editPassword.text.toString().isBlank()
                 ) {
                     Toasty.warning(this@LoginActivity, R.string.alert_user, Toast.LENGTH_LONG).show()
                 } else {

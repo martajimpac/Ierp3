@@ -191,8 +191,25 @@
             android:textSize="@dimen/ts15"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.52"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView33" />
+            app:layout_constraintTop_toBottomOf="@+id/textView33"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageButton
+            android:id="@+id/btn_show_password"
+            android:layout_width="30dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_eye_closed"
+            app:layout_constraintBottom_toBottomOf="@+id/editPassword"
+            app:layout_constraintEnd_toEndOf="@+id/editPassword"
+            app:layout_constraintTop_toTopOf="@+id/editPassword"
+            app:tint="@color/textColorHint" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

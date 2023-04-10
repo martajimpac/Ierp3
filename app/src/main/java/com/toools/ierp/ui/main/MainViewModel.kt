@@ -23,7 +23,7 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
 
         viewModelScope.launch {
             momentosLiveData.value = Resource.loading()
-            val response = repository.momentos(ConstantHelper.clientREST,usuario)
+            val response = repository.momentos(usuario)
 
             if(response != null) {
                 if(response.isOK()) {

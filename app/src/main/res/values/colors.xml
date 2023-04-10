@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#338e00</color>
     <color name="colorAccent">#9ef254</color>
 
+    <color name="textColorHint">#808080</color>
+
     <color name="colorBackground">#D7E2CE</color>
 
     <color name="red_app">#FF595E</color>

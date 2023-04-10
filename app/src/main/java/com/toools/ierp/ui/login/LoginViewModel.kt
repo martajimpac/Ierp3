@@ -18,7 +18,7 @@ import javax.inject.Inject
 class LoginViewModel  @Inject constructor(private val repository: Repository): ViewModel() {
 
     val loginLiveData: MutableLiveData<Resource<LoginResponse>> = MutableLiveData()
-    val momentosLiveData: MutableLiveData<Resource<MomentosResponse>> = MutableLiveData()
+    //val momentosLiveData: MutableLiveData<Resource<MomentosResponse>> = MutableLiveData() todo quitar
     val addTokenFirebaseLiveData: MutableLiveData<Resource<BaseResponse>> = MutableLiveData()
 
     fun login(client: String, user: String, password: String){
@@ -27,13 +27,13 @@ class LoginViewModel  @Inject constructor(private val repository: Repository): V
             loginLiveData.value = Resource.loading()
             val response = repository.login(client,user,password)
             if (response != null) {
-                if (response.isOK() && response.userId != null) {
+                if (response.isOK()) {
                     loginLiveData.value = Resource.success(response)
                 } else {
                     if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
                         loginLiveData.value = Resource.error(ErrorHelper.notSession)
                     }else{
-                        loginLiveData.value = Resource.error(ErrorHelper.loginNoValido)
+                        loginLiveData.value = Resource.error(ErrorHelper.loginNoValido(client))
                     }
                 }
             }else{
@@ -42,7 +42,7 @@ class LoginViewModel  @Inject constructor(private val repository: Repository): V
         }
     }
 
-    /*
+    /* todo  quitar
     fun momentos(usuario: String){
 
         viewModelScope.launch {

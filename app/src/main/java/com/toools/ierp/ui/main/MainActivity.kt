@@ -5,13 +5,11 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.core.app.ActivityOptionsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -22,7 +20,6 @@ import com.toools.ierp.R
 import com.toools.ierp.core.DialogHelper
 import com.toools.ierp.core.prefs
 import com.toools.ierp.data.ConstantHelper
-import com.toools.ierp.data.Repository
 import com.toools.ierp.data.model.LoginResponse
 import com.toools.ierp.databinding.ActivityMainBinding
 import com.toools.ierp.databinding.NavigationLeftBinding
@@ -40,13 +37,13 @@ class MainActivity : BaseActivity(), SeccionesListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navigationBinding: NavigationLeftBinding
-    private var isPaused: Boolean = false
     private var adapterSecciones: AdapterSecciones? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         navigationBinding = NavigationLeftBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         binding.apply {
             setSupportActionBar(toolbar)
             supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -77,10 +74,9 @@ class MainActivity : BaseActivity(), SeccionesListener {
             }
 
             toolbar.setNavigationOnClickListener {
-
                 if (showingBack)
-                    //onBackPressed()
-                    //findNavController().popBackStack() TODO
+                    onBackPressed()
+                    //requireView().findNavController().popBackStack() //TODO ver si funciona
                 else {
                     if (drawerLayout.isDrawerOpen(navigationLeft))
                         drawerLayout.closeDrawer(navigationLeft)
@@ -97,8 +93,7 @@ class MainActivity : BaseActivity(), SeccionesListener {
         }
 
         navigationBinding.apply{
-            var usuario: LoginResponse? = null
-            usuario = Gson().fromJson(
+            var usuario: LoginResponse? = Gson().fromJson(
                 prefs.getString(ConstantHelper.usuarioLogin, null),
                 LoginResponse::class.java
             )
@@ -119,11 +114,9 @@ class MainActivity : BaseActivity(), SeccionesListener {
 
                 //todo deprecated
                 val pInfo = packageManager.getPackageInfo(packageName, 0)
-                appVersionTextView.text =
-                    String.format(getString(R.string.app_name_with_version), pInfo.versionName)
+                appVersionTextView.text = String.format(getString(R.string.app_name_with_version), pInfo.versionName)
 
             } catch (e: PackageManager.NameNotFoundException) {
-
                 if (BuildConfig.DEBUG)
                     e.printStackTrace()
             }
@@ -167,7 +160,7 @@ class MainActivity : BaseActivity(), SeccionesListener {
         }
     }
 
-    fun showIconBack(show: Boolean) {
+    fun showIconBack(show: Boolean) { //todo quitar
         if (show) {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         } else {

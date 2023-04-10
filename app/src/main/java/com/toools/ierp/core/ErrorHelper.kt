@@ -25,9 +25,10 @@ class ErrorHelper {
             get() = IerpApp.getInstance().getString(R.string.ispot_notifications_default_error)
 
         //ierp
-
-        val loginNoValido: String
-            get() = IerpApp.getInstance().getString(R.string.login_user_pass_error)
+        fun loginNoValido(organizacion: String): String{
+            val errorMsg = IerpApp.getInstance().getString(R.string.login_user_pass_error)
+            return String.format(errorMsg, organizacion)
+        }
 
         val loginError: String
             get() = IerpApp.getInstance().getString(R.string.login_conexion)

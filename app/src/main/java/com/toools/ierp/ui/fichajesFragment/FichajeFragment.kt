@@ -13,14 +13,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.*
+import com.toools.ierp.core.DialogHelper
+import com.toools.ierp.data.model.LoginResponse
+import com.toools.ierp.databinding.FragmentFichajeBinding
 import com.toools.ierp.ui.base.BaseFragment
 import com.toools.ierp.ui.main.MainActivity
 import es.dmoral.toasty.Toasty
@@ -33,12 +36,13 @@ const val TAG = "FichajeFragment"
 
 class FichajeFragment : BaseFragment() {
 
-    /*
-
     private var act: Activity? = null
     var usuario: LoginResponse? = null
     var usuarioPrefs: LoginResponse? = null
+    private lateinit var binding: FragmentFichajeBinding
+    private val viewModel: FichajeViewModel by viewModels()
 
+    /* todo deprecated */
     val reqSetting: LocationRequest = LocationRequest.create().apply {
         fastestInterval = 1000
         interval = 1000
@@ -73,8 +77,8 @@ class FichajeFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fichaje, container, false)
+        binding = FragmentFichajeBinding.inflate(inflater, container,false)
+        return binding.root
     }
 
     @SuppressLint("MissingPermission", "SetTextI18n")
@@ -82,50 +86,53 @@ class FichajeFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         act?.let { act ->
 
-            //comprobar si existen acciones y cargar el recicler.
-            val layoutManager = LinearLayoutManager(act)
-            layoutManager.orientation = RecyclerView.VERTICAL
-            recyclerAcc.layoutManager = layoutManager
-            recyclerAcc.setHasFixedSize(true)
-            val decoration = DividerItemDecoration(act, DividerItemDecoration.VERTICAL)
-            recyclerAcc.addItemDecoration(decoration)
-            (recyclerAcc.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+            binding.apply{
 
-            showCenter()
+                //comprobar si existen acciones y cargar el recicler.
+                val layoutManager = LinearLayoutManager(act)
+                layoutManager.orientation = RecyclerView.VERTICAL
+                recyclerAcc.layoutManager = layoutManager
+                recyclerAcc.setHasFixedSize(true)
+                val decoration = DividerItemDecoration(act, DividerItemDecoration.VERTICAL)
+                recyclerAcc.addItemDecoration(decoration)
+                (recyclerAcc.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
-            onLoadView()
+                showCenter()
 
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(act)
+                onLoadView()
 
-            locationUpdates = object : LocationCallback() {
-                override fun onLocationResult(lr: LocationResult) {
-                    longitud = lr.lastLocation?.longitude
-                    latitud = lr.lastLocation?.latitude
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(act)
+
+                locationUpdates = object : LocationCallback() {
+                    override fun onLocationResult(lr: LocationResult) {
+                        longitud = lr.lastLocation?.longitude
+                        latitud = lr.lastLocation?.latitude
+                    }
                 }
-            }
 
-            fusedLocationClient?.requestLocationUpdates(reqSetting, locationUpdates!!, null)
+                fusedLocationClient?.requestLocationUpdates(reqSetting, locationUpdates!!, null)
 
-            contentCalendar.setOnClickListener {
+                contentCalendar.setOnClickListener {
 
-                DatePickerDialog(
-                    act as Context, R.style.DatePickerDialogTheme,
-                    DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                    DatePickerDialog(
+                        act as Context, R.style.DatePickerDialogTheme,
+                        DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
 
-                        anyo = year
-                        mes = month + 1
-                        dia = dayOfMonth
+                            anyo = year
+                            mes = month + 1
+                            dia = dayOfMonth
 
-                        DialogHelper.getInstance().showLoadingAlert(act, null, true)
+                            DialogHelper.getInstance().showLoadingAlert(act, null, true)
 
-                        usuario?.token?.let {
-                            viewModel.callMomentosDia(it, dia, mes, anyo)
-                        } ?: run {
-                            viewModel.callMomentosDia("", dia, mes, anyo)
-                        }
+                            usuario?.token?.let {
+                                viewModel.callMomentosDia(it, dia, mes, anyo)
+                            } ?: run {
+                                viewModel.callMomentosDia("", dia, mes, anyo)
+                            }
 
-                    }, anyo, mes - 1, dia
-                ).show()
+                        }, anyo, mes - 1, dia
+                    ).show()
+                }
             }
         }
     }
@@ -133,21 +140,12 @@ class FichajeFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
         onLoadView()
-
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is Activity)
             act = context
-    }
-
-    private val viewModel: FichajeViewModel by lazy {
-
-        ViewModelProvider(
-            this,
-            this.defaultViewModelProviderFactory
-        ).get(FichajeViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -712,5 +710,4 @@ class FichajeFragment : BaseFragment() {
         }
     }
 
-     */
 }

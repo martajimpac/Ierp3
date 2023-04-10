@@ -218,7 +218,6 @@
     <string name="ispot_direct_ads_default_error">Ha ocurrido un error al obtener los datos iniciales de carga de la app.</string>
     <string name="ispot_notifications_default_error">Ha ocurrido un error al obtener el listado de notificaciones asociadas al curso.</string>
 
-    <!--    <string name="login_user_pass_error">El usuario o la contraseña no son correctos.</string>-->
     <string name="login_user_pass_error">El usuario o la contraseña no son correctos para la organización %1$s.</string>
     <string name="login_conexion">Ha ocurrido un error al tratar de validar el login.</string>
     <string name="momentos_conexion">Ha ocurrido un error al tratar de buscar las entradas y salidas.</string>

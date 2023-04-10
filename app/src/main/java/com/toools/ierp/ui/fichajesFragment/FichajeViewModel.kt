@@ -1,16 +1,11 @@
 package com.toools.ierp.ui.fichajesFragment
 
-/*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.toools.ierp.entities.Resource
-import com.toools.ierp.entities.ierp.MomentosResponse
-import com.toools.ierp.helpers.rest.AppException
-import com.toools.ierp.helpers.rest.RestApiCallback
-import com.toools.ierp.helpers.rest.RestRepository
 
 class FichajeViewModel : ViewModel() {
 
+    /*
     val momentosDiaRecived: MutableLiveData<Resource<MomentosResponse>> = MutableLiveData()
 
     fun callMomentosDia(token: String, dia : Int, mes: Int, anyo: Int){
@@ -47,5 +42,5 @@ class FichajeViewModel : ViewModel() {
             }
         })
 
-    }
-}*/
+    }*/
+}
