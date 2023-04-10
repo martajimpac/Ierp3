@@ -15,11 +15,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
-import androidx.viewbinding.BuildConfig
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
+import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
 import com.toools.ierp.core.*
 import com.toools.ierp.data.ConstantHelper
@@ -29,7 +29,6 @@ import com.toools.ierp.databinding.ActivityLoginBinding
 import com.toools.ierp.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import java.util.*
 
 const val TAG = "LoginActivity"
 
@@ -62,11 +61,6 @@ class LoginActivity : AppCompatActivity() {
                     e.printStackTrace()
                 txtVersionApp.text = "${R.string.version_app}"
             }
-            if (BuildConfig.DEBUG) { //todo porque esto no funciona??
-                editClient.setText("toools")
-                editUsuario.setText("martapracticas@toools.es")
-                editPassword.setText("4rfv5tgb")
-            }
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -77,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             ) {
-                //buscar si el login es automatico
+                //TODO: buscar si el login es automatico
                 activarLogin()
             }
         }, 200)
@@ -90,7 +84,6 @@ class LoginActivity : AppCompatActivity() {
         ConstantHelper.clientREST = prefs.getString(ConstantHelper.client, "").toString()
 
         Handler(Looper.getMainLooper()).postDelayed({
-            
             if (checkPermission(
                     Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -104,34 +97,33 @@ class LoginActivity : AppCompatActivity() {
 
     private fun activarLogin() {
 
-        if (prefs.getBoolean(
-                ConstantHelper.autoLogin,
-                false
-            ) && prefs.getString(ConstantHelper.usuarioLogin, null) != null
-        ) {
+        //si autologin es true y el usuario no es nulo
+        if (prefs.getBoolean(ConstantHelper.autoLogin, false) &&
+            prefs.getString(ConstantHelper.usuarioLogin, null) != null) {
+            //TODO CREO QUE TODO ESTO SOBRA
+            //recoge el usuario de shared prefs y lo transforma a loginResponse
 
-            usuario = Gson().fromJson(
+            /*usuario = Gson().fromJson(
                 prefs.getString(ConstantHelper.usuarioLogin, null),
-                LoginResponse::class.java
-            )
-
-            //comprobar que el token firebase esta insertado
-            if (!prefs.getBoolean(ConstantHelper.addTokenFirebase, false))
-
+                LoginResponse::class.
+                java
+            )*/
+            //comprobar que el token firebase esta insertado y insertarlo si no lo esta
+            if (prefs.getBoolean(ConstantHelper.addTokenFirebase, false)){
                 usuario?.token?.let {
                     fcmToken.addOnSuccessListener(this@LoginActivity) { instanceIdResult ->
                         viewModel.addTokenFirebase(it, instanceIdResult)
                     }
                 }
-
-            if (usuario != null) {
-                Repository.usuario = usuario //TODO NO SE SI ESTO HACE FALTA
-                //consultar los momentos.
-                DialogHelper.getInstance().showLoadingAlert(this, null, true)
-                viewModel.momentos(usuario!!.token.let { usuario!!.token } ?: run { "" })
             }
-        } else {
-            DialogHelper.getInstance().showLoadingAlert(this, null, false)
+
+            DialogHelper.getInstance().showLoadingAlert(this, null, true)
+            toMain()
+
+            //Repository.usuario = usuario //TODO SI EL USUARIO NO ES NULO LO GUARDA, PARA QUE?
+            //TODO, SOLO LLAMAMOS A MOMENTOS AQUI SI EL LOGIN YA ESTA ACTIVADO PERO ES UN POCO ABSURDO
+            //viewModel.momentos(usuario!!.token ?: "" ) //en caso de que sesa nulo
+
         }
 
         binding.apply{
@@ -163,6 +155,8 @@ class LoginActivity : AppCompatActivity() {
                 Resource.Status.SUCCESS -> {
                     DialogHelper.getInstance().showLoadingAlert(this, null, false)
 
+                    usuario = response.data
+
                     //Guardar el cliente en shared preferences
                     val edit = prefs.edit()
                     edit.putString(ConstantHelper.client, binding.editClient.text.toString())
@@ -176,11 +170,11 @@ class LoginActivity : AppCompatActivity() {
                         resources.getString(R.string.yes),
                         completion1 = {
                             edit.putBoolean(ConstantHelper.autoLogin, true)
-                            edit.putString(ConstantHelper.usuarioLogin, Gson().toJson(response.data))
-                            edit.putBoolean(ConstantHelper.addTokenFirebase, false)
+                            edit.putString(ConstantHelper.usuarioLogin, Gson().toJson(usuario))
+                            edit.putBoolean(ConstantHelper.addTokenFirebase, true)
                             edit.apply()
 
-                            response.data?.token?.let { token ->
+                            usuario?.token?.let { token ->
                                 //insertar el token de firebase
                                 fcmToken.addOnCompleteListener(this@LoginActivity) { instanceIdResult ->
                                     viewModel.addTokenFirebase(token, instanceIdResult.toString())
@@ -188,11 +182,14 @@ class LoginActivity : AppCompatActivity() {
                                 }
                             }
 
-                            toMain(response.data!!)
+                            toMain()
                         },
                         button2 = resources.getString(R.string.no),
                         completion2 = {
-                            toMain(response.data!!)
+                            edit.putBoolean(ConstantHelper.autoLogin, false)
+                            edit.putString(ConstantHelper.usuarioLogin, Gson().toJson(usuario))
+                            edit.apply()
+                            toMain() //todo antes a main le pasabamos el usuario
                         })
                 }
                 Resource.Status.ERROR -> {
@@ -217,13 +214,11 @@ class LoginActivity : AppCompatActivity() {
         }
 
         //momentos
-        viewModel.momentosLiveData.observe(this) { response ->
+        /*viewModel.momentosLiveData.observe(this) { response ->
             if (BuildConfig.DEBUG)
                 Log.e(TAG, "momentos: {${response.status}}")
             when (response.status) {
-                Resource.Status.LOADING -> {
-                    //DialogHelper.getInstance().showLoadingAlert(this, null, true)
-                }
+                Resource.Status.LOADING -> { }
                 Resource.Status.SUCCESS -> {
                     DialogHelper.getInstance().showLoadingAlert(this, null, false)
 
@@ -248,10 +243,10 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             }
-        }
+        }*/
 
         //addTokenFirebase
-        viewModel.momentosLiveData.observe(this) { response ->
+        viewModel.addTokenFirebaseLiveData.observe(this) { response ->
             if (BuildConfig.DEBUG)
                 Log.e(TAG, "addTokenFirebase: {${response.status}}")
             when (response.status) {
@@ -266,17 +261,15 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-
-
-    private fun toMain(usuario: LoginResponse) {
+    private fun toMain() {
         DialogHelper.getInstance().showLoadingAlert(this, null, true)
 
         Handler(Looper.getMainLooper()).postDelayed({
 
             DialogHelper.getInstance().showLoadingAlert(this, null, false)
 
-            //Guardar el usuario
-            Repository.usuario = usuario //TODO inject repository mejor
+            //todo Guardar el usuario
+            //Repository.usuario = usuario
 
             val intent = Intent(this, MainActivity::class.java)
 
@@ -288,8 +281,7 @@ class LoginActivity : AppCompatActivity() {
                     )
                 )
 
-                val options =
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(this@LoginActivity, *pairs)
+                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this@LoginActivity, *pairs)
 
                 startActivity(intent, options.toBundle())
             }
@@ -297,7 +289,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-    private val PERMISSION_ID = 42
+    private val PERMISSION_ID = 42 //TODO PASA ESETO A CONSTANT HELPER
     private fun checkPermission(vararg perm: String): Boolean {
         val havePermissions = perm.toList().all {
             ContextCompat.checkSelfPermission(this, it) ==

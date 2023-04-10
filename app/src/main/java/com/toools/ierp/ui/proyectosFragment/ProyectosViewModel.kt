@@ -19,8 +19,7 @@ class ProyectosViewModel : ViewModel() {
 
         RestRepository.getInstance().usuario?.token?.let { token ->
 
-            RestRepository.getInstance()
-                .proyectos(token, object : RestApiCallback<ProyectosResponse> {
+            RestRepository.getInstance().proyectos(token, object : RestApiCallback<ProyectosResponse> {
 
                     override fun onSuccess(response: ProyectosResponse) {
                         proyectosRecived.value = Resource.success(response)

@@ -11,11 +11,11 @@ class Repository @Inject constructor(private val ispotService: IspotService, pri
     suspend fun login(client: String, usuario: String, password: String): LoginResponse? {
         return ierpService.login(client, usuario, password)
     }
-    suspend fun momentos(client: String, usuario: String): MomentosResponse? {
-        return ierpService.momentos(client, usuario)
+    suspend fun momentos(usuario: String): MomentosResponse? {
+        return ierpService.momentos(usuario)
     }
-    suspend fun addTokenFirebase(client: String, token: String, tokenFirebase: String): BaseResponse? {
-        return ierpService.addTokenFirebase(client,token,tokenFirebase)
+    suspend fun addTokenFirebase(token: String, tokenFirebase: String): BaseResponse? {
+        return ierpService.addTokenFirebase(token,tokenFirebase)
     }
 
     //ISPOT
@@ -36,8 +36,8 @@ class Repository @Inject constructor(private val ispotService: IspotService, pri
     }
 
     //Guardar el usuario
-    companion object{
+    /*companion object{
         var usuario: LoginResponse? = null
-    }
+    }*/
 
 }

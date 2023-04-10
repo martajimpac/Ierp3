@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.toools.ierp.core.ErrorHelper
 import com.toools.ierp.core.Resource
-import com.toools.ierp.data.ConstantHelper
 import com.toools.ierp.data.Repository
 import com.toools.ierp.data.model.MomentosResponse
 import com.toools.ierp.data.model.BaseResponse
@@ -43,11 +42,12 @@ class LoginViewModel  @Inject constructor(private val repository: Repository): V
         }
     }
 
+    /*
     fun momentos(usuario: String){
 
         viewModelScope.launch {
             momentosLiveData.value = Resource.loading()
-            val response = repository.momentos(ConstantHelper.clientREST,usuario)
+            val response = repository.momentos(usuario)
 
             if(response != null) {
                 if(response.isOK()) {
@@ -63,12 +63,12 @@ class LoginViewModel  @Inject constructor(private val repository: Repository): V
                 momentosLiveData.value = Resource.error(ErrorHelper.momentosError)
             }
         }
-    }
+    }*/
     fun addTokenFirebase(token: String, tokenFirebase: String){
 
         viewModelScope.launch {
             addTokenFirebaseLiveData.value = Resource.loading()
-            val response = repository.addTokenFirebase(ConstantHelper.clientREST, token, tokenFirebase)
+            val response = repository.addTokenFirebase(token, tokenFirebase)
             addTokenFirebaseLiveData.value = Resource.success(response)
         }
 

@@ -1,6 +1,7 @@
 package com.toools.ierp.ui.main
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -11,13 +12,20 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
+import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
 import com.toools.ierp.core.DialogHelper
 import com.toools.ierp.core.prefs
 import com.toools.ierp.data.ConstantHelper
 import com.toools.ierp.data.Repository
+import com.toools.ierp.data.model.LoginResponse
 import com.toools.ierp.databinding.ActivityMainBinding
+import com.toools.ierp.databinding.NavigationLeftBinding
 import com.toools.ierp.ui.base.BaseActivity
 import com.toools.ierp.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,16 +39,15 @@ const val TAG = "MainActivity"
 class MainActivity : BaseActivity(), SeccionesListener {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var navigationBinding: NavigationLeftBinding
     private var isPaused: Boolean = false
     private var adapterSecciones: AdapterSecciones? = null
-
-    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-
-        binding.apply{
+        navigationBinding = NavigationLeftBinding.inflate(layoutInflater)
+        binding.apply {
             setSupportActionBar(toolbar)
             supportActionBar?.setDisplayShowTitleEnabled(false)
             backImageIERP()
@@ -72,9 +79,9 @@ class MainActivity : BaseActivity(), SeccionesListener {
             toolbar.setNavigationOnClickListener {
 
                 if (showingBack)
-                    //findNavController().popBackStack()
+                    //onBackPressed()
+                    //findNavController().popBackStack() TODO
                 else {
-
                     if (drawerLayout.isDrawerOpen(navigationLeft))
                         drawerLayout.closeDrawer(navigationLeft)
                     else
@@ -82,25 +89,27 @@ class MainActivity : BaseActivity(), SeccionesListener {
                 }
             }
 
-            /*
-            imageView6.setOnClickListener { todo esto esta en el munu (navigationleft recycler... hay que ver como conectar esa vista aqui)
-                byTooolsClickListener()
-            }*/
+            navigationBinding.imageView6.setOnClickListener { byTooolsClickListener() }
 
             cardOut.setOnClickListener {
                 logOut()
             }
+        }
 
-            // TODO cargar los datos del empleado en el drawer
+        navigationBinding.apply{
+            var usuario: LoginResponse? = null
+            usuario = Gson().fromJson(
+                prefs.getString(ConstantHelper.usuarioLogin, null),
+                LoginResponse::class.java
+            )
 
-
-            /*Repository.usuario?.let { usuario ->
+            usuario?.let {
                 nombreUsuarioTextView.text = usuario.nombre
 
-                Glide.with(this).load(resources.getString(R.string.url_base_img, usuario.username))
+                Glide.with(this@MainActivity).load(resources.getString(R.string.url_base_img, usuario.username))
                     .circleCrop()
                     .error(
-                        Glide.with(this).load(R.drawable.luciano).circleCrop()
+                        Glide.with(this@MainActivity).load(R.drawable.luciano).circleCrop()
                     ).into(imgUsuario)
             } ?: run {
                 onBackToLogin()
@@ -108,6 +117,7 @@ class MainActivity : BaseActivity(), SeccionesListener {
 
             try {
 
+                //todo deprecated
                 val pInfo = packageManager.getPackageInfo(packageName, 0)
                 appVersionTextView.text =
                     String.format(getString(R.string.app_name_with_version), pInfo.versionName)
@@ -118,26 +128,25 @@ class MainActivity : BaseActivity(), SeccionesListener {
                     e.printStackTrace()
             }
 
-            val layoutManager = LinearLayoutManager(this)
+            val layoutManager = LinearLayoutManager(this@MainActivity)
             layoutManager.orientation = RecyclerView.VERTICAL
+
             recyclerSecciones.layoutManager = layoutManager
             recyclerSecciones.setHasFixedSize(true)
             (recyclerSecciones.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
             adapterSecciones = AdapterSecciones(
-                this, ConstantHelper.Seccion.values().toMutableList(),
-                prefs.getBoolean(ConstantHelper.sendNotificacion, true), this
+                this@MainActivity, ConstantHelper.Seccion.values().toMutableList(),
+                prefs.getBoolean(ConstantHelper.sendNotificacion, true), this@MainActivity
             )
 
             recyclerSecciones.adapter = adapterSecciones
-
-             */
         }
     }
 
     override fun onResume() {
         super.onResume()
-        ConstantHelper.clientREST = prefs.getString(ConstantHelper.client, "").toString()
+        ConstantHelper.clientREST = prefs.getString(ConstantHelper.client, "").toString() //todo, porque hay que hacer esto en todos los on resume?
     }
 
     var toggle: ActionBarDrawerToggle? = null
@@ -146,13 +155,14 @@ class MainActivity : BaseActivity(), SeccionesListener {
     fun backImageIERP() {
         binding.apply{
             imgIerp.setOnClickListener {
-                //contentFragment.findNavController().navigate(R.id.fichajeFragment)
-                /*contentFragment.findNavController().currentDestination?.let {
+                contentFragment.findNavController().navigate(R.id.fichajeFragment)
+                contentFragment.findNavController().currentDestination?.let {
                     if (it.id == R.id.fichajeFragment) {
                         moveTaskToBack(true)
                     }
-                }*/
-//            super.onBackPressed() todo he borrado esta funcion, ver la funcion nueva
+                }
+                super.onBackPressed()
+                //todo deprecated
             }
         }
     }
@@ -170,31 +180,34 @@ class MainActivity : BaseActivity(), SeccionesListener {
     //DRAWER LAYOUT
     private val simpleDrawerListener = object : DrawerLayout.SimpleDrawerListener() {
 
-        /*
         var scale: Float = 0.0f
         override fun onDrawerSlide(drawer: View, slideOffset: Float) {
 
-            scale = (1.5f - slideOffset).coerceAtLeast(1.0f)
+            navigationBinding.apply{
+                scale = (1.5f - slideOffset).coerceAtLeast(1.0f)
 
-            tooolsContent.visibility = View.VISIBLE
+                tooolsContent.visibility = View.VISIBLE
 
-            content.x = navigationLeft.width * slideOffset
-            val lp = content.layoutParams as DrawerLayout.LayoutParams
-            lp.height =
-                drawerLayout.height - (drawerLayout.height.toFloat() * slideOffset * 0.28f).toInt()
-            lp.topMargin = (drawerLayout.height - lp.height) / 2
-            lp.width =
-                drawerLayout.width - (drawerLayout.width.toFloat() * slideOffset * 0.28f).toInt()
-            content.layoutParams = lp
+                binding.apply{
+                    content.x = navigationLeft.width * slideOffset
+                    val lp = content.layoutParams as DrawerLayout.LayoutParams
+                    lp.height =
+                        drawerLayout.height - (drawerLayout.height.toFloat() * slideOffset * 0.28f).toInt()
+                    lp.topMargin = (drawerLayout.height - lp.height) / 2
+                    lp.width =
+                        drawerLayout.width - (drawerLayout.width.toFloat() * slideOffset * 0.28f).toInt()
+                    content.layoutParams = lp
 
-            navigationLeft.scaleX = scale
-            navigationLeft.scaleY = scale
-            navigationLeft.alpha = slideOffset + 0.1f
+                    navigationLeft.scaleX = scale
+                    navigationLeft.scaleY = scale
+                    navigationLeft.alpha = slideOffset + 0.1f
+                }
 
-            tooolsContent.scaleX = 2.25f - slideOffset
-            tooolsContent.scaleY = 2.25f - slideOffset
-            tooolsContent.alpha = slideOffset + 0.1f
+                tooolsContent.scaleX = 2.25f - slideOffset
+                tooolsContent.scaleY = 2.25f - slideOffset
+                tooolsContent.alpha = slideOffset + 0.1f
 
+            }
         }
 
         override fun onDrawerOpened(drawer: View) {}
@@ -203,7 +216,6 @@ class MainActivity : BaseActivity(), SeccionesListener {
 
         override fun onDrawerStateChanged(newState: Int) {}
 
-         */
     }
 
     fun logOut() {
@@ -236,8 +248,6 @@ class MainActivity : BaseActivity(), SeccionesListener {
         binding.apply{
 
             contentFragment.findNavController().let { navController ->
-
-                /*
 
                 var id: Int = R.id.fichajeFragment
 
@@ -273,8 +283,6 @@ class MainActivity : BaseActivity(), SeccionesListener {
                 } ?: run {
                     navController.navigate(id)
                 }
-
-                */
             }
         }
     }
@@ -295,7 +303,7 @@ class MainActivity : BaseActivity(), SeccionesListener {
 
                     adapterSecciones?.let {
                         it.setNotificaciones(false)
-                        //recyclerSecciones.adapter = it todo
+                        navigationBinding.recyclerSecciones.adapter = it
                     }
                 },
                 button2 = resources.getString(R.string.no),
@@ -307,7 +315,7 @@ class MainActivity : BaseActivity(), SeccionesListener {
                                 true
                             )
                         )
-                        //recyclerSecciones.adapter = it
+                        navigationBinding.recyclerSecciones.adapter = it
                     }
                 })
         } else {
@@ -332,12 +340,12 @@ class MainActivity : BaseActivity(), SeccionesListener {
 
             adapterSecciones?.let {
                 it.setNotificaciones(true)
-                //recyclerSecciones.adapter = it
+                navigationBinding.recyclerSecciones.adapter = it
             }
         }
     }
 
-    companion object {
+    companion object { //TODO CAMBIAR ESTO POR UN INJECT o ver si se puede quitar
         lateinit var app: MainActivity
         fun getInstance(): MainActivity {
             return app
