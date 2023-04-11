@@ -1,5 +1,6 @@
 package com.toools.ierp.ui.main
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -29,7 +30,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import java.util.*
 
-
 const val TAG = "MainActivity"
 
 @AndroidEntryPoint
@@ -43,7 +43,13 @@ class MainActivity : BaseActivity(), SeccionesListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         navigationBinding = NavigationLeftBinding.inflate(layoutInflater)
+        binding.drawerLayout.addView(navigationBinding.root, 1)
+
         setContentView(binding.root)
+        setUpView()
+    }
+
+    fun setUpView() {
         binding.apply {
             setSupportActionBar(toolbar)
             supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -76,7 +82,7 @@ class MainActivity : BaseActivity(), SeccionesListener {
             toolbar.setNavigationOnClickListener {
                 if (showingBack)
                     onBackPressed()
-                    //requireView().findNavController().popBackStack() //TODO ver si funciona
+                //requireView().findNavController().popBackStack() //TODO ver si funciona
                 else {
                     if (drawerLayout.isDrawerOpen(navigationLeft))
                         drawerLayout.closeDrawer(navigationLeft)
