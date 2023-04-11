@@ -1,0 +1,25 @@
+
+ANTES
+    val inflater = LayoutInflater.from(this.context)
+    val view = inflater.inflate(R.layout.recycler_momentos, parent, false)
+    return MomentoHolder(view)
+
+
+DESPUES
+    binding = RecyclerAccionesBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+    return AccionesHolder(binding)
+
+
+
+
+        -----------------------------------------------------------------
+        //binding activity
+
+        ANTES
+            FRAGMENT
+                return inflater.inflate(R.layout.fragment_fichaje, container, false)
+
+            ACTIVITY
+                setContentView(R.layout.activity_login)
+        DESPUES
+                binding = FragmentFichajeBinding.inflate(inflater, container,false)

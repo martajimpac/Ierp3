@@ -1,21 +1,21 @@
 package com.toools.ierp.ui.login
 
-
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.toools.ierp.core.ErrorHelper
 import com.toools.ierp.core.Resource
 import com.toools.ierp.data.Repository
-import com.toools.ierp.data.model.MomentosResponse
 import com.toools.ierp.data.model.BaseResponse
 import com.toools.ierp.data.model.LoginResponse
+import com.toools.ierp.domain.AddTokenFirebaseUserCase
+import com.toools.ierp.domain.LoginUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel  @Inject constructor(private val repository: Repository): ViewModel() {
+class LoginViewModel  @Inject constructor(private val loginUserCase: LoginUserCase,private val addTokenFirebaseUserCase: AddTokenFirebaseUserCase): ViewModel() {
 
     val loginLiveData: MutableLiveData<Resource<LoginResponse>> = MutableLiveData()
     //val momentosLiveData: MutableLiveData<Resource<MomentosResponse>> = MutableLiveData() todo quitar
@@ -25,7 +25,7 @@ class LoginViewModel  @Inject constructor(private val repository: Repository): V
 
         viewModelScope.launch {
             loginLiveData.value = Resource.loading()
-            val response = repository.login(client,user,password)
+            val response = loginUserCase.invoke(client,user,password)
             if (response != null) {
                 if (response.isOK()) {
                     loginLiveData.value = Resource.success(response)
@@ -68,7 +68,7 @@ class LoginViewModel  @Inject constructor(private val repository: Repository): V
 
         viewModelScope.launch {
             addTokenFirebaseLiveData.value = Resource.loading()
-            val response = repository.addTokenFirebase(token, tokenFirebase)
+            val response = addTokenFirebaseUserCase.invoke(token, tokenFirebase)
             addTokenFirebaseLiveData.value = Resource.success(response)
         }
 

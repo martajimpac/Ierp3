@@ -102,16 +102,9 @@
     <string name="fin_trabajo">Finaliza la jornada. ¡¡¡Bien hecho!!!</string>
     <string name="cargando">Cargando…</string>
 
-    <!--    <string name="txt_entrar_casa">Actualmente está a %1$d metros de %2$s. El trabajo desde casa está terminantemente-->
-    <!--        prohibido salvo autorización expresa de la dirección. Tras presionar el botón \'Empezar a trabajar\', inserte el-->
-    <!--        código que le han facilitado para poder fichar desde casa.-->
-    <!--    </string>-->
     <string name="txt_entrar_casa">Actualmente está a %1$d metros de %2$s. Recuerda que este fichaje
         se realizara fuera de las instalaciones de la empresa. Indique el motivo de esta situación.</string>
-    <!--    <string name="txt_salir_casa">Actualmente está a %1$d metros de %2$s. El trabajo desde casa está terminantemente-->
-    <!--        prohibido salvo autorización expresa de la dirección. Tras presionar el botón \'Dejar de trabajar\', inserte el-->
-    <!--        código que le han facilitado para poder fichar desde casa.-->
-    <!--    </string>-->
+
     <string name="txt_salir_casa">Actualmente está a %1$d metros de %2$s. Recuerda que este fichaje
         se realizara fuera de las instalaciones de la empresa.</string>
 

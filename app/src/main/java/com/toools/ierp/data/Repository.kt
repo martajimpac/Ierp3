@@ -97,9 +97,4 @@ class Repository @Inject constructor(private val ispotService: IspotService, pri
         return ispotService.notifications(clientID)
     }
 
-    //Guardar el usuario
-    /*companion object{
-        var usuario: LoginResponse? = null
-    }*/
-
 }

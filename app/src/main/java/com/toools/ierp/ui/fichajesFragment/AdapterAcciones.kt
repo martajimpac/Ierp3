@@ -30,7 +30,7 @@ class AdapterAcciones(context: Context, listMomentos: MutableList<LoginResponse.
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccionesHolder {
-        binding = RecyclerAccionesBinding.inflate(LayoutInflater.from(parent.context),parent,false) //esto creo que es asi pero no se porque
+        binding = RecyclerAccionesBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return AccionesHolder(binding)
     }
 

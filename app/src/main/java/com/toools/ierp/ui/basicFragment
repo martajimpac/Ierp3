@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 
+@AndroidEntryPoint
 class ClientesDetalladoFragment : Fragment() {
 
     private val args: ClientesDetalladoFragmentArgs by navArgs()
@@ -22,6 +23,7 @@ class ClientesDetalladoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpView()
+        setUpObservers()
     }
 
     fun setUpView() {
@@ -31,4 +33,41 @@ class ClientesDetalladoFragment : Fragment() {
             }
         }
     }
+
+
+     fun setUpObservers() {                                                             //SE USA VIEWLIFECYCLEOWNER PORQUE ES UN ACTIVITY
+        homeViewModel.getMenuClienteLiveData.observe(viewLifecycleOwner) {
+            when (it.status) {
+                Resource.Status.LOADING -> {}
+                Resource.Status.SUCCESS -> {
+                    it.data?.let { response ->
+                        if (response.isOK()) {
+                            loadRecyclerEventos(response.clientes)
+                        } else {
+                            //TODO mostrar error obtener datos eventos
+                        }
+                    }
+                }
+                Resource.Status.ERROR -> {}
+            }
+        }
+    }
+
+
+    fun loadRecyclerEventos(listEventos: MutableList<Cliente>) {
+        adapterEventos?.let {
+            it.setList(listEventos)
+        } ?: run {
+            adapterEventos = AdapterEventosHome(requireContext(), listEventos) { evento ->
+                val menuItem = MenuItem(evento, false)
+                val action = HomeFragmentDirections.homeFragmentToWebFragment(menuItem)
+                findNavController().navigate(action)
+            }
+        }
+
+        binding?.eventosHomeRecyclerView?.adapter = adapterEventos
+    }
+
+
+
 }

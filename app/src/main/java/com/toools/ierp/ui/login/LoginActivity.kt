@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.InputType
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.view.View
@@ -25,7 +24,6 @@ import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
 import com.toools.ierp.core.*
 import com.toools.ierp.data.ConstantHelper
-import com.toools.ierp.data.Repository
 import com.toools.ierp.data.model.LoginResponse
 import com.toools.ierp.databinding.ActivityLoginBinding
 import com.toools.ierp.ui.main.MainActivity
@@ -107,8 +105,7 @@ class LoginActivity : AppCompatActivity() {
 
             /*usuario = Gson().fromJson(
                 prefs.getString(ConstantHelper.usuarioLogin, null),
-                LoginResponse::class.
-                java
+                LoginResponse::class.java
             )*/
             //comprobar que el token firebase esta insertado y insertarlo si no lo esta
             if (prefs.getBoolean(ConstantHelper.addTokenFirebase, false)){
@@ -196,7 +193,6 @@ class LoginActivity : AppCompatActivity() {
                                     Log.e("TAG", token)
                                 }
                             }
-
                             toMain()
                         },
                         button2 = resources.getString(R.string.no),

@@ -2,45 +2,50 @@ package com.toools.ierp.ui.fichajesFragment
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.toools.ierp.core.ErrorHelper
+import com.toools.ierp.core.Resource
+import com.toools.ierp.data.model.MomentosResponse
+import com.toools.ierp.domain.EntradaSalidaUserCase
+import com.toools.ierp.domain.MomentosDiaUserCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FichajeViewModel : ViewModel() {
+@HiltViewModel
+class FichajeViewModel @Inject constructor(private val momentosDiaUserCase: MomentosDiaUserCase, private val entradaSalidaUserCase: EntradaSalidaUserCase): ViewModel() {
 
-    /*
-    val momentosDiaRecived: MutableLiveData<Resource<MomentosResponse>> = MutableLiveData()
+    val momentosDiaLiveData: MutableLiveData<Resource<MomentosResponse>> = MutableLiveData()
+    val entradaSalidaLiveData: MutableLiveData<Resource<MomentosResponse>> = MutableLiveData()
 
-    fun callMomentosDia(token: String, dia : Int, mes: Int, anyo: Int){
-
-        RestRepository.getInstance().momentosDia(token, dia, mes, anyo, object : RestApiCallback<MomentosResponse> {
-
-
-            override fun onSuccess(response: MomentosResponse) {
-                momentosDiaRecived.value = Resource.success(response)
+    fun momentosDia(token: String, dia : Int, mes: Int, ano: Int){
+        viewModelScope.launch {
+            val response = momentosDiaUserCase.invoke(token, dia, mes, ano)
+            if (response != null) {
+                if (response.isOK()) {
+                    momentosDiaLiveData.value = Resource.success(response)
+                } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                    momentosDiaLiveData.value = Resource.success(response)
+                }
+            } else {
+                momentosDiaLiveData.value = Resource.error(ErrorHelper.loginError)
             }
-
-            override fun onFailure(throwable: Throwable) {
-                momentosDiaRecived.value = Resource.error(AppException(string = if (throwable.localizedMessage.isNullOrEmpty()) throwable.toString() else throwable.localizedMessage))
-
-            }
-        })
-
+        }
     }
 
-    val addEventRecived: MutableLiveData<Resource<MomentosResponse>> = MutableLiveData()
-
-    fun callAddEvent(token: String, entradaSalida: Int, latidud: Double, longitud: Double, comments: String, descripcion: String){
-
-        RestRepository.getInstance().entradaSalida(token, entradaSalida, latidud, longitud, comments, descripcion, object : RestApiCallback<MomentosResponse> {
-
-
-            override fun onSuccess(response: MomentosResponse) {
-                addEventRecived.value = Resource.success(response)
+    fun entradaSalida(token: String, entradaSalida: Int, latidud: Double, longitud: Double, comments: String, descripcion: String){
+        viewModelScope.launch {
+            val response = entradaSalidaUserCase.invoke(token, entradaSalida, latidud, longitud, comments, descripcion)
+            if (response != null) {
+                if (response.isOK()) {
+                    momentosDiaLiveData.value = Resource.success(response)
+                } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                    momentosDiaLiveData.value = Resource.success(response)
+                }
+            } else {
+                momentosDiaLiveData.value = Resource.error(ErrorHelper.loginError)
             }
+        }
 
-            override fun onFailure(throwable: Throwable) {
-                addEventRecived.value = Resource.error(AppException(string = if (throwable.localizedMessage.isNullOrEmpty()) throwable.toString() else throwable.localizedMessage))
-
-            }
-        })
-
-    }*/
+    }
 }

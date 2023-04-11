@@ -19,13 +19,14 @@
             app:cardElevation="@dimen/pm5"
             android:padding="@dimen/pm10" android:background="@color/red_app"
             app:layout_constraintBottom_toBottomOf="@+id/imgIerpCasa">
+
         <ImageView
-                android:src="@drawable/ic_back"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/imageView"
-                android:scaleType="centerInside"
-                android:layout_margin="@dimen/pm10"/>
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/pm10"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_back" />
     </androidx.cardview.widget.CardView>
 
     <ImageView

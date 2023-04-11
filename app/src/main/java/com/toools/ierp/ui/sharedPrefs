@@ -17,6 +17,7 @@ fun recuperarObjeto(): LoginModel {
 
 
 //mas corto
+                    val edit = prefs.edit()
 edit.putString(ConstantHelper.usuarioLogin, Gson().toJson(response.data))
 edit.apply
 
@@ -24,3 +25,21 @@ edit.apply
                 prefs.getString(ConstantHelper.usuarioLogin, null),
                 LoginResponse::class.java
             )
+
+
+
+
+            DESDE FRAGMENT
+
+            usuarioPrefs = Gson().fromJson(
+                                IerpApp.getInstance().prefs.getString(ConstantHelper.usuarioLogin, null),
+                                LoginResponse::class.java
+                            )
+
+            usuarioPrefs = Gson().fromJson(
+                requireContext().prefs.getString(ConstantHelper.usuarioLogin, null),
+                LoginResponse::class.java
+            )
+
+            recuperar
+                                        requireContext().prefs.edit().putString(ConstantHelper.usuarioLogin, Gson().toJson(response.data)).apply()
