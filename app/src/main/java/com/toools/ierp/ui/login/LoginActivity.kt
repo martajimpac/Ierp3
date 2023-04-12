@@ -61,6 +61,13 @@ class LoginActivity : AppCompatActivity() {
                     e.printStackTrace()
                 txtVersionApp.text = "${R.string.version_app}"
             }
+
+            if (BuildConfig.DEBUG) {
+                editClient.setText("toools")
+                editUsuario.setText("pmarta@toools.es")
+                editPassword.setText("4rfv5tgb")
+
+            }
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -103,10 +110,10 @@ class LoginActivity : AppCompatActivity() {
             //TODO CREO QUE TODO ESTO SOBRA
             //recoge el usuario de shared prefs y lo transforma a loginResponse
 
-            /*usuario = Gson().fromJson(
+            usuario = Gson().fromJson(
                 prefs.getString(ConstantHelper.usuarioLogin, null),
                 LoginResponse::class.java
-            )*/
+            )
             //comprobar que el token firebase esta insertado y insertarlo si no lo esta
             if (prefs.getBoolean(ConstantHelper.addTokenFirebase, false)){
                 usuario?.token?.let {

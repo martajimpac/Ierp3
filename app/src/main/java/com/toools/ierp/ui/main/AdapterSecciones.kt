@@ -8,12 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.toools.ierp.R
 import com.toools.ierp.data.ConstantHelper
-import com.toools.ierp.databinding.RecyclerSeccionesBinding
+import com.toools.ierp.databinding.RecyclerMenuBinding
 
 class AdapterSecciones (context: Context, listSecciones: MutableList<ConstantHelper.Seccion>, isNotificaciones: Boolean, listener: SeccionesListener) :
     RecyclerView.Adapter<AdapterSecciones.SeccionHolder>() {
 
-    private lateinit var binding: RecyclerSeccionesBinding
+    private lateinit var binding: RecyclerMenuBinding
 
     private var listSecciones: MutableList<ConstantHelper.Seccion> = mutableListOf()
     private var context: Context
@@ -42,7 +42,7 @@ class AdapterSecciones (context: Context, listSecciones: MutableList<ConstantHel
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SeccionHolder {
-        binding = RecyclerSeccionesBinding.inflate(LayoutInflater.from(parent.context),parent,false) //esto creo que es asi pero no se porque
+        binding = RecyclerMenuBinding.inflate(LayoutInflater.from(parent.context),parent,false) //esto creo que es asi pero no se porque
         return SeccionHolder(binding)
     }
 
@@ -75,7 +75,7 @@ class AdapterSecciones (context: Context, listSecciones: MutableList<ConstantHel
         }
     }
 
-    class SeccionHolder(val binding: RecyclerSeccionesBinding) : RecyclerView.ViewHolder(binding.root) {
+    class SeccionHolder(val binding: RecyclerMenuBinding) : RecyclerView.ViewHolder(binding.root) {
 
         var switchNotificaciones = binding.notificacionSwitch
         var seccionConstrainLayout = binding.seccionConstrainLayout

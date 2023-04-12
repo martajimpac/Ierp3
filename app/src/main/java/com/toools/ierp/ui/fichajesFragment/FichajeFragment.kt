@@ -40,6 +40,7 @@ const val TAG = "FichajeFragment"
 
 @AndroidEntryPoint
 class FichajeFragment : BaseFragment() {
+    /*
 
     private var activity: Activity? = null
     var usuario: LoginResponse? = null
@@ -47,9 +48,6 @@ class FichajeFragment : BaseFragment() {
     private lateinit var casaBinding: ContentDesdeCasaBinding
 
     private val viewModel: FichajeViewModel by viewModels()
-
-    var fusedLocationClient: FusedLocationProviderClient? = null
-    var locationUpdates: LocationCallback? = null
 
     var longitud: Double? = null
     var latitud: Double? = null
@@ -66,7 +64,10 @@ class FichajeFragment : BaseFragment() {
 
     private var listMomentos: MutableList<LoginResponse.Momentos> = mutableListOf()
 
-    private var timeInterval: Long = 1000
+    var fusedLocationClient: FusedLocationProviderClient? = null
+    var locationUpdates: LocationCallback? = null
+
+    private var timeInterval: Long = 800
     private var minimalDistance: Float = 1.0f
 
     /* todo ver si va bien
@@ -127,7 +128,7 @@ class FichajeFragment : BaseFragment() {
 
                 showCenter()
 
-                onLoadView()
+                onLoadView() //todo porque aqui llama a on load view? si lo quito sigue funcionando?
 
                 fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
 
@@ -144,7 +145,7 @@ class FichajeFragment : BaseFragment() {
 
                     DatePickerDialog(
                         activity as Context, R.style.DatePickerDialogTheme,
-                        DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                        { _, year, month, dayOfMonth ->
 
                             anyo = year
                             mes = month + 1
@@ -152,7 +153,7 @@ class FichajeFragment : BaseFragment() {
 
                             DialogHelper.getInstance().showLoadingAlert(activity, null, true)
 
-                            //todo porque hace esto??
+                            //todo porque hace esto?? Y SI MOMENTOS DIA NO FUERA NULL?
                             usuario?.token?.let {
                                 viewModel.momentosDia(it, dia, mes, anyo)
                             } ?: run {
@@ -180,7 +181,7 @@ class FichajeFragment : BaseFragment() {
             LoginResponse::class.java
         )
 
-        if (usuario != null) {
+        usuario?.let {
 
             binding.apply{
                 txtNombreUser.text = usuario!!.nombre
@@ -193,7 +194,7 @@ class FichajeFragment : BaseFragment() {
 
             cargarAcciones(usuario!!.momentos, usuario!!.zonaHoraria!!)
 
-        } else {
+        } ?:run {
             if (activity != null)
                 (activity as MainActivity).onBackToLogin()
         }
@@ -203,6 +204,7 @@ class FichajeFragment : BaseFragment() {
     @SuppressLint("MissingPermission")
     private fun cargarAcciones(momentos: MutableList<LoginResponse.Momentos>, zonaHoraria: String) {
 
+        Log.e(com.toools.ierp.ui.login.TAG, "cargar ACCIONES")
         listMomentos.clear()
         listMomentos.addAll(momentos)
 
@@ -221,6 +223,7 @@ class FichajeFragment : BaseFragment() {
 
             if (momentos.isNullOrEmpty() || momentos.size == 0) {
 
+                Log.e(com.toools.ierp.ui.login.TAG, "cargar MOMENTOS ES NULLL")
                 txtTituRegistros.text = resources.getString(R.string.not_entradas)
 
                 txtTituAcciones.text = resources.getString(R.string.desc_not_entradas)
@@ -229,6 +232,7 @@ class FichajeFragment : BaseFragment() {
 
             } else {
 
+                Log.e(com.toools.ierp.ui.login.TAG, "cargar MOMENTOS NO ES NULLL")
                 txtTituRegistros.text = resources.getString(R.string.entra_sal)
 
                 txtTituAcciones.text = resources.getString(R.string.txt_horas, zonaHoraria)
@@ -253,12 +257,15 @@ class FichajeFragment : BaseFragment() {
                     )
 
                     if (usuario?.permitir_no_localizacion == "0") {
+                        Log.e(com.toools.ierp.ui.login.TAG, "VAMOS A FICHAR PORQUE EL USUARIO NO TIENE LOC")
                         fichar()
                     } else {
+                        Log.e(com.toools.ierp.ui.login.TAG, "VAMOS A VER SI ESTAS LEJOS O NO")
                         checkDistance()
                     }
                 } else
-                    Toasty.warning(requireActivity(), resources.getString(R.string.warn_sin_localizacion)).show()
+                    Log.e(com.toools.ierp.ui.login.TAG, "ALGO FUE MAL AL PULSAR EL BOTON, WARN SIN LOC")
+                    Toasty.warning(requireActivity(), resources.getString(R.string.warn_sin_localizacion)).show() //TODO: PERMITIR MOSTRAR UBIC DE NUEVO
             }
         }
     }
@@ -278,6 +285,7 @@ class FichajeFragment : BaseFragment() {
         locUser.longitude = longitud!!
 
         if (usuario?.id_centro_trabajo == "0") {
+            Log.e(com.toools.ierp.ui.login.TAG, "check distance: centro trabajo es 0")
             for (centro in usuario!!.centros_trabajo) {
                 val locWork = Location("work")
                 locWork.latitude = centro.ct_latitud!!.toDouble()
@@ -286,12 +294,14 @@ class FichajeFragment : BaseFragment() {
                 if (locUser.distanceTo(locWork) < centro.ct_distancia_fichajes!!.toDouble()) {
                     distanciaKO = false
                     fichar()
+                    Log.e(com.toools.ierp.ui.login.TAG, "check distance: centro trabajo es 0 fichar")
                     break
                 }
 
                 if (locUser.distanceTo(locWork) < minDistance) {
                     minDistance = locUser.distanceTo(locWork)
                     centerName = centro.ct_nombre ?: ""
+                    Log.e(com.toools.ierp.ui.login.TAG, "check distance: centro trabajo es 0 no fichar")
                 }
             }
         } else {
@@ -303,6 +313,7 @@ class FichajeFragment : BaseFragment() {
                 if (locUser.distanceTo(locWork) < centro.ct_distancia_fichajes!!.toDouble()) {
                     distanciaKO = false
                     if (usuario?.id_centro_trabajo == centro.ct_id) {
+                        Log.e(com.toools.ierp.ui.login.TAG, "check distance: centro trabajo NO es 0 fichar")
                         fichar()
                         break
                     } else {
@@ -492,12 +503,14 @@ class FichajeFragment : BaseFragment() {
     }
 
     private fun cargarModalCasa(isEntrar: Boolean, distancia: Long, centro: String) {
+        Toasty.warning(requireContext(), "cargar modal casa").show()
 
-
+        /*
         /*modalCasa =
             inflater.inflate(R.layout.content_desde_casa, (act as MainActivity).content, false)
         (act as MainActivity).content.addView(modalCasa) */
 
+        /*
         casaBinding.apply{
             if (isEntrar) {
                 txtDescCasa.text =
@@ -513,7 +526,10 @@ class FichajeFragment : BaseFragment() {
                 txtBtnAccionCasa.text = resources.getString(R.string.finish_accion)
             }
 
-            contentBtncasa.setOnClickListener {
+         */
+
+            casaBinding.apply{
+                contentBtncasa.setOnClickListener {
                 if (isEntrar) {
                     DialogHelper.getInstance().showEditTextAlert(
                         activity as MainActivity,
@@ -550,7 +566,7 @@ class FichajeFragment : BaseFragment() {
                         hint = resources.getString(R.string.descripcion)
                     )
                 } else {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireContext(), null, true)
 
                     usuario?.token?.let {
                         viewModel.entradaSalida(
@@ -578,13 +594,17 @@ class FichajeFragment : BaseFragment() {
                 }*/
             }
         }
+
+         */
     }
 
     fun setUpObservers(){
+
         //momentosDia
         viewModel.momentosDiaLiveData.observe(viewLifecycleOwner){ response ->
             if (BuildConfig.DEBUG)
                 Log.e(com.toools.ierp.ui.login.TAG, "momentos: {${response.status}}")
+
             when (response.status) {
                 Resource.Status.LOADING -> {
                     if (activity != null) {
@@ -630,10 +650,11 @@ class FichajeFragment : BaseFragment() {
                 }
             }
         }
+
         //entradaSalida
         viewModel.entradaSalidaLiveData.observe(viewLifecycleOwner){ response ->
             if (BuildConfig.DEBUG)
-                Log.e(com.toools.ierp.ui.login.TAG, "addEvent: {${response.status}}")
+                Log.e(com.toools.ierp.ui.login.TAG, "entradaSalida: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
                     if (activity != null) {
@@ -644,9 +665,12 @@ class FichajeFragment : BaseFragment() {
                     if (activity != null) {
                         DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
 
-                        /*
-                        if (modalCasa != null)
-                            (activity as MainActivity).content.removeView(modalCasa)*/
+
+                        /* todo porque esta esto aqui
+                        modalCasa?.let{
+                            (activity as MainActivity).content.removeView(modalCasa)
+                        }*/
+
 
                         if (response.data?.error != null && Integer.parseInt(response.data.error) == ErrorHelper.SESSION_EXPIRED) {
                             DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
@@ -697,6 +721,5 @@ class FichajeFragment : BaseFragment() {
         }
     }
 
-
-
+     */
 }
