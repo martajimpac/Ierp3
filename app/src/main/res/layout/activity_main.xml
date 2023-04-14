@@ -92,18 +92,19 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/menu_layout"
+        android:id="@+id/navigation_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true">
 
         <include
+            android:id="@+id/menu_layout"
             layout="@layout/menu_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
 
     </com.google.android.material.navigation.NavigationView>
 

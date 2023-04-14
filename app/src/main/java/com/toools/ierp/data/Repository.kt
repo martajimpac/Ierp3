@@ -24,8 +24,8 @@ class Repository @Inject constructor(private val ispotService: IspotService, pri
         return ierpService.momentosDia(usuario,dia,mes,ano)
     }
 
-    suspend fun entradaSalida(token: String,entradaSalida: Int, latitud: Double, longitud:Double,comments:String,descripcion:String): MomentosResponse? {
-        return ierpService.entradaSalida(token,entradaSalida,latitud,longitud,comments,descripcion)
+    suspend fun entradaSalida(token: String,entrar: Int, latitud: Double, longitud:Double,comments:String,descripcion:String): MomentosResponse? {
+        return ierpService.entradaSalida(token,entrar,latitud,longitud,comments,descripcion)
     }
 
     suspend fun guardias(usuario: String,dia: Int, mes: Int, ano: Int): GuardiasResponse? {

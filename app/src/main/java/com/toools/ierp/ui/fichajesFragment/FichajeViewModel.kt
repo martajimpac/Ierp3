@@ -33,17 +33,17 @@ class FichajeViewModel @Inject constructor(private val momentosDiaUserCase: Mome
         }
     }
 
-    fun entradaSalida(token: String, entradaSalida: Int, latidud: Double, longitud: Double, comments: String, descripcion: String){
+    fun entradaSalida(token: String, entrar: Int, latidud: Double, longitud: Double, comments: String, descripcion: String){
         viewModelScope.launch {
-            val response = entradaSalidaUserCase.invoke(token, entradaSalida, latidud, longitud, comments, descripcion)
+            val response = entradaSalidaUserCase.invoke(token, entrar, latidud, longitud, comments, descripcion)
             if (response != null) {
                 if (response.isOK()) {
-                    momentosDiaLiveData.value = Resource.success(response)
+                    entradaSalidaLiveData.value = Resource.success(response)
                 } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
-                    momentosDiaLiveData.value = Resource.success(response)
+                    entradaSalidaLiveData.value = Resource.success(response)
                 }
             } else {
-                momentosDiaLiveData.value = Resource.error(ErrorHelper.loginError)
+                entradaSalidaLiveData.value = Resource.error(ErrorHelper.loginError)
             }
         }
 

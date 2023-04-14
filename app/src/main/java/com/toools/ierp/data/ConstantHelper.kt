@@ -122,7 +122,7 @@ object ConstantHelper {
     }
 
 
-    enum class Seccion(var nombre: Int, var icono: Int) {
+    enum class SeccionMenu(var nombre: Int, var icono: Int) {
 
         fichajes(R.string.fichajes, R.drawable.ic_fichajes),
         guardias(R.string.guardias_seccion, R.drawable.ic_guardias),

@@ -19,8 +19,6 @@
         <item name="android:textColorSecondary">@android:color/white</item>
     </style>
 
-
-    <!--TODO: porque eseta en rojo?-->
     <style name="FullScreen" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
@@ -52,7 +50,7 @@
     </style>
 
     <!--Fuentes-->
-    <style name="fontWhiteBold"> <!--TODO  fontPath?? -->
+    <style name="fontWhiteBold"> <!--TODO SIEMPRE DA UN ERROR PORQUE LA FUENTE NO CARGA fontPath?? -->
         <item name="font">@string/title_font</item>
         <item name="android:textColor">@android:color/white</item>
     </style>

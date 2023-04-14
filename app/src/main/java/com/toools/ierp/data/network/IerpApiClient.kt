@@ -29,7 +29,7 @@ interface IerpApiClient {
 
     @FormUrlEncoded
     @POST(ConstantHelper.IERP_ADD_EVENT)
-    suspend fun entradaSalida(@Field("client") client: String, @Field("token") token: String, @Field("entradaSalida") entradaSalida: Int, @Field("latitud")
+    suspend fun entradaSalida(@Field("client") client: String, @Field("token") token: String, @Field("entradaSalida") entrar: Int, @Field("latitud")
     latitud: Double, @Field("longitud") longitud: Double, @Field("comentario") comments: String, @Field("descripcion") descripcion: String): Response<MomentosResponse>
 
     @FormUrlEncoded

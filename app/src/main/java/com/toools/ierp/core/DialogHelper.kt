@@ -5,6 +5,8 @@ import android.graphics.PorterDuff
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
@@ -91,6 +93,7 @@ class DialogHelper {
             AppCompatResources.getDrawable(activity, icon)?.let { drawable ->
 
                 val draw = drawable.mutate()
+                //todo deprecated
                 draw.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary), PorterDuff.Mode.SRC_IN)
                 icon(drawable = draw)
             } ?: icon(icon)

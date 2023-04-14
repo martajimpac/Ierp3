@@ -51,14 +51,11 @@ class LoginActivity : AppCompatActivity() {
 
         binding.apply{
             try {
-                val pInfo = packageManager.getPackageInfo(packageName, 0) //TODO deprecated
+                val pInfo = packageManager.getPackageInfo(packageName, 0)
                 txtVersionApp.text =
                     String.format(getString(R.string.app_name_with_version), pInfo.versionName)
 
             } catch (e: PackageManager.NameNotFoundException) {
-
-                if (BuildConfig.DEBUG)
-                    e.printStackTrace()
                 txtVersionApp.text = "${R.string.version_app}"
             }
 
@@ -69,16 +66,13 @@ class LoginActivity : AppCompatActivity() {
 
             }
         }
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
         Handler(Looper.getMainLooper()).postDelayed({
             if (checkPermission(
                     Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             ) {
-                //TODO: buscar si el login es automatico
                 activarLogin()
             }
         }, 200)
@@ -87,7 +81,6 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
         ConstantHelper.clientREST = prefs.getString(ConstantHelper.client, "").toString()
 
         Handler(Looper.getMainLooper()).postDelayed({
@@ -96,7 +89,6 @@ class LoginActivity : AppCompatActivity() {
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             ) {
-                // TODO: buscar si el login es automatico
                 activarLogin()
             }
         }, 200)
@@ -107,15 +99,14 @@ class LoginActivity : AppCompatActivity() {
         //si autologin es true y el usuario no es nulo
         if (prefs.getBoolean(ConstantHelper.autoLogin, false) &&
             prefs.getString(ConstantHelper.usuarioLogin, null) != null) {
-            //TODO CREO QUE TODO ESTO SOBRA
-            //recoge el usuario de shared prefs y lo transforma a loginResponse
 
+            //recoge el usuario de shared prefs y lo transforma a loginResponse
             usuario = Gson().fromJson(
                 prefs.getString(ConstantHelper.usuarioLogin, null),
                 LoginResponse::class.java
             )
             //comprobar que el token firebase esta insertado y insertarlo si no lo esta
-            if (prefs.getBoolean(ConstantHelper.addTokenFirebase, false)){
+            if (!prefs.getBoolean(ConstantHelper.addTokenFirebase, false)){
                 usuario?.token?.let {
                     fcmToken.addOnSuccessListener(this@LoginActivity) { instanceIdResult ->
                         viewModel.addTokenFirebase(it, instanceIdResult)
@@ -126,8 +117,10 @@ class LoginActivity : AppCompatActivity() {
             DialogHelper.getInstance().showLoadingAlert(this, null, true)
             toMain()
 
-            //Repository.usuario = usuario //TODO SI EL USUARIO NO ES NULO LO GUARDA, PARA QUE?
-            //TODO, SOLO LLAMAMOS A MOMENTOS AQUI SI EL LOGIN YA ESTA ACTIVADO PERO ES UN POCO ABSURDO
+            // TODO, SOLO LLAMAMOS A MOMENTOS AQUI SI EL LOGIN YA ESTA ACTIVADO PERO ES UN POCO ABSURDO
+            // Antes guardaba el usuario a veces en el repositorio y a veces en sharedprefs, yo lo he guardado siempre en prefs
+
+            //Repository.usuario = usuario
             //viewModel.momentos(usuario!!.token ?: "" ) //en caso de que sesa nulo
 
         }
@@ -167,6 +160,11 @@ class LoginActivity : AppCompatActivity() {
 
         //login
         viewModel.loginLiveData.observe(this){ response ->
+
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG,"login: {${response.status}}")
+            }
+
             when (response.status) {
                 Resource.Status.LOADING -> {
                     DialogHelper.getInstance().showLoadingAlert(this, null, true)
@@ -190,7 +188,7 @@ class LoginActivity : AppCompatActivity() {
                         completion1 = {
                             edit.putBoolean(ConstantHelper.autoLogin, true)
                             edit.putString(ConstantHelper.usuarioLogin, Gson().toJson(usuario))
-                            edit.putBoolean(ConstantHelper.addTokenFirebase, true)
+                            edit.putBoolean(ConstantHelper.addTokenFirebase, false)
                             edit.apply()
 
                             usuario?.token?.let { token ->
@@ -207,7 +205,7 @@ class LoginActivity : AppCompatActivity() {
                             edit.putBoolean(ConstantHelper.autoLogin, false)
                             edit.putString(ConstantHelper.usuarioLogin, Gson().toJson(usuario))
                             edit.apply()
-                            toMain() //todo antes a main le pasabamos el usuario
+                            toMain()
                         })
                 }
                 Resource.Status.ERROR -> {
@@ -265,8 +263,10 @@ class LoginActivity : AppCompatActivity() {
 
         //addTokenFirebase
         viewModel.addTokenFirebaseLiveData.observe(this) { response ->
-            if (BuildConfig.DEBUG)
+            if (BuildConfig.DEBUG) {
                 Log.e(TAG, "addTokenFirebase: {${response.status}}")
+            }
+
             when (response.status) {
                 Resource.Status.LOADING -> { }
                 Resource.Status.SUCCESS -> {
@@ -303,11 +303,10 @@ class LoginActivity : AppCompatActivity() {
 
                 startActivity(intent, options.toBundle())
             }
-        }, 500)
+        }, 500) //todo: A veces el menu de activity main no carga bien, puede ser porque necesita mas tiempo para cargarse?
     }
 
-
-    private val PERMISSION_ID = 42 //TODO PASA ESETO A CONSTANT HELPER
+    private val PERMISSION_ID = 42
     private fun checkPermission(vararg perm: String): Boolean {
         val havePermissions = perm.toList().all {
             ContextCompat.checkSelfPermission(this, it) ==

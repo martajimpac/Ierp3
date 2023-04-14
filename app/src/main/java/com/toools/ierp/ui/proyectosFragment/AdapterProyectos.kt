@@ -1,6 +1,5 @@
 package com.toools.ierp.ui.proyectosFragment
 
-/*
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +9,8 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.toools.ierp.R
-import com.toools.ierp.entities.ierp.Proyecto
-import kotlinx.android.synthetic.main.recycler_proyectos.view.*
-import net.cachapa.expandablelayout.ExpandableLayout
+import com.toools.ierp.data.model.Proyecto
+import com.toools.ierp.databinding.RecyclerProyectosBinding
 
 class AdapterProyectos (context: Context, listProyectos: MutableList<Proyecto>, var listener: ProyectosListener) :
     RecyclerView.Adapter<AdapterProyectos.ProyectoHolder>() {
@@ -21,6 +19,8 @@ class AdapterProyectos (context: Context, listProyectos: MutableList<Proyecto>, 
     private var listProyectos: MutableList<Proyecto> = mutableListOf()
     private var context: Context
     private var holderSelec: ProyectoHolder? = null
+
+    private lateinit var binding: RecyclerProyectosBinding
 
     init {
         this.listProyectos.addAll(listProyectos)
@@ -35,9 +35,8 @@ class AdapterProyectos (context: Context, listProyectos: MutableList<Proyecto>, 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProyectoHolder {
-        val inflater = LayoutInflater.from(this.context)
-        val view = inflater.inflate(R.layout.recycler_proyectos, parent, false)
-        return ProyectoHolder(view)
+        binding = RecyclerProyectosBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return ProyectoHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -55,6 +54,7 @@ class AdapterProyectos (context: Context, listProyectos: MutableList<Proyecto>, 
 
         holder.headerConstraintLayout.setOnClickListener {
 
+            /*
             holderSelec?.let{
                 if (it.absoluteAdapterPosition != holder.absoluteAdapterPosition && it.expandable.isExpanded)
                     it.expandable.toggle(true)
@@ -81,25 +81,32 @@ class AdapterProyectos (context: Context, listProyectos: MutableList<Proyecto>, 
             holder.tareasAsignadasView.setOnClickListener {
                 listener.clickAddTarea(proyecto)
             }
+             */
         }
     }
 
-    class ProyectoHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ProyectoHolder(val binding: RecyclerProyectosBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        var expandable: ExpandableLayout = view.expandable
-        var headerConstraintLayout: ConstraintLayout = view.headerConstraintLayout
-        var tareasView: View = view.tareasView
-        var soportesView: View = view.soportesView
-        var empleadosView: View = view.empleadosView
-        var tareasAsignadasView: View = view.tareasAsignadasView
-        var miniaturaImageView = view.miniaturaImageView
+        var headerConstraintLayout: ConstraintLayout = binding.headerConstraintLayout
+
+        /*
+        var expandable: ExpandableLayout = binding.expandable
+        var tareasView: View = binding.tareasView
+        var soportesView: View = binding.soportesView
+        var empleadosView: View = binding.empleadosView
+        var tareasAsignadasView: View = binding.tareasAsignadasView
+        */
+
+        var miniaturaImageView = binding.miniaturaImageView
 
         fun bind(item: Proyecto) = with(itemView) {
-            Glide.with(context).load(item.imagen).into(asignadoImageView)
-            proyectoTextView.text = item.nombre
-            Glide.with(context).load(item.miniatura).circleCrop().error(Glide.with(context).load(R.drawable.ic_proyectos)).into(miniaturaImageView)
-
+            binding.apply{
+                Glide.with(context).load(item.imagen).into(asignadoImageView)
+                proyectoTextView.text = item.nombre
+                Glide.with(context).load(item.miniatura).circleCrop().error(Glide.with(context).load(R.drawable.ic_proyectos)).into(miniaturaImageView)
+            }
+            //animacion
             ViewCompat.setTransitionName(miniaturaImageView, context.getString(R.string.trans_proyecto, item.id))
         }
     }
-}*/
+}

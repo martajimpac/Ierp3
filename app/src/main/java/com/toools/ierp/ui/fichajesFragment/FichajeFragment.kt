@@ -1,7 +1,6 @@
 package com.toools.ierp.ui.fichajesFragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Context
 import android.location.Location
@@ -40,9 +39,7 @@ const val TAG = "FichajeFragment"
 
 @AndroidEntryPoint
 class FichajeFragment : BaseFragment() {
-    /*
 
-    private var activity: Activity? = null
     var usuario: LoginResponse? = null
     private lateinit var binding: FragmentFichajeBinding
     private lateinit var casaBinding: ContentDesdeCasaBinding
@@ -67,24 +64,23 @@ class FichajeFragment : BaseFragment() {
     var fusedLocationClient: FusedLocationProviderClient? = null
     var locationUpdates: LocationCallback? = null
 
-    private var timeInterval: Long = 800
-    private var minimalDistance: Float = 1.0f
-
-    /* todo ver si va bien
-        val reqSetting: LocationRequest = LocationRequest.create().apply {
+    /* todo he actualizado esto que estaba deprecated
+    val reqSetting: LocationRequest = LocationRequest.create().apply {
         fastestInterval = 1000
         interval = 1000
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         smallestDisplacement = 1.0f
     }*/
-    private fun reqSetting(): LocationRequest =
 
+    private var timeInterval: Long = 800
+    private var minimalDistance: Float = 1.0f
+
+    private fun reqSetting(): LocationRequest =
         LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, timeInterval).apply {
             setMinUpdateDistanceMeters(minimalDistance)
             setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
             setWaitForAccurateLocation(true)
         }.build()
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -103,69 +99,72 @@ class FichajeFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        onLoadView()
-    }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is Activity)
-            activity = context
+        usuario = Gson().fromJson(
+            IerpApp.getInstance().prefs.getString(ConstantHelper.usuarioLogin, null),
+            LoginResponse::class.java
+        )
+        onLoadView()
     }
 
     @SuppressLint("MissingPermission", "SetTextI18n")
     fun setUpView(){
-        activity?.let { activity ->
-            binding.apply{
+        usuario = Gson().fromJson(
+            IerpApp.getInstance().prefs.getString(ConstantHelper.usuarioLogin, null),
+            LoginResponse::class.java
+        )
 
-                //comprobar si existen acciones y cargar el recicler.
-                val layoutManager = LinearLayoutManager(activity)
-                layoutManager.orientation = RecyclerView.VERTICAL
-                recyclerAcc.layoutManager = layoutManager
-                recyclerAcc.setHasFixedSize(true)
-                val decoration = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
-                recyclerAcc.addItemDecoration(decoration)
-                (recyclerAcc.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        // Oculta la vista contentDesdeCasa
+        binding.contentDesdeCasa.containerCasa.visibility = View.GONE
 
-                showCenter()
+        binding.apply{
 
-                onLoadView() //todo porque aqui llama a on load view? si lo quito sigue funcionando?
+            //comprobar si existen acciones y cargar el recicler.
+            val layoutManager = LinearLayoutManager(activity)
+            layoutManager.orientation = RecyclerView.VERTICAL
+            recyclerAcc.layoutManager = layoutManager
+            recyclerAcc.setHasFixedSize(true)
+            val decoration = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
+            recyclerAcc.addItemDecoration(decoration)
+            (recyclerAcc.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
-                fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
+            showCenter()
 
-                locationUpdates = object : LocationCallback() {
-                    override fun onLocationResult(lr: LocationResult) {
-                        longitud = lr.lastLocation?.longitude
-                        latitud = lr.lastLocation?.latitude
-                    }
-                }
+            //onLoadView() //todo he quitado esto porque al iniciar la actividad iva a llamar a on resume asique iba a llamar a onloadview igualmente
 
-                fusedLocationClient?.requestLocationUpdates(reqSetting(), locationUpdates!!, null)
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-                contentCalendar.setOnClickListener {
-
-                    DatePickerDialog(
-                        activity as Context, R.style.DatePickerDialogTheme,
-                        { _, year, month, dayOfMonth ->
-
-                            anyo = year
-                            mes = month + 1
-                            dia = dayOfMonth
-
-                            DialogHelper.getInstance().showLoadingAlert(activity, null, true)
-
-                            //todo porque hace esto?? Y SI MOMENTOS DIA NO FUERA NULL?
-                            usuario?.token?.let {
-                                viewModel.momentosDia(it, dia, mes, anyo)
-                            } ?: run {
-                                viewModel.momentosDia("", dia, mes, anyo)
-                            }
-
-                        }, anyo, mes - 1, dia
-                    ).show()
+            locationUpdates = object : LocationCallback() {
+                override fun onLocationResult(lr: LocationResult) {
+                    longitud = lr.lastLocation?.longitude
+                    latitud = lr.lastLocation?.latitude
                 }
             }
-        }
 
+            fusedLocationClient?.requestLocationUpdates(reqSetting(), locationUpdates!!, null)
+
+            contentCalendar.setOnClickListener {
+                DatePickerDialog(
+                    activity as Context, R.style.DatePickerDialogTheme,
+                    { _, year, month, dayOfMonth ->
+
+                        anyo = year
+                        mes = month + 1
+                        dia = dayOfMonth
+
+                        //creo que se queda parado aqui
+                        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+
+                        usuario?.token?.let {
+                            viewModel.momentosDia(it, dia, mes, anyo)
+                        } ?: run {
+                            viewModel.momentosDia("", dia, mes, anyo)
+                        }
+
+                    }, anyo, mes - 1, dia
+                ).show()
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")  //todo que diferencia hay entre set up view y load view??
@@ -176,17 +175,11 @@ class FichajeFragment : BaseFragment() {
         mes = cal.get(Calendar.MONTH) + 1
         dia = cal.get(Calendar.DAY_OF_MONTH)
 
-        usuario = Gson().fromJson(
-            IerpApp.getInstance().prefs.getString(ConstantHelper.usuarioLogin, null),
-            LoginResponse::class.java
-        )
-
         usuario?.let {
 
             binding.apply{
                 txtNombreUser.text = usuario!!.nombre
                 txtDescUser.text = "@${usuario!!.username}"
-
                 Glide.with(this@FichajeFragment).load(resources.getString(R.string.url_base_img, usuario!!.username))
                     .circleCrop()
                     .error(Glide.with(this@FichajeFragment).load(R.drawable.luciano).circleCrop()).into(imgUser)
@@ -195,7 +188,7 @@ class FichajeFragment : BaseFragment() {
             cargarAcciones(usuario!!.momentos, usuario!!.zonaHoraria!!)
 
         } ?:run {
-            if (activity != null)
+            if (activity != null) //todo actuizalir esto
                 (activity as MainActivity).onBackToLogin()
         }
 
@@ -204,7 +197,6 @@ class FichajeFragment : BaseFragment() {
     @SuppressLint("MissingPermission")
     private fun cargarAcciones(momentos: MutableList<LoginResponse.Momentos>, zonaHoraria: String) {
 
-        Log.e(com.toools.ierp.ui.login.TAG, "cargar ACCIONES")
         listMomentos.clear()
         listMomentos.addAll(momentos)
 
@@ -223,7 +215,6 @@ class FichajeFragment : BaseFragment() {
 
             if (momentos.isNullOrEmpty() || momentos.size == 0) {
 
-                Log.e(com.toools.ierp.ui.login.TAG, "cargar MOMENTOS ES NULLL")
                 txtTituRegistros.text = resources.getString(R.string.not_entradas)
 
                 txtTituAcciones.text = resources.getString(R.string.desc_not_entradas)
@@ -232,7 +223,6 @@ class FichajeFragment : BaseFragment() {
 
             } else {
 
-                Log.e(com.toools.ierp.ui.login.TAG, "cargar MOMENTOS NO ES NULLL")
                 txtTituRegistros.text = resources.getString(R.string.entra_sal)
 
                 txtTituAcciones.text = resources.getString(R.string.txt_horas, zonaHoraria)
@@ -245,10 +235,11 @@ class FichajeFragment : BaseFragment() {
                 isEntrar = momentos.last().tipo != LoginResponse.Momentos.entrada
             }
 
-            adapter = AdapterAcciones(activity as Context, listMomentos)
+            adapter = AdapterAcciones(requireContext(), listMomentos)
             recyclerAcc.adapter = adapter
 
             contentBtn.setOnClickListener {//todo ver porque aqui no carga nada
+
                 if (latitud != null && longitud != null) {
 
                     usuario = Gson().fromJson(
@@ -257,15 +248,13 @@ class FichajeFragment : BaseFragment() {
                     )
 
                     if (usuario?.permitir_no_localizacion == "0") {
-                        Log.e(com.toools.ierp.ui.login.TAG, "VAMOS A FICHAR PORQUE EL USUARIO NO TIENE LOC")
                         fichar()
                     } else {
-                        Log.e(com.toools.ierp.ui.login.TAG, "VAMOS A VER SI ESTAS LEJOS O NO")
                         checkDistance()
                     }
-                } else
-                    Log.e(com.toools.ierp.ui.login.TAG, "ALGO FUE MAL AL PULSAR EL BOTON, WARN SIN LOC")
+                } else {
                     Toasty.warning(requireActivity(), resources.getString(R.string.warn_sin_localizacion)).show() //TODO: PERMITIR MOSTRAR UBIC DE NUEVO
+                }
             }
         }
     }
@@ -285,7 +274,6 @@ class FichajeFragment : BaseFragment() {
         locUser.longitude = longitud!!
 
         if (usuario?.id_centro_trabajo == "0") {
-            Log.e(com.toools.ierp.ui.login.TAG, "check distance: centro trabajo es 0")
             for (centro in usuario!!.centros_trabajo) {
                 val locWork = Location("work")
                 locWork.latitude = centro.ct_latitud!!.toDouble()
@@ -294,14 +282,12 @@ class FichajeFragment : BaseFragment() {
                 if (locUser.distanceTo(locWork) < centro.ct_distancia_fichajes!!.toDouble()) {
                     distanciaKO = false
                     fichar()
-                    Log.e(com.toools.ierp.ui.login.TAG, "check distance: centro trabajo es 0 fichar")
                     break
                 }
 
                 if (locUser.distanceTo(locWork) < minDistance) {
                     minDistance = locUser.distanceTo(locWork)
                     centerName = centro.ct_nombre ?: ""
-                    Log.e(com.toools.ierp.ui.login.TAG, "check distance: centro trabajo es 0 no fichar")
                 }
             }
         } else {
@@ -313,7 +299,6 @@ class FichajeFragment : BaseFragment() {
                 if (locUser.distanceTo(locWork) < centro.ct_distancia_fichajes!!.toDouble()) {
                     distanciaKO = false
                     if (usuario?.id_centro_trabajo == centro.ct_id) {
-                        Log.e(com.toools.ierp.ui.login.TAG, "check distance: centro trabajo NO es 0 fichar")
                         fichar()
                         break
                     } else {
@@ -376,9 +361,7 @@ class FichajeFragment : BaseFragment() {
     }
 
     fun fichar() {
-
-        val entradaSalida =
-
+        val entrar =
             if (isEntrar) {
                 LoginResponse.Momentos.entradaInt
             } else {
@@ -388,7 +371,7 @@ class FichajeFragment : BaseFragment() {
         usuario?.token?.let {
             viewModel.entradaSalida(
                 it,
-                entradaSalida,
+                entrar,
                 latitud!!,
                 longitud!!,
                 "", ""
@@ -396,7 +379,7 @@ class FichajeFragment : BaseFragment() {
         } ?: run {
             viewModel.entradaSalida(
                 "",
-                entradaSalida,
+                entrar,
                 latitud!!,
                 longitud!!,
                 "", ""
@@ -505,13 +488,16 @@ class FichajeFragment : BaseFragment() {
     private fun cargarModalCasa(isEntrar: Boolean, distancia: Long, centro: String) {
         Toasty.warning(requireContext(), "cargar modal casa").show()
 
-        /*
-        /*modalCasa =
+        /* todo he quitado esto y he añadido la vista content desde casa con un include
+        modalCasa =
             inflater.inflate(R.layout.content_desde_casa, (act as MainActivity).content, false)
-        (act as MainActivity).content.addView(modalCasa) */
+        (act as MainActivity).content.addView(modalCasa)*/
 
-        /*
-        casaBinding.apply{
+        binding.contentDesdeCasa.apply{
+
+            // muestra la vista content desde casa
+            containerCasa.visibility = View.VISIBLE
+
             if (isEntrar) {
                 txtDescCasa.text =
                     resources.getString(R.string.txt_entrar_casa, distancia, centro)
@@ -525,14 +511,10 @@ class FichajeFragment : BaseFragment() {
                     .into(imgAccionCasa)
                 txtBtnAccionCasa.text = resources.getString(R.string.finish_accion)
             }
-
-         */
-
-            casaBinding.apply{
-                contentBtncasa.setOnClickListener {
+            contentBtncasa.setOnClickListener {
                 if (isEntrar) {
                     DialogHelper.getInstance().showEditTextAlert(
-                        activity as MainActivity,
+                        requireActivity(),
                         resources.getString(R.string.insert_code_title),
                         resources.getString(R.string.insert_code_description),
                         R.drawable.ic_toools_rellena,
@@ -540,7 +522,7 @@ class FichajeFragment : BaseFragment() {
                         object : EditTextDialogListener {
                             override fun editTextDialogDismissed(value: String) {
 
-                                DialogHelper.getInstance().showLoadingAlert(activity!!, null, true)
+                                DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
 
                                 usuario?.token?.let {
                                     viewModel.entradaSalida(
@@ -559,14 +541,13 @@ class FichajeFragment : BaseFragment() {
                                         "", value
                                     )
                                 }
-
                             }
                         },
                         button2 = resources.getString(R.string.cancel),
                         hint = resources.getString(R.string.descripcion)
                     )
                 } else {
-                    DialogHelper.getInstance().showLoadingAlert(requireContext(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() ,null,true)
 
                     usuario?.token?.let {
                         viewModel.entradaSalida(
@@ -589,13 +570,14 @@ class FichajeFragment : BaseFragment() {
             }
 
             cardVolver.setOnClickListener {
-               /* if (modalCasa != null) { //todo como cambio esto?
+                /*if (modalCasa != null) {
                     (activity as MainActivity).content.removeView(modalCasa)
                 }*/
+
+                binding.contentDesdeCasa.containerCasa.visibility = View.GONE
             }
         }
 
-         */
     }
 
     fun setUpObservers(){
@@ -603,50 +585,45 @@ class FichajeFragment : BaseFragment() {
         //momentosDia
         viewModel.momentosDiaLiveData.observe(viewLifecycleOwner){ response ->
             if (BuildConfig.DEBUG)
-                Log.e(com.toools.ierp.ui.login.TAG, "momentos: {${response.status}}")
+                Log.e(TAG, "momentos: {${response.status}}")
 
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    if (activity != null) {
-                        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
-                    }
+                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    if (activity != null) {
 
-                        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                        if (response.data?.error != null && Integer.parseInt(response.data.error) == ErrorHelper.SESSION_EXPIRED) {
-                            DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
-                                title = R.string.not_session,
-                                text = R.string.desc_not_session,
-                                icon = R.drawable.ic_toools_rellena,
-                                completion = {
-                                    if (activity != null)
-                                        (activity as MainActivity).onBackToLogin()
-                                })
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    if (response.data?.error != null && Integer.parseInt(response.data.error) == ErrorHelper.SESSION_EXPIRED) {
+                        DialogHelper.getInstance().showOKAlert(requireActivity(),
+                            title = R.string.not_session,
+                            text = R.string.desc_not_session,
+                            icon = R.drawable.ic_toools_rellena,
+                            completion = {
+                                //todo como puedo cambiar esto? no me gusta lo de activity
+                                if (activity != null)
+                                    (activity as MainActivity).onBackToLogin()
+                            })
 
-                        } else {
-                            usuario!!.zonaHoraria = response.data!!.timeZone!!
-                            requireContext().prefs.edit().putString(ConstantHelper.usuarioLogin, Gson().toJson(response.data)).apply()
-                            cargarAcciones(response.data.momentos, response.data.timeZone!!)
-                        }
+                    } else {
+                        usuario!!.zonaHoraria = response.data!!.timeZone!!
+                        requireContext().prefs.edit().putString(ConstantHelper.usuarioLogin, Gson().toJson(response.data)).apply()
+                        cargarAcciones(response.data.momentos, response.data.timeZone!!)
                     }
                 }
                 Resource.Status.ERROR -> {
-                    if (activity != null) {
-                        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                        DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
-                            title = R.string.ups,
-                            text = response.exception ?: ErrorHelper.momentosError,
-                            icon = R.drawable.ic_toools_rellena,
-                            completion = {
-                                usuario?.token?.let {
-                                    viewModel.momentosDia(it, dia, mes, anyo)
-                                } ?: run {
-                                    viewModel.momentosDia("", dia, mes, anyo)
-                                }
-                            })
-                    }
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showOKAlert(requireActivity(),
+                        title = R.string.ups,
+                        text = response.exception ?: ErrorHelper.momentosError,
+                        icon = R.drawable.ic_toools_rellena,
+                        completion = {
+                            usuario?.token?.let {
+                                viewModel.momentosDia(it, dia, mes, anyo)
+                            } ?: run {
+                                viewModel.momentosDia("", dia, mes, anyo)
+                            }
+                        })
                 }
             }
         }
@@ -654,61 +631,55 @@ class FichajeFragment : BaseFragment() {
         //entradaSalida
         viewModel.entradaSalidaLiveData.observe(viewLifecycleOwner){ response ->
             if (BuildConfig.DEBUG)
-                Log.e(com.toools.ierp.ui.login.TAG, "entradaSalida: {${response.status}}")
+                Log.e(TAG, "entradaSalida: {${response.status}}")
+
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    if (activity != null) {
-                        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
-                    }
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    if (activity != null) {
-                        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+
+                    /* todo porque esta esto aqui
+                    modalCasa?.let{
+                        (activity as MainActivity).content.removeView(modalCasa)
+                    }*/
 
 
-                        /* todo porque esta esto aqui
-                        modalCasa?.let{
-                            (activity as MainActivity).content.removeView(modalCasa)
-                        }*/
+                    if (response.data?.error != null && Integer.parseInt(response.data.error) == ErrorHelper.SESSION_EXPIRED) {
+                        DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                            title = R.string.not_session,
+                            text = R.string.desc_not_session,
+                            icon = R.drawable.ic_toools_rellena,
+                            completion = {
+                                if (activity != null)
+                                    (activity as MainActivity).onBackToLogin()
+                            })
 
-
-                        if (response.data?.error != null && Integer.parseInt(response.data.error) == ErrorHelper.SESSION_EXPIRED) {
-                            DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
-                                title = R.string.not_session,
-                                text = R.string.desc_not_session,
-                                icon = R.drawable.ic_toools_rellena,
-                                completion = {
-                                    if (activity != null)
-                                        (activity as MainActivity).onBackToLogin()
-                                })
-
-                        } else {
-                            try {
-                                if (response.data!!.momentos.last().tipo == LoginResponse.Momentos.entrada) {
+                    } else {
+                        try {
+                            if (response.data!!.momentos.last().tipo == LoginResponse.Momentos.entrada) {
 //                                Toasty.warning(act!!, resources.getString(R.string.ini_trabajo)) TODO
 //                                    .show()
 
-                                } else {
+                            } else {
 //                                Toasty.warning(act!!, resources.getString(R.string.fin_trabajo))
 //                                    .show()
-                                }
-
-                                usuario!!.momentos = response.data.momentos
-                                cargarAcciones(response.data.momentos, usuario!!.zonaHoraria!!)
-                            } catch (e: Exception) {
-
                             }
+
+                            usuario!!.momentos = response.data.momentos
+                            cargarAcciones(response.data.momentos, usuario!!.zonaHoraria!!)
+                        } catch (e: Exception) {
+
                         }
-                        activity?.let { it1 -> DialogHelper.getInstance().showLoadingAlert(it1, null, true) }
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            activity?.let { it1 ->
-                                DialogHelper.getInstance().showLoadingAlert(it1, null, false)
-                            }
-                        }, 1000)
                     }
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                            DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    }, 500) //todo ver si aun funciona con menos tiempo
                 }
                 Resource.Status.ERROR -> {
-                    if (activity != null) {
+                    if (activity != null) { //todo preguntar si pasa algo si quito todos los activity !=null
                         DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
                         DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
                             title = R.string.ups,
@@ -720,6 +691,4 @@ class FichajeFragment : BaseFragment() {
             }
         }
     }
-
-     */
 }

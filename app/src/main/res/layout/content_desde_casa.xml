@@ -7,7 +7,7 @@
         android:clickable="true"
         android:focusable="true"
         android:elevation="@dimen/pm20"
-        android:id="@+id/contentCasa" android:background="#FFBCBE">
+        android:id="@+id/container_casa" android:background="#FFBCBE">
 
     <androidx.cardview.widget.CardView
             android:layout_width="@dimen/pm40"

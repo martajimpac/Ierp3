@@ -7,6 +7,12 @@
              android:layout_height="match_parent"
              tools:context=".ui.fichajesFragment.FichajeFragment">
 
+    <include
+        android:id="@+id/content_desde_casa"
+        layout="@layout/content_desde_casa"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <TextView
             android:id="@+id/txtTituRegistros"
             style="@style/fontWhiteBold"

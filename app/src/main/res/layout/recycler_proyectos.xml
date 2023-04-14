@@ -73,7 +73,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!--
+            <!-- TODO CREO QUE ESTO ES UNA LIBRERIA QUE NO TENGO
             <net.cachapa.expandablelayout.ExpandableLayout
                     android:id="@+id/expandable"
                     android:layout_width="match_parent"
@@ -195,7 +195,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </net.cachapa.expandablelayout.ExpandableLayout>    -->
+            </net.cachapa.expandablelayout.ExpandableLayout>  -->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
