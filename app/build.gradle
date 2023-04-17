@@ -100,16 +100,11 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
 
     //Firebase
-    implementation 'com.google.gms:google-services:4.3.13'
+    implementation 'com.google.gms:google-services:4.3.15'
     implementation 'com.google.firebase:firebase-core:21.1.1'
     implementation 'com.google.firebase:firebase-crashlytics-ktx:18.3.6'
     implementation 'com.google.firebase:firebase-analytics-ktx:21.2.1'
     implementation 'com.google.firebase:firebase-messaging:23.1.2'
-
-    //Firebase
-    /*implementation 'com.google.firebase:firebase-crashlytics-ktx:18.3.5'
-    implementation 'com.google.firebase:firebase-analytics-ktx:21.2.0'
-    implementation 'com.google.firebase:firebase-messaging:23.1.1'*/
 
     //material dialogs
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
@@ -131,11 +126,12 @@ dependencies {
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
     implementation 'io.github.inflationx:viewpump:2.0.3'
 
-    //Tellyo
-    //implementation('com.tellyo:tellyosdk:1.1.1'){transitive=true}
+    //Expandible
+    implementation 'com.github.cachapa:ExpandableLayout:2.9.2'
 
+    //SegmentedView
+    implementation 'com.github.trinnguyen:Android-SegmentView:master-SNAPSHOT'
 
-    //TODO VER SI FUNCIONA SIN ESTO
     constraints { //solucionar lo de clases duplicadas
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
             because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")

@@ -86,7 +86,7 @@ interface IerpApiClient {
                           @Field("idEstado") idEstado: String, @Field("observacion") observacion: String): Response<BaseResponse>
 
 
-    //estos no se usan todo
+    //estos no se usan
     @FormUrlEncoded
     @POST(ConstantHelper.IERP_TAREAS_ASIGNADAS)
     suspend fun tareasAsignadas(@Field("client") client: String, @Field("token") token: String): Response<TareasAsignadasResponse>

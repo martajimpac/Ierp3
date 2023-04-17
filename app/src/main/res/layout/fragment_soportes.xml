@@ -63,7 +63,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView2" />
 
-    <!-- TODO creo que esto tiene que ver con la libreria que hay que añadir
     <com.trinnguyen.SegmentView
             android:id="@+id/segmentView"
             android:layout_width="0dp"
@@ -82,7 +81,7 @@
             app:separateLineColor="#D6D6D9"
             app:textAppearance="@style/fontWhiteBold"
             app:unselectedBackgroundColor="#FFFFFF"
-            app:unselectedTextColor="#7F7F7F" /> -->
+            app:unselectedTextColor="#7F7F7F" />
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/soportesRecyclerView"

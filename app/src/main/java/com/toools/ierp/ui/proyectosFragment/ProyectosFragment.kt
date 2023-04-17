@@ -1,8 +1,6 @@
 package com.toools.ierp.ui.proyectosFragment
 
 import androidx.fragment.app.Fragment
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,20 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.gson.Gson
 import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
 import com.toools.ierp.core.*
-import com.toools.ierp.data.model.BaseResponse
+import com.toools.ierp.data.ConstantHelper
+import com.toools.ierp.data.model.LoginResponse
 import com.toools.ierp.data.model.Proyecto
-import com.toools.ierp.data.model.ProyectosResponse
 import com.toools.ierp.databinding.FragmentProyectosBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,6 +32,7 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
     private var adapterEmpleados: AdapterEmpleados? = null
     private var dialogAddTarea: AddTareaDialog? = null
     private lateinit var binding: FragmentProyectosBinding
+    private var usuario: LoginResponse?=null
 
     private val viewModel: ProyectosViewModel by viewModels()
 
@@ -52,8 +50,11 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
         onLoadView()
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        //ocultar la vista
+        binding.dialogEmpleados.containerDialogEmpleados.visibility = View.GONE
+
         super.onViewCreated(view, savedInstanceState)
 
         val layoutManager = LinearLayoutManager(requireActivity())
@@ -63,12 +64,21 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
         binding.proyectosRecyclerView.setHasFixedSize(true)
         (binding.proyectosRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
+        usuario?: Gson().fromJson(
+            requireContext().prefs.getString(ConstantHelper.usuarioLogin, null),
+            LoginResponse::class.java
+        )
         setUpObservers()
-        //onLoadView() todo
     }
 
     private fun onLoadView() {
-        viewModel.callProyectos()
+        usuario?: Gson().fromJson(
+            requireContext().prefs.getString(ConstantHelper.usuarioLogin, null),
+            LoginResponse::class.java
+        )
+        usuario?.let{
+            viewModel.proyectos(usuario?.token!!)
+        }
     }
 
     //*************************
@@ -92,56 +102,36 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
         findNavController().navigate(action, extras)
     }
 
-    var modalEmpleados: View? = null
     override fun clickEmpleados(proyecto: Proyecto) {
+        binding.dialogEmpleados.apply{
 
-        /*
-        TODO: esto con el binding ya no funciona, como lo hago?
-        binding.apply{
+            val gridLayoutManager = GridLayoutManager(requireActivity(), 3)
+            gridLayoutManager.orientation = RecyclerView.VERTICAL
+            empleadosRecyclerView.layoutManager = gridLayoutManager
+            empleadosRecyclerView.setHasFixedSize(true)
+            (empleadosRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
-            if (modalEmpleados == null) {
-                val inflater = LayoutInflater.from(requireActivity())
-                modalEmpleados =
-                    inflater.inflate(R.layout.dialog_empleados, proyectosConstraintLayout, false)
+            adapterEmpleados?.let { adapter ->
+                adapter.setList(proyecto.usuarios.toMutableList())
+            } ?: run {
+                adapterEmpleados = AdapterEmpleados(requireActivity(), proyecto.usuarios.toMutableList())
             }
 
-            modalEmpleados?.let { modal ->
-                proyectosConstraintLayout.addView(modalEmpleados)
+            empleadosRecyclerView.adapter = adapterEmpleados
 
-                val gridLayoutManager = GridLayoutManager(requireActivity(), 3)
-                gridLayoutManager.orientation = RecyclerView.VERTICAL
-                modal.empleadosRecyclerView.layoutManager = gridLayoutManager
-                modal.empleadosRecyclerView.setHasFixedSize(true)
-                (modal.empleadosRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
-                    false
+            tituloProyectoTextView.text = proyecto.nombre
 
-                adapterEmpleados?.let { adapter ->
-                    adapter.setList(proyecto.usuarios.toMutableList())
-                } ?: run {
-                    adapterEmpleados = AdapterEmpleados(it, proyecto.usuarios.toMutableList())
-                }
-
-                modal.empleadosRecyclerView.adapter = adapterEmpleados
-
-
-                modal.tituloProyectoTextView.text = proyecto.nombre
-
-                modal.aceptarContraintLayout.setOnClickListener {
-                    proyectosConstraintLayout.removeView(modalEmpleados)
-                }
+            //ocultar vista
+            aceptarContraintLayout.setOnClickListener {
+                containerDialogEmpleados.visibility = View.GONE
             }
-
         }
-
-         */
     }
-
     override fun clickAddTarea(proyecto: Proyecto) {
 
         if (dialogAddTarea == null) {
             dialogAddTarea = AddTareaDialog(requireContext())
         }
-
         dialogAddTarea?.let { dialog ->
 
             binding.apply{
@@ -157,33 +147,35 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
                 view.layoutParams = params
             }
         }
-
     }
 
     //*************************
     //Listener AddTareaDialog
     //*************************
-    override fun clickAddTarea(
+
+   override fun clickAddTarea(
         idProyecto: String,
         idEmpleado: String,
         titulo: String,
         descripcion: String,
         plazo: String
-    ) {
+   ) {
         binding.proyectosConstraintLayout.removeView(dialogAddTarea)
         DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
-        viewModel.insertarTarea(
-            idProyecto = idProyecto,
-            idEmpleado = idEmpleado,
-            titulo = titulo,
-            descripcion = descripcion,
-            plazo = plazo
-        )
-
-    }
+        usuario?.let{
+            viewModel.insertarTarea(
+                token = usuario?.token!!,
+                idProyecto = idProyecto,
+                idEmpleado = idEmpleado,
+                titulo = titulo,
+                descripcion = descripcion,
+                plazo = plazo
+            )
+        }
+   }
 
     override fun clickCancelTarea() {
-        //binding.proyectosConstraintLayout.removeView(dialogAddTarea)
+        //proyectosConstraintLayout.removeView(dialogAddTarea)
     }
 
     //*************************
@@ -191,16 +183,16 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
     //*************************
 
     fun setUpObservers() {
+
         viewModel.proyectosLiveData.observe(viewLifecycleOwner) { response ->
 
             if (BuildConfig.DEBUG)
                 Log.e(TAG, "proyectos: {${response.status}}")
 
+
             when (response.status) {
                 Resource.Status.LOADING -> {
                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
-
-
                 }
                 Resource.Status.SUCCESS -> {
                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
@@ -222,7 +214,7 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
                         text = response.exception ?: ErrorHelper.proyectosError,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
-                            viewModel.callProyectos()
+                            viewModel.proyectos(usuario?.token!!)
                         })
                 }
             }

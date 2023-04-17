@@ -24,7 +24,7 @@ class AddTareaDialog @JvmOverloads constructor(context: Context, attrs: Attribut
     private var binding: DialogAddTareaBinding
 
     private var listener: AddTareaDialogListener? = null
-    private var adapterEmpleados: AdapterEmpleados? = null
+    private var adapterEmpleados: AdapterEmpleadosDialog? = null
     private var listEmpleados: MutableList<Usuario> = mutableListOf()
     private var onScrollListener: RecyclerView.OnScrollListener? = null
     private var proyecto: Proyecto? = null
@@ -64,7 +64,7 @@ class AddTareaDialog @JvmOverloads constructor(context: Context, attrs: Attribut
         adapterEmpleados?.let {
             it.setList(listEmpleados)
         } ?: run {
-            adapterEmpleados = AdapterEmpleados(context, listEmpleados)  { position ->
+            adapterEmpleados = AdapterEmpleadosDialog(context, listEmpleados)  { position ->
                 binding.empleadosRecyclerView.smoothScrollToPosition(position)
             }
         }

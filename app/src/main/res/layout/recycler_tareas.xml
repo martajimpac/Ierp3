@@ -115,7 +115,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            <!-- TODO creo q esto tbn tiene que ver con la libreria
+            <!--
        <net.cachapa.expandablelayout.ExpandableLayout
                android:id="@+id/expandable"
                android:layout_width="match_parent"

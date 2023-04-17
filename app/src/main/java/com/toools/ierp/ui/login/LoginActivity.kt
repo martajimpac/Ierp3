@@ -24,6 +24,7 @@ import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
 import com.toools.ierp.core.*
 import com.toools.ierp.data.ConstantHelper
+import com.toools.ierp.data.Repository
 import com.toools.ierp.data.model.LoginResponse
 import com.toools.ierp.databinding.ActivityLoginBinding
 import com.toools.ierp.ui.main.MainActivity
@@ -115,14 +116,8 @@ class LoginActivity : AppCompatActivity() {
             }
 
             DialogHelper.getInstance().showLoadingAlert(this, null, true)
-            toMain()
 
-            // TODO, SOLO LLAMAMOS A MOMENTOS AQUI SI EL LOGIN YA ESTA ACTIVADO PERO ES UN POCO ABSURDO
-            // Antes guardaba el usuario a veces en el repositorio y a veces en sharedprefs, yo lo he guardado siempre en prefs
-
-            //Repository.usuario = usuario
-            //viewModel.momentos(usuario!!.token ?: "" ) //en caso de que sesa nulo
-
+            toMain(usuario!!)
         }
 
         binding.apply{
@@ -198,14 +193,14 @@ class LoginActivity : AppCompatActivity() {
                                     Log.e("TAG", token)
                                 }
                             }
-                            toMain()
+                            toMain(usuario!!)
                         },
                         button2 = resources.getString(R.string.no),
                         completion2 = {
                             edit.putBoolean(ConstantHelper.autoLogin, false)
                             edit.putString(ConstantHelper.usuarioLogin, Gson().toJson(usuario))
                             edit.apply()
-                            toMain()
+                            toMain(usuario!!)
                         })
                 }
                 Resource.Status.ERROR -> {
@@ -279,15 +274,13 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun toMain() {
+    private fun toMain(usuario: LoginResponse) {
         DialogHelper.getInstance().showLoadingAlert(this, null, true)
 
         Handler(Looper.getMainLooper()).postDelayed({
 
             DialogHelper.getInstance().showLoadingAlert(this, null, false)
 
-            //todo Guardar el usuario
-            //Repository.usuario = usuario
 
             val intent = Intent(this, MainActivity::class.java)
 
@@ -300,10 +293,9 @@ class LoginActivity : AppCompatActivity() {
                 )
 
                 val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this@LoginActivity, *pairs)
-
                 startActivity(intent, options.toBundle())
             }
-        }, 500) //todo: A veces el menu de activity main no carga bien, puede ser porque necesita mas tiempo para cargarse?
+        }, 500)
     }
 
     private val PERMISSION_ID = 42

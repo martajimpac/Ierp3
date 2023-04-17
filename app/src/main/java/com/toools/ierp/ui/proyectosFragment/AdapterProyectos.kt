@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.toools.ierp.R
 import com.toools.ierp.data.model.Proyecto
 import com.toools.ierp.databinding.RecyclerProyectosBinding
+import net.cachapa.expandablelayout.ExpandableLayout
 
 class AdapterProyectos (context: Context, listProyectos: MutableList<Proyecto>, var listener: ProyectosListener) :
     RecyclerView.Adapter<AdapterProyectos.ProyectoHolder>() {
@@ -54,11 +55,12 @@ class AdapterProyectos (context: Context, listProyectos: MutableList<Proyecto>, 
 
         holder.headerConstraintLayout.setOnClickListener {
 
-            /*
+            /* TODO PORQUE ESTO NO FUNCIONA
             holderSelec?.let{
                 if (it.absoluteAdapterPosition != holder.absoluteAdapterPosition && it.expandable.isExpanded)
                     it.expandable.toggle(true)
             }
+             */
 
             holder.expandable.toggle(true)
 
@@ -81,21 +83,17 @@ class AdapterProyectos (context: Context, listProyectos: MutableList<Proyecto>, 
             holder.tareasAsignadasView.setOnClickListener {
                 listener.clickAddTarea(proyecto)
             }
-             */
         }
     }
 
     class ProyectoHolder(val binding: RecyclerProyectosBinding) : RecyclerView.ViewHolder(binding.root) {
 
         var headerConstraintLayout: ConstraintLayout = binding.headerConstraintLayout
-
-        /*
         var expandable: ExpandableLayout = binding.expandable
         var tareasView: View = binding.tareasView
         var soportesView: View = binding.soportesView
         var empleadosView: View = binding.empleadosView
         var tareasAsignadasView: View = binding.tareasAsignadasView
-        */
 
         var miniaturaImageView = binding.miniaturaImageView
 

@@ -33,7 +33,7 @@ class IerpApp : MultiDexApplication() {
                 CalligraphyInterceptor(
                     CalligraphyConfig.Builder()
                         .setDefaultFontPath(getString(R.string.default_font))
-                        .setFontAttrId(androidx.core.R.attr.font) //todo
+                        .setFontAttrId(androidx.core.R.attr.font)
                         .build()
                 )
             )

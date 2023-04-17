@@ -7,6 +7,12 @@
         android:layout_height="match_parent"
         tools:context=".ui.respuestasFragment.RespuestasFragment">
 
+    <include
+        android:id="@+id/dialog_observaciones"
+        layout="@layout/dialog_observaciones"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <View
             android:id="@+id/view12"
             android:layout_width="@dimen/pm60"

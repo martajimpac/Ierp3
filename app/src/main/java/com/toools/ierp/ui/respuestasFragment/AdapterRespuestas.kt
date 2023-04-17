@@ -1,20 +1,19 @@
 package com.toools.ierp.ui.respuestasFragment
 
-/*
 import android.content.Context
 import android.text.Html
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.toools.ierp.R
-import com.toools.ierp.entities.ierp.Respuesta
-import kotlinx.android.synthetic.main.recycler_respuestas.view.*
+import com.toools.ierp.data.model.Respuesta
+import com.toools.ierp.databinding.RecyclerRespuestasBinding
 
 class AdapterRespuestas(context: Context, listRespuestas: MutableList<Respuesta>) :
     RecyclerView.Adapter<AdapterRespuestas.RespuestaHolder>() {
 
+    private lateinit var binding: RecyclerRespuestasBinding
     private var listRespuestas: MutableList<Respuesta> = mutableListOf()
     private var context: Context
 
@@ -31,9 +30,8 @@ class AdapterRespuestas(context: Context, listRespuestas: MutableList<Respuesta>
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RespuestaHolder {
-        val inflater = LayoutInflater.from(this.context)
-        val view = inflater.inflate(R.layout.recycler_respuestas, parent, false)
-        return RespuestaHolder(view)
+        binding = RecyclerRespuestasBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return RespuestaHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -49,20 +47,20 @@ class AdapterRespuestas(context: Context, listRespuestas: MutableList<Respuesta>
 
     }
 
-    class RespuestaHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class RespuestaHolder(val binding: RecyclerRespuestasBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Respuesta) = with(itemView) {
-            item.imagenUsuario?.let {
-                Glide.with(context).load(item.imagenUsuario).circleCrop().into(autorImageView)
-            } ?: run {
-                Glide.with(context).load(R.drawable.luciano).circleCrop().into(autorImageView)
+            binding.apply {
+                item.imagenUsuario?.let {
+                    Glide.with(context).load(item.imagenUsuario).circleCrop().into(autorImageView)
+                } ?: run {
+                    Glide.with(context).load(R.drawable.luciano).circleCrop().into(autorImageView)
+                }
+
+                emailTextView.text = item.emailAutor
+                fechaTextView.text = item.getFechaFormateada()
+                respuestaTextView.text = Html.fromHtml(item.respuesta, Html.FROM_HTML_MODE_LEGACY)
             }
-
-            emailTextView.text = item.emailAutor
-            fechaTextView.text = item.getFechaFormateada()
-            respuestaTextView.text = Html.fromHtml(item.respuesta, Html.FROM_HTML_MODE_LEGACY)
         }
-
     }
-
-}*/
+}

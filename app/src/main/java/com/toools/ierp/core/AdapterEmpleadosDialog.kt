@@ -9,8 +9,8 @@ import com.toools.ierp.R
 import com.toools.ierp.data.model.Usuario
 import com.toools.ierp.databinding.RecyclerEmpleadoDialogBinding
 
-class AdapterEmpleados (context: Context, listUsuarios: MutableList<Usuario>, itemClick: ((position: Int) -> Unit)) :
-    RecyclerView.Adapter<AdapterEmpleados.EmpleadoHolder>() {
+class AdapterEmpleadosDialog (context: Context, listUsuarios: MutableList<Usuario>, itemClick: ((position: Int) -> Unit)) :
+    RecyclerView.Adapter<AdapterEmpleadosDialog.EmpleadoHolder>() {
 
     private lateinit var binding : RecyclerEmpleadoDialogBinding
 

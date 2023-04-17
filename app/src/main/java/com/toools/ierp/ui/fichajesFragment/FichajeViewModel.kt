@@ -20,30 +20,39 @@ class FichajeViewModel @Inject constructor(private val momentosDiaUserCase: Mome
 
     fun momentosDia(token: String, dia : Int, mes: Int, ano: Int){
         viewModelScope.launch {
+            momentosDiaLiveData.value = Resource.loading()
             val response = momentosDiaUserCase.invoke(token, dia, mes, ano)
+
             if (response != null) {
                 if (response.isOK()) {
                     momentosDiaLiveData.value = Resource.success(response)
                 } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
                     momentosDiaLiveData.value = Resource.success(response)
+                } else {
+                    momentosDiaLiveData.value = Resource.error(ErrorHelper.momentosError)
                 }
             } else {
-                momentosDiaLiveData.value = Resource.error(ErrorHelper.loginError)
+                momentosDiaLiveData.value = Resource.error(ErrorHelper.momentosError)
             }
         }
     }
 
     fun entradaSalida(token: String, entrar: Int, latidud: Double, longitud: Double, comments: String, descripcion: String){
         viewModelScope.launch {
+            entradaSalidaLiveData.value = Resource.loading()
             val response = entradaSalidaUserCase.invoke(token, entrar, latidud, longitud, comments, descripcion)
+
             if (response != null) {
                 if (response.isOK()) {
                     entradaSalidaLiveData.value = Resource.success(response)
-                } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
-                    entradaSalidaLiveData.value = Resource.success(response)
+                } else {
+                    entradaSalidaLiveData.value = Resource.error(ErrorHelper.addEventError)
+                    if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                        entradaSalidaLiveData.value = Resource.success(response)
+                    }
                 }
-            } else {
-                entradaSalidaLiveData.value = Resource.error(ErrorHelper.loginError)
+            }else {
+                entradaSalidaLiveData.value = Resource.error(ErrorHelper.addEventError)
             }
         }
 

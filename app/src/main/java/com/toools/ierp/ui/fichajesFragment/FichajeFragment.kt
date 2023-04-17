@@ -25,6 +25,7 @@ import com.toools.ierp.IerpApp
 import com.toools.ierp.R
 import com.toools.ierp.core.*
 import com.toools.ierp.data.ConstantHelper
+import com.toools.ierp.data.Repository
 import com.toools.ierp.data.model.LoginResponse
 import com.toools.ierp.databinding.ContentDesdeCasaBinding
 import com.toools.ierp.databinding.FragmentFichajeBinding
@@ -40,6 +41,7 @@ const val TAG = "FichajeFragment"
 @AndroidEntryPoint
 class FichajeFragment : BaseFragment() {
 
+    var usuarioPrefs: LoginResponse? = null
     var usuario: LoginResponse? = null
     private lateinit var binding: FragmentFichajeBinding
     private lateinit var casaBinding: ContentDesdeCasaBinding
@@ -64,7 +66,7 @@ class FichajeFragment : BaseFragment() {
     var fusedLocationClient: FusedLocationProviderClient? = null
     var locationUpdates: LocationCallback? = null
 
-    /* todo he actualizado esto que estaba deprecated
+    /* he actualizado esto que estaba deprecated
     val reqSetting: LocationRequest = LocationRequest.create().apply {
         fastestInterval = 1000
         interval = 1000
@@ -99,20 +101,11 @@ class FichajeFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-
-        usuario = Gson().fromJson(
-            IerpApp.getInstance().prefs.getString(ConstantHelper.usuarioLogin, null),
-            LoginResponse::class.java
-        )
         onLoadView()
     }
 
     @SuppressLint("MissingPermission", "SetTextI18n")
     fun setUpView(){
-        usuario = Gson().fromJson(
-            IerpApp.getInstance().prefs.getString(ConstantHelper.usuarioLogin, null),
-            LoginResponse::class.java
-        )
 
         // Oculta la vista contentDesdeCasa
         binding.contentDesdeCasa.containerCasa.visibility = View.GONE
@@ -129,8 +122,7 @@ class FichajeFragment : BaseFragment() {
             (recyclerAcc.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
             showCenter()
-
-            //onLoadView() //todo he quitado esto porque al iniciar la actividad iva a llamar a on resume asique iba a llamar a onloadview igualmente
+            usuario = Repository.usuario
 
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
@@ -156,8 +148,12 @@ class FichajeFragment : BaseFragment() {
                         DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
 
                         usuario?.token?.let {
+                            if (BuildConfig.DEBUG)
+                                Log.e(TAG, "vamos a momentos")
                             viewModel.momentosDia(it, dia, mes, anyo)
                         } ?: run {
+                            if (BuildConfig.DEBUG)
+                                Log.e(TAG, "vamos a momentos PERO EL USUARIO ES NULO")
                             viewModel.momentosDia("", dia, mes, anyo)
                         }
 
@@ -167,8 +163,14 @@ class FichajeFragment : BaseFragment() {
         }
     }
 
-    @SuppressLint("SetTextI18n")  //todo que diferencia hay entre set up view y load view??
+    @SuppressLint("SetTextI18n")
     private fun onLoadView() {
+
+        usuarioPrefs = usuarioPrefs ?: Gson().fromJson(
+            IerpApp.getInstance().prefs.getString(ConstantHelper.usuarioLogin, null),
+            LoginResponse::class.java
+        )
+        usuario = Repository.usuario
 
         val cal = Calendar.getInstance()
         anyo = cal.get(Calendar.YEAR)
@@ -180,7 +182,7 @@ class FichajeFragment : BaseFragment() {
             binding.apply{
                 txtNombreUser.text = usuario!!.nombre
                 txtDescUser.text = "@${usuario!!.username}"
-                Glide.with(this@FichajeFragment).load(resources.getString(R.string.url_base_img, usuario!!.username))
+                Glide.with(this@FichajeFragment).load(resources.getString(R.string.url_base_img, usuarioPrefs!!.username))
                     .circleCrop()
                     .error(Glide.with(this@FichajeFragment).load(R.drawable.luciano).circleCrop()).into(imgUser)
             }
@@ -188,7 +190,7 @@ class FichajeFragment : BaseFragment() {
             cargarAcciones(usuario!!.momentos, usuario!!.zonaHoraria!!)
 
         } ?:run {
-            if (activity != null) //todo actuizalir esto
+            if (activity != null)
                 (activity as MainActivity).onBackToLogin()
         }
 
@@ -238,33 +240,25 @@ class FichajeFragment : BaseFragment() {
             adapter = AdapterAcciones(requireContext(), listMomentos)
             recyclerAcc.adapter = adapter
 
-            contentBtn.setOnClickListener {//todo ver porque aqui no carga nada
+            contentBtn.setOnClickListener {
 
                 if (latitud != null && longitud != null) {
 
-                    usuario = Gson().fromJson(
-                        requireContext().prefs.getString(ConstantHelper.usuarioLogin, null),
-                        LoginResponse::class.java
-                    )
-
-                    if (usuario?.permitir_no_localizacion == "0") {
+                    if (usuarioPrefs?.permitir_no_localizacion == "0") {
                         fichar()
                     } else {
                         checkDistance()
                     }
                 } else {
-                    Toasty.warning(requireActivity(), resources.getString(R.string.warn_sin_localizacion)).show() //TODO: PERMITIR MOSTRAR UBIC DE NUEVO
+                    Toasty.warning(requireActivity(), resources.getString(R.string.warn_sin_localizacion)).show()
                 }
             }
         }
     }
 
     fun checkDistance() {
-        usuario= Gson().fromJson(
-            requireContext().prefs.getString(ConstantHelper.usuarioLogin, null),
-            LoginResponse::class.java
-        )
 
+        //todo hace falta volver a llamar a sharedprefs
         var distanciaKO = true
         var minDistance = 1000000f
         var centerName = ""
@@ -273,8 +267,8 @@ class FichajeFragment : BaseFragment() {
         locUser.latitude = latitud!!
         locUser.longitude = longitud!!
 
-        if (usuario?.id_centro_trabajo == "0") {
-            for (centro in usuario!!.centros_trabajo) {
+        if (usuarioPrefs?.id_centro_trabajo == "0") {
+            for (centro in usuarioPrefs!!.centros_trabajo) {
                 val locWork = Location("work")
                 locWork.latitude = centro.ct_latitud!!.toDouble()
                 locWork.longitude = centro.ct_longitud!!.toDouble()
@@ -291,14 +285,14 @@ class FichajeFragment : BaseFragment() {
                 }
             }
         } else {
-            for (centro in usuario!!.centros_trabajo) {
+            for (centro in usuarioPrefs!!.centros_trabajo) {
                 val locWork = Location("work")
                 locWork.latitude = centro.ct_latitud!!.toDouble()
                 locWork.longitude = centro.ct_longitud!!.toDouble()
 
                 if (locUser.distanceTo(locWork) < centro.ct_distancia_fichajes!!.toDouble()) {
                     distanciaKO = false
-                    if (usuario?.id_centro_trabajo == centro.ct_id) {
+                    if (usuarioPrefs?.id_centro_trabajo == centro.ct_id) {
                         fichar()
                         break
                     } else {
@@ -324,7 +318,7 @@ class FichajeFragment : BaseFragment() {
                     }
                 }
 
-                if (usuario?.id_centro_trabajo == centro.ct_id) {
+                if (usuarioPrefs?.id_centro_trabajo == centro.ct_id) {
                     minDistance = locUser.distanceTo(locWork)
                     centerName = centro.ct_nombre ?: ""
                 }
@@ -488,11 +482,6 @@ class FichajeFragment : BaseFragment() {
     private fun cargarModalCasa(isEntrar: Boolean, distancia: Long, centro: String) {
         Toasty.warning(requireContext(), "cargar modal casa").show()
 
-        /* todo he quitado esto y he añadido la vista content desde casa con un include
-        modalCasa =
-            inflater.inflate(R.layout.content_desde_casa, (act as MainActivity).content, false)
-        (act as MainActivity).content.addView(modalCasa)*/
-
         binding.contentDesdeCasa.apply{
 
             // muestra la vista content desde casa
@@ -570,11 +559,8 @@ class FichajeFragment : BaseFragment() {
             }
 
             cardVolver.setOnClickListener {
-                /*if (modalCasa != null) {
-                    (activity as MainActivity).content.removeView(modalCasa)
-                }*/
-
-                binding.contentDesdeCasa.containerCasa.visibility = View.GONE
+                // muestra la vista content desde casa
+                containerCasa.visibility = View.GONE
             }
         }
 
@@ -607,7 +593,6 @@ class FichajeFragment : BaseFragment() {
 
                     } else {
                         usuario!!.zonaHoraria = response.data!!.timeZone!!
-                        requireContext().prefs.edit().putString(ConstantHelper.usuarioLogin, Gson().toJson(response.data)).apply()
                         cargarAcciones(response.data.momentos, response.data.timeZone!!)
                     }
                 }
@@ -619,8 +604,12 @@ class FichajeFragment : BaseFragment() {
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
                             usuario?.token?.let {
+                                if (BuildConfig.DEBUG)
+                                    Log.e(TAG, "vamos a momentos DESDE MOMENTOS PORQUE ALGO FUE MAL")
                                 viewModel.momentosDia(it, dia, mes, anyo)
                             } ?: run {
+                                if (BuildConfig.DEBUG)
+                                    Log.e(TAG, "vamos a momentos DESDE MOMENTOS PORQUE ALGO FUE MAL")
                                 viewModel.momentosDia("", dia, mes, anyo)
                             }
                         })
@@ -640,12 +629,6 @@ class FichajeFragment : BaseFragment() {
                 Resource.Status.SUCCESS -> {
                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
 
-                    /* todo porque esta esto aqui
-                    modalCasa?.let{
-                        (activity as MainActivity).content.removeView(modalCasa)
-                    }*/
-
-
                     if (response.data?.error != null && Integer.parseInt(response.data.error) == ErrorHelper.SESSION_EXPIRED) {
                         DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
                             title = R.string.not_session,
@@ -658,17 +641,8 @@ class FichajeFragment : BaseFragment() {
 
                     } else {
                         try {
-                            if (response.data!!.momentos.last().tipo == LoginResponse.Momentos.entrada) {
-//                                Toasty.warning(act!!, resources.getString(R.string.ini_trabajo)) TODO
-//                                    .show()
-
-                            } else {
-//                                Toasty.warning(act!!, resources.getString(R.string.fin_trabajo))
-//                                    .show()
-                            }
-
-                            usuario!!.momentos = response.data.momentos
-                            cargarAcciones(response.data.momentos, usuario!!.zonaHoraria!!)
+                            usuario!!.momentos = response.data!!.momentos
+                            cargarAcciones(response.data.momentos, usuarioPrefs!!.zonaHoraria!!)
                         } catch (e: Exception) {
 
                         }
@@ -676,17 +650,15 @@ class FichajeFragment : BaseFragment() {
                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                     Handler(Looper.getMainLooper()).postDelayed({
                             DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                    }, 500) //todo ver si aun funciona con menos tiempo
+                    }, 500)
                 }
                 Resource.Status.ERROR -> {
-                    if (activity != null) { //todo preguntar si pasa algo si quito todos los activity !=null
                         DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
                         DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
                             title = R.string.ups,
                             text = response.exception ?: ErrorHelper.addEventError,
                             icon = R.drawable.ic_toools_rellena,
                             completion = {})
-                    }
                 }
             }
         }
