@@ -1,6 +1,5 @@
 package com.toools.ierp.ui.soportesFragment
 
-/*
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -8,14 +7,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.toools.ierp.R
-import com.toools.ierp.entities.ierp.Soporte
-import kotlinx.android.synthetic.main.recycler_soportes.view.*
+import com.toools.ierp.data.model.Soporte
+import com.toools.ierp.databinding.RecyclerSoportesBinding
+
 
 class AdapterSoportes (context: Context, listSoportes: MutableList<Soporte>, var listener: SoportesListener) :
     RecyclerView.Adapter<AdapterSoportes.SoporteHolder>() {
 
     private var listSoportes: MutableList<Soporte> = mutableListOf()
     private var context: Context
+
+    private lateinit var binding: RecyclerSoportesBinding
 
     init {
         this.listSoportes.addAll(listSoportes)
@@ -30,9 +32,8 @@ class AdapterSoportes (context: Context, listSoportes: MutableList<Soporte>, var
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SoporteHolder {
-        val inflater = LayoutInflater.from(this.context)
-        val view = inflater.inflate(R.layout.recycler_soportes, parent, false)
-        return SoporteHolder(view)
+        binding = RecyclerSoportesBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return SoporteHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -57,36 +58,36 @@ class AdapterSoportes (context: Context, listSoportes: MutableList<Soporte>, var
         }
     }
 
-    class SoporteHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class SoporteHolder(val binding: RecyclerSoportesBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        var asignarCardView = view.asignarCardView
-        var soporteCardView = view.soporteCardView
+        var asignarCardView = binding.asignarCardView
+        var soporteCardView = binding.soporteCardView
 
         fun bind(item: Soporte) = with(itemView) {
-            Glide.with(context).load(item.imagenAsignado).error(Glide.with(context).load(R.drawable.luciano).circleCrop()).circleCrop().into(asignadoImageView)
-            Glide.with(context).load(item.imgMiniProyecto).error(Glide.with(context).load(R.drawable.ic_proyectos).circleCrop()).circleCrop().into(proyectoImageView)
+            binding.apply{
+                Glide.with(context).load(item.imagenAsignado).error(Glide.with(context).load(R.drawable.luciano).circleCrop()).circleCrop().into(asignadoImageView)
+                Glide.with(context).load(item.imgMiniProyecto).error(Glide.with(context).load(R.drawable.ic_proyectos).circleCrop()).circleCrop().into(proyectoImageView)
 
-            emailTextView.text = item.emailUserIncidencia
-            respuestaTextView.text = item.getFechaFormateada()
-            tituloTextView.text = item.titulo
+                emailTextView.text = item.emailUserIncidencia
+                respuestaTextView.text = item.getFechaFormateada()
+                tituloTextView.text = item.titulo
 
-            if (item.estado == Soporte.sinAsignar) {
-                asignarCardView.visibility = View.VISIBLE
-                asignadoImageView.visibility = View.GONE
+                if (item.estado == Soporte.sinAsignar) {
+                    asignarCardView.visibility = View.VISIBLE
+                    asignadoImageView.visibility = View.GONE
 
-                estadoTextView.text = context.getString(R.string.sin_abrir)
-                estadoCardView.setCardBackgroundColor(context.getColor(R.color.soporte_sin_abrir))
+                    estadoTextView.text = context.getString(R.string.sin_abrir)
+                    estadoCardView.setCardBackgroundColor(context.getColor(R.color.soporte_sin_abrir))
 
-            } else {
-                asignarCardView.visibility = View.GONE
-                asignadoImageView.visibility = View.VISIBLE
+                } else {
+                    asignarCardView.visibility = View.GONE
+                    asignadoImageView.visibility = View.VISIBLE
 
-                estadoTextView.text = context.getString(R.string.abierta)
-                estadoCardView.setCardBackgroundColor(context.getColor(R.color.soporte_abierto))
+                    estadoTextView.text = context.getString(R.string.abierta)
+                    estadoCardView.setCardBackgroundColor(context.getColor(R.color.soporte_abierto))
+                }
             }
-
         }
 
     }
-
-}*/
+}

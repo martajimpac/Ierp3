@@ -121,28 +121,24 @@ object ConstantHelper {
         return (dp * scale + 0.5f).toInt()
     }
 
-
     enum class SeccionMenu(var nombre: Int, var icono: Int) {
-
         fichajes(R.string.fichajes, R.drawable.ic_fichajes),
         guardias(R.string.guardias_seccion, R.drawable.ic_guardias),
         proyectos(R.string.proyectos, R.drawable.ic_proyectos),
         tareas(R.string.tareas, R.drawable.ic_tareas),
         tareasAsignadas(R.string.tareas_asignadas, R.drawable.ic_tareas_autor),
         soportes(R.string.soportes, R.drawable.ic_soportes),
+        video(R.string.video, R.drawable.ic_video),
         notificaciones(R.string.notificaciones, R.drawable.notifications_on)
-
     }
 
     enum class Estados(var idEstado: String, var color: Int, var nombre: Int) {
-
         abierta("1", R.color.color_abierta, R.string.abierta),
         enProgreso("2", R.color.color_en_proceso, R.string.en_progreso),
         enRevision("3", R.color.color_en_revision, R.string.en_revision),
         terminada("4", R.color.color_terminada, R.string.terminada),
         completada("5", R.color.color_default, R.string.completada),
         sinAbrir("0", R.color.color_sin_abierta, R.string.sin_abrir)
-
     }
 
     enum class Tipos(var idTipo: Int) {

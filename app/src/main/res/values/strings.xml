@@ -18,6 +18,7 @@
     <string name="tareas_asignadas">TAREAS ASIGNADAS</string>
     <string name="proyectos">PROYECTOS</string>
     <string name="soportes">SOPORTES</string>
+    <string name="video">VIDEO</string>
     <string name="notificaciones">NOTIFICACIONES</string>
     <string name="respuestas">RESPUESTAS</string>
 
@@ -231,5 +232,7 @@
     <string name="tareas_asignadas_error">Ha ocurrido un error al obtener las tareas que has creado.</string>
     <string name="insertar_tarea_error">Ha ocurrido un error al insertar la tarea en el proyecto seleccionado.</string>
 
+    <!--VIDEO-->
+    <string name="media_url_mp3">https://file-examples.com/storage/feee5c69f0643c59da6bf13/2017/04/file_example_MP4_480_1_5MG.mp4</string>
 
 </resources>

@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+//TODO cuando arregles esto cambia los errores
 @HiltViewModel
 class FichajeViewModel @Inject constructor(private val momentosDiaUserCase: MomentosDiaUserCase, private val entradaSalidaUserCase: EntradaSalidaUserCase): ViewModel() {
 
@@ -45,14 +46,13 @@ class FichajeViewModel @Inject constructor(private val momentosDiaUserCase: Mome
             if (response != null) {
                 if (response.isOK()) {
                     entradaSalidaLiveData.value = Resource.success(response)
+                } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                    entradaSalidaLiveData.value = Resource.success(response)
                 } else {
-                    entradaSalidaLiveData.value = Resource.error(ErrorHelper.addEventError)
-                    if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
-                        entradaSalidaLiveData.value = Resource.success(response)
-                    }
+                    entradaSalidaLiveData.value = Resource.error("la respuesta no es nula pero hay un error")
                 }
             }else {
-                entradaSalidaLiveData.value = Resource.error(ErrorHelper.addEventError)
+                entradaSalidaLiveData.value = Resource.error("nula")
             }
         }
 

@@ -32,7 +32,6 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
     private var adapterEmpleados: AdapterEmpleados? = null
     private var dialogAddTarea: AddTareaDialog? = null
     private lateinit var binding: FragmentProyectosBinding
-    private var usuario: LoginResponse?=null
 
     private val viewModel: ProyectosViewModel by viewModels()
 
@@ -64,21 +63,11 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
         binding.proyectosRecyclerView.setHasFixedSize(true)
         (binding.proyectosRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
-        usuario?: Gson().fromJson(
-            requireContext().prefs.getString(ConstantHelper.usuarioLogin, null),
-            LoginResponse::class.java
-        )
         setUpObservers()
     }
 
     private fun onLoadView() {
-        usuario?: Gson().fromJson(
-            requireContext().prefs.getString(ConstantHelper.usuarioLogin, null),
-            LoginResponse::class.java
-        )
-        usuario?.let{
-            viewModel.proyectos(usuario?.token!!)
-        }
+        viewModel.proyectos()
     }
 
     //*************************
@@ -162,20 +151,17 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
    ) {
         binding.proyectosConstraintLayout.removeView(dialogAddTarea)
         DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
-        usuario?.let{
-            viewModel.insertarTarea(
-                token = usuario?.token!!,
-                idProyecto = idProyecto,
-                idEmpleado = idEmpleado,
-                titulo = titulo,
-                descripcion = descripcion,
-                plazo = plazo
-            )
-        }
+        viewModel.insertarTarea(
+            idProyecto = idProyecto,
+            idEmpleado = idEmpleado,
+            titulo = titulo,
+            descripcion = descripcion,
+            plazo = plazo
+        )
    }
 
     override fun clickCancelTarea() {
-        //proyectosConstraintLayout.removeView(dialogAddTarea)
+        binding.proyectosConstraintLayout.removeView(dialogAddTarea)
     }
 
     //*************************
@@ -214,7 +200,7 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
                         text = response.exception ?: ErrorHelper.proyectosError,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
-                            viewModel.proyectos(usuario?.token!!)
+                            viewModel.proyectos()
                         })
                 }
             }

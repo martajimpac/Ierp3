@@ -256,6 +256,9 @@ class MainActivity : BaseActivity(), MenuListener {
                 ConstantHelper.SeccionMenu.soportes -> {
                     id = R.id.soportesFragment
                 }
+                ConstantHelper.SeccionMenu.video -> {
+                    id = R.id.videoFragment
+                }
                 ConstantHelper.SeccionMenu.notificaciones -> {
                 }
             }

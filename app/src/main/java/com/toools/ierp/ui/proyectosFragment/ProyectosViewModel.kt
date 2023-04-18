@@ -9,6 +9,7 @@ import com.toools.ierp.core.ErrorHelper
 import com.toools.ierp.core.Resource
 import com.toools.ierp.core.prefs
 import com.toools.ierp.data.ConstantHelper
+import com.toools.ierp.data.Repository
 import com.toools.ierp.data.model.BaseResponse
 import com.toools.ierp.data.model.LoginResponse
 import com.toools.ierp.data.model.ProyectosResponse
@@ -27,26 +28,27 @@ class ProyectosViewModel @Inject constructor(private val proyectosUserCase: Proy
     val insertarTareaLiveData: MutableLiveData<Resource<BaseResponse>> = MutableLiveData()
 
 
-    fun proyectos(token: String) {
+    fun proyectos() {
         viewModelScope.launch {
             proyectosLiveData.value = Resource.loading()
-            val response = proyectosUserCase.invoke(token)
-            if (response != null) {
-                if (response.isOK()) {
-                    proyectosLiveData.value = Resource.success(response)
-                } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
-                    proyectosLiveData.value = Resource.success(response)
+            Repository.usuario?.token?.let{token ->
+                val response = proyectosUserCase.invoke(token)
+                if (response != null) {
+                    if (response.isOK()) {
+                        proyectosLiveData.value = Resource.success(response)
+                    } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                        proyectosLiveData.value = Resource.success(response)
+                    } else {
+                        proyectosLiveData.value = Resource.error(ErrorHelper.proyectosError)
+                    }
                 } else {
                     proyectosLiveData.value = Resource.error(ErrorHelper.proyectosError)
                 }
-            } else {
-                proyectosLiveData.value = Resource.error(ErrorHelper.proyectosError)
             }
         }
     }
 
     fun insertarTarea(
-        token: String,
         idProyecto: String,
         idEmpleado: String,
         titulo: String,
@@ -55,18 +57,20 @@ class ProyectosViewModel @Inject constructor(private val proyectosUserCase: Proy
     ) {
         viewModelScope.launch {
             insertarTareaLiveData.value = Resource.loading()
-            val response = insertarTareaUserCase.invoke(token, idProyecto, idEmpleado, titulo, descripcion, plazo)
+            Repository.usuario?.token?.let { token ->
+                val response = insertarTareaUserCase.invoke(token, idProyecto, idEmpleado, titulo, descripcion, plazo)
 
-            if (response != null) {
-                if (response.isOK()) {
-                    insertarTareaLiveData.value = Resource.success(response)
-                } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
-                    insertarTareaLiveData.value = Resource.success(response)
+                if (response != null) {
+                    if (response.isOK()) {
+                        insertarTareaLiveData.value = Resource.success(response)
+                    } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                        insertarTareaLiveData.value = Resource.success(response)
+                    } else {
+                        insertarTareaLiveData.value = Resource.error(ErrorHelper.insertarTareaError)
+                    }
                 } else {
                     insertarTareaLiveData.value = Resource.error(ErrorHelper.insertarTareaError)
                 }
-            } else {
-                insertarTareaLiveData.value = Resource.error(ErrorHelper.insertarTareaError)
             }
         }
     }

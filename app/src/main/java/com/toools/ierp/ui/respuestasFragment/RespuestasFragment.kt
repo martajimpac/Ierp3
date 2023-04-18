@@ -28,11 +28,13 @@ import com.toools.ierp.data.model.RespuestasResponse
 import com.toools.ierp.data.model.Soporte
 import com.toools.ierp.databinding.FragmentRespuestasBinding
 import com.toools.ierp.ui.main.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
 
 const val TAG = "RespuestasFragment"
 
+@AndroidEntryPoint
 class RespuestasFragment : Fragment() {
 
     private val args: RespuestasFragmentArgs by navArgs()

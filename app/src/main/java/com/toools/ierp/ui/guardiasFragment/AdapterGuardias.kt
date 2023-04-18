@@ -1,20 +1,21 @@
 package com.toools.ierp.ui.guardiasFragment
 
-/*
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
+
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.toools.ierp.R
-import com.toools.ierp.entities.ierp.GuardiasResponse.Guardias
-import kotlinx.android.synthetic.main.recycler_momentos.view.*
+import com.toools.ierp.data.model.GuardiasResponse.Guardias
+import com.toools.ierp.databinding.RecyclerGuardiasBinding
+
 
 class AdapterGuardias : RecyclerView.Adapter<AdapterGuardias.GuardiasHolder>{
 
     private val ctx: Context
     private var listGuardias: MutableList<Guardias> = mutableListOf()
+    private lateinit var binding: RecyclerGuardiasBinding
 
 
     constructor(context: Context, listGuardias: MutableList<Guardias>) {
@@ -35,11 +36,8 @@ class AdapterGuardias : RecyclerView.Adapter<AdapterGuardias.GuardiasHolder>{
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GuardiasHolder {
-        val inflater = LayoutInflater.from(parent.context)
-
-        val view = inflater.inflate(R.layout.recycler_momentos, parent, false)
-
-        return GuardiasHolder(view)
+        binding = RecyclerGuardiasBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return GuardiasHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -50,25 +48,26 @@ class AdapterGuardias : RecyclerView.Adapter<AdapterGuardias.GuardiasHolder>{
         holder.bind(listGuardias[position])
     }
 
-    class GuardiasHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class GuardiasHolder(val binding: RecyclerGuardiasBinding) : RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("RtlHardcoded")
         fun bind(item: Guardias) = with(itemView) {
-            if(item.tipo == Guardias.entrada){
-                txtAccion.text = resources.getString(R.string.entrada)
-                txtAccion.setTextColor(resources.getColor(R.color.colorPrimary,null))
-            }else{
-                txtAccion.text = resources.getString(R.string.salida)
-                txtAccion.setTextColor(resources.getColor(R.color.red_app,null))
+            binding.apply{
+                if(item.tipo == Guardias.entrada){
+                    txtAccion.text = resources.getString(R.string.entrada)
+                    txtAccion.setTextColor(resources.getColor(R.color.colorPrimary,null))
+                }else{
+                    txtAccion.text = resources.getString(R.string.salida)
+                    txtAccion.setTextColor(resources.getColor(R.color.red_app,null))
+                }
+
+                txtHora.text = item.getHoraToString()
+
+                txtDescripcion.text = item.descripcion
+
             }
-
-            txtHora.text = item.getHoraToString()
-
-            txtDescripcion.text = item.descripcion
-
-
         }
 
     }
 
-}*/
+}

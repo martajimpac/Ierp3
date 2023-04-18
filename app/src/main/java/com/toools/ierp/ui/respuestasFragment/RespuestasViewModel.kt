@@ -6,8 +6,15 @@ import androidx.lifecycle.ViewModel
 import com.toools.ierp.core.Resource
 import com.toools.ierp.data.model.BaseResponse
 import com.toools.ierp.data.model.RespuestasResponse
+import com.toools.ierp.domain.AsignarSoporteUserCase
+import com.toools.ierp.domain.InsertarTareaUserCase
+import com.toools.ierp.domain.ProyectosUserCase
+import com.toools.ierp.domain.RespuestasUserCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class RespuestasViewModel: ViewModel() {
+@HiltViewModel
+class RespuestasViewModel @Inject constructor(private val respuestasUserCase: RespuestasUserCase, private val asignarSoportesUserCase: AsignarSoporteUserCase): ViewModel() {
 
     val respuestasRecived: MutableLiveData<Resource<RespuestasResponse>> = MutableLiveData()
     val asignarSoportesRecived: MutableLiveData<Resource<BaseResponse>> = MutableLiveData()

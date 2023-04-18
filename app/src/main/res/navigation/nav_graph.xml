@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_fichajeFragment_to_tareasAsignadasFragment"
             app:destination="@id/tareasAsignadasFragment" />
+        <action
+            android:id="@+id/action_fichajeFragment_to_videoFragment"
+            app:destination="@id/videoFragment" />
     </fragment>
     <fragment
         android:id="@+id/guardiasFragment"
@@ -80,5 +83,10 @@
         android:id="@+id/tareasAsignadasFragment"
         android:name="com.toools.ierp.ui.tareasAsignadasFragment.TareasAsignadasFragment"
         android:label="TareasAsignadasFragment" />
+    <fragment
+        android:id="@+id/videoFragment"
+        android:name="com.toools.ierp.ui.videoFragment.VideoFragment"
+        android:label="fragment_video"
+        tools:layout="@layout/fragment_video" />
 
 </navigation>

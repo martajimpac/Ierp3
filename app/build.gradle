@@ -132,6 +132,14 @@ dependencies {
     //SegmentedView
     implementation 'com.github.trinnguyen:Android-SegmentView:master-SNAPSHOT'
 
+    //Exoplayer
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.5'
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.18.5'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.5'
+    implementation 'com.google.android.exoplayer:exoplayer-hls:2.18.5'
+    implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.5'
+
+
     constraints { //solucionar lo de clases duplicadas
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
             because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")

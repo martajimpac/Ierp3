@@ -44,7 +44,6 @@ class FichajeFragment : BaseFragment() {
     var usuarioPrefs: LoginResponse? = null
     var usuario: LoginResponse? = null
     private lateinit var binding: FragmentFichajeBinding
-    private lateinit var casaBinding: ContentDesdeCasaBinding
 
     private val viewModel: FichajeViewModel by viewModels()
 
@@ -89,7 +88,6 @@ class FichajeFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFichajeBinding.inflate(inflater, container,false)
-        casaBinding = ContentDesdeCasaBinding.inflate(inflater, container,false)
         return binding.root
     }
 
@@ -126,10 +124,13 @@ class FichajeFragment : BaseFragment() {
 
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
+            //BUSCAR LA UBICACION DEL USUARIO
             locationUpdates = object : LocationCallback() {
                 override fun onLocationResult(lr: LocationResult) {
-                    longitud = lr.lastLocation?.longitude
-                    latitud = lr.lastLocation?.latitude
+                    //longitud = lr.lastLocation?.longitude
+                    //latitud = lr.lastLocation?.latitude
+                    longitud = 41.475005
+                    latitud = -4.710115
                 }
             }
 
@@ -190,7 +191,7 @@ class FichajeFragment : BaseFragment() {
             cargarAcciones(usuario!!.momentos, usuario!!.zonaHoraria!!)
 
         } ?:run {
-            if (activity != null)
+            if(activity != null)
                 (activity as MainActivity).onBackToLogin()
         }
 
@@ -258,7 +259,6 @@ class FichajeFragment : BaseFragment() {
 
     fun checkDistance() {
 
-        //todo hace falta volver a llamar a sharedprefs
         var distanciaKO = true
         var minDistance = 1000000f
         var centerName = ""
@@ -480,8 +480,8 @@ class FichajeFragment : BaseFragment() {
     }
 
     private fun cargarModalCasa(isEntrar: Boolean, distancia: Long, centro: String) {
-        Toasty.warning(requireContext(), "cargar modal casa").show()
 
+        val codigo = "codigo"
         binding.contentDesdeCasa.apply{
 
             // muestra la vista content desde casa
@@ -502,6 +502,7 @@ class FichajeFragment : BaseFragment() {
             }
             contentBtncasa.setOnClickListener {
                 if (isEntrar) {
+                    if (BuildConfig.DEBUG)
                     DialogHelper.getInstance().showEditTextAlert(
                         requireActivity(),
                         resources.getString(R.string.insert_code_title),
@@ -519,7 +520,7 @@ class FichajeFragment : BaseFragment() {
                                         LoginResponse.Momentos.entradaInt,
                                         latitud!!,
                                         longitud!!,
-                                        "", value
+                                        codigo, value
                                     )
                                 } ?: run {
                                     viewModel.entradaSalida(
@@ -527,7 +528,7 @@ class FichajeFragment : BaseFragment() {
                                         LoginResponse.Momentos.entradaInt,
                                         latitud!!,
                                         longitud!!,
-                                        "", value
+                                        codigo, value
                                     )
                                 }
                             }
@@ -544,7 +545,7 @@ class FichajeFragment : BaseFragment() {
                             LoginResponse.Momentos.salidaInt,
                             latitud!!,
                             longitud!!,
-                            "", ""
+                            codigo, ""
                         )
                     } ?: run {
                         viewModel.entradaSalida(
@@ -552,7 +553,7 @@ class FichajeFragment : BaseFragment() {
                             LoginResponse.Momentos.salidaInt,
                             latitud!!,
                             longitud!!,
-                            "", ""
+                            codigo, ""
                         )
                     }
                 }
@@ -586,8 +587,7 @@ class FichajeFragment : BaseFragment() {
                             text = R.string.desc_not_session,
                             icon = R.drawable.ic_toools_rellena,
                             completion = {
-                                //todo como puedo cambiar esto? no me gusta lo de activity
-                                if (activity != null)
+                                if(activity != null)
                                     (activity as MainActivity).onBackToLogin()
                             })
 
@@ -635,7 +635,7 @@ class FichajeFragment : BaseFragment() {
                             text = R.string.desc_not_session,
                             icon = R.drawable.ic_toools_rellena,
                             completion = {
-                                if (activity != null)
+                                if(activity != null)
                                     (activity as MainActivity).onBackToLogin()
                             })
 

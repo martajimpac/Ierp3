@@ -1,52 +1,63 @@
 package com.toools.ierp.ui.guardiasFragment
 
-/*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.toools.ierp.entities.Resource
-import com.toools.ierp.entities.ierp.GuardiasResponse
-import com.toools.ierp.helpers.rest.AppException
-import com.toools.ierp.helpers.rest.RestApiCallback
-import com.toools.ierp.helpers.rest.RestRepository
+import androidx.lifecycle.viewModelScope
+import com.toools.ierp.core.ErrorHelper
+import com.toools.ierp.core.Resource
+import com.toools.ierp.data.model.GuardiasResponse
+import com.toools.ierp.domain.AddGuardiaUserCase
+import com.toools.ierp.domain.GuardiasUserCase
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class GuardiasViewModel: ViewModel() {
+@HiltViewModel
+class GuardiasViewModel @Inject constructor(private val guardiasUserCase: GuardiasUserCase,private val  addGuardiaUserCase: AddGuardiaUserCase): ViewModel() {
 
-    val guardiasRecived: MutableLiveData<Resource<GuardiasResponse>> = MutableLiveData()
+    val guardiasLiveData: MutableLiveData<Resource<GuardiasResponse>> = MutableLiveData()
+    val addGuardiasLiveData: MutableLiveData<Resource<GuardiasResponse>> = MutableLiveData()
 
-    fun callGuardias(token: String, dia : Int, mes: Int, anyo: Int){
-
-        RestRepository.getInstance().guardias(token, dia, mes, anyo, object : RestApiCallback<GuardiasResponse> {
-
-
-            override fun onSuccess(response: GuardiasResponse) {
-                guardiasRecived.value = Resource.success(response)
+    fun guardias(token: String, dia : Int, mes: Int, anyo: Int){
+        viewModelScope.launch {
+            guardiasLiveData.value = Resource.loading()
+            val response = guardiasUserCase.invoke(token, dia, mes, anyo)
+            if (response != null) {
+                if (response.isOK()) {
+                    guardiasLiveData.value = Resource.success(response)
+                } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                    guardiasLiveData.value = Resource.success(response)
+                } else {
+                    guardiasLiveData.value = Resource.error(ErrorHelper.guardiasError)
+                }
+            } else {
+                guardiasLiveData.value = Resource.error(ErrorHelper.guardiasError)
             }
-
-            override fun onFailure(throwable: Throwable) {
-                guardiasRecived.value = Resource.error(AppException(string = if (throwable.localizedMessage.isNullOrEmpty()) throwable.toString() else throwable.localizedMessage))
-
-            }
-        })
-
+            
+        }
     }
 
-    val addGuardiasRecived: MutableLiveData<Resource<GuardiasResponse>> = MutableLiveData()
-
-    fun callAddGuardias(token: String, momento: Date, descripcion: String, tipo: Int){
-
-        RestRepository.getInstance().addGuardia(token, momento, descripcion, tipo, object : RestApiCallback<GuardiasResponse> {
-
-
-            override fun onSuccess(response: GuardiasResponse) {
-                guardiasRecived.value = Resource.success(response)
+    fun addGuardias(token: String, momento: Date, descripcion: String, tipo: Int){
+        viewModelScope.launch {
+            addGuardiasLiveData.value = Resource.loading()
+            //pasar momento a string
+            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val response = addGuardiaUserCase.invoke(token, format.format(momento), descripcion, tipo)
+            if (response != null) {
+                if (response.isOK()) {
+                    addGuardiasLiveData.value = Resource.success(response)
+                } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                    addGuardiasLiveData.value = Resource.success(response)
+                } else {
+                    addGuardiasLiveData.value = Resource.error(ErrorHelper.addGuardiaError)
+                }
+            } else {
+                addGuardiasLiveData.value = Resource.error(ErrorHelper.addGuardiaError)
             }
 
-            override fun onFailure(throwable: Throwable) {
-                guardiasRecived.value = Resource.error(AppException(string = if (throwable.localizedMessage.isNullOrEmpty()) throwable.toString() else throwable.localizedMessage))
-
-            }
-        })
-
+        }
     }
-}*/
+}

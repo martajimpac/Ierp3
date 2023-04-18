@@ -1,23 +1,25 @@
 package com.toools.ierp.ui.adapter
 
-/*
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.toools.ierp.R
+import com.toools.ierp.data.model.Proyecto
+import com.toools.ierp.databinding.RecyclerProyectoGeneralBinding
 
 
 class AdapterProyectoGeneral (context: Context, listProyectos: MutableList<Proyecto>, itemClick: ((position: Int) -> Unit)) :
-    RecyclerView.Adapter<AdapterProyectoGeneral.ProyectoHolder>() {
+    RecyclerView.Adapter<AdapterProyectoGeneral.ProyectoGeneralHolder>() {
 
     private var listProyectos: MutableList<Proyecto> = mutableListOf()
     private var context: Context
     private var positionSelected = 0
     private var itemClick: ((position: Int) -> Unit)
+
+    private lateinit var binding: RecyclerProyectoGeneralBinding
 
     init {
         this.listProyectos.addAll(listProyectos)
@@ -42,10 +44,9 @@ class AdapterProyectoGeneral (context: Context, listProyectos: MutableList<Proye
         notifyItemChanged(positionAnterior)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProyectoHolder {
-        val inflater = LayoutInflater.from(this.context)
-        val view = inflater.inflate(R.layout.recycler_proyecto_general, parent, false)
-        return ProyectoHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProyectoGeneralHolder {
+        binding = RecyclerProyectoGeneralBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return ProyectoGeneralHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -56,7 +57,7 @@ class AdapterProyectoGeneral (context: Context, listProyectos: MutableList<Proye
         return position.toLong()
     }
 
-    override fun onBindViewHolder(holder: ProyectoHolder, position: Int) {
+    override fun onBindViewHolder(holder: ProyectoGeneralHolder, position: Int) {
         holder.bind(listProyectos[position])
 
         if (position == positionSelected) {
@@ -72,19 +73,19 @@ class AdapterProyectoGeneral (context: Context, listProyectos: MutableList<Proye
         }
     }
 
-    class ProyectoHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ProyectoGeneralHolder(val binding: RecyclerProyectoGeneralBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        var borderProyectoView = view.borderProyectoView
-        var proyectoTextView = view.proyectoTextView
-        var proyectoConstraintLayaot = view.proyectoConstraintLayaut
+        var borderProyectoView = binding.borderProyectoView
+        var proyectoTextView = binding.proyectoTextView
+        var proyectoConstraintLayaot = binding.proyectoConstraintLayaut
 
         fun bind(item: Proyecto) = with(itemView) {
-            Glide.with(context).load(item.miniatura).circleCrop().error(Glide.with(context).load(R.drawable.ic_proyectos).circleCrop()).into(asignadoImageView)
+            Glide.with(context).load(item.miniatura).circleCrop().error(Glide.with(context).load(R.drawable.ic_proyectos).circleCrop()).into(binding.asignadoImageView)
             proyectoTextView.text = item.codigo
 
-            ViewCompat.setTransitionName(asignadoImageView, context.getString(R.string.trans_proyecto, item.id))
+            ViewCompat.setTransitionName(binding.asignadoImageView, context.getString(R.string.trans_proyecto, item.id))
         }
 
     }
 
-}*/
+}
