@@ -233,6 +233,9 @@
     <string name="insertar_tarea_error">Ha ocurrido un error al insertar la tarea en el proyecto seleccionado.</string>
 
     <!--VIDEO-->
-    <string name="media_url_mp3">https://file-examples.com/storage/feee5c69f0643c59da6bf13/2017/04/file_example_MP4_480_1_5MG.mp4</string>
+    <string name="media_url_mp4">https://file-examples.com/storage/feee5c69f0643c59da6bf13/2017/04/file_example_MP4_480_1_5MG.mp4</string>
+    <string name="media_url_mp3">https://file-examples.com/storage/feee5c69f0643c59da6bf13/2017/11/file_example_MP3_700KB.mp3</string>
+    <string name="titulo_video_1">Primer video</string>
+    <string name="titulo_video_2">Segundo video</string>
 
 </resources>

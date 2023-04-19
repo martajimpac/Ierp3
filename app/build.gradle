@@ -139,6 +139,9 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-hls:2.18.5'
     implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.5'
 
+    //ZoomLayout
+    implementation("com.otaliastudios:zoomlayout:1.9.0")
+
 
     constraints { //solucionar lo de clases duplicadas
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
