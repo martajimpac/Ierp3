@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -14,7 +14,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.util.Util
+import com.google.android.exoplayer2.video.VideoSize
+import com.otaliastudios.zoom.ZoomSurfaceView
 import com.toools.ierp.R
 import com.toools.ierp.databinding.FragmentVideoBinding
 
@@ -22,11 +25,12 @@ import com.toools.ierp.databinding.FragmentVideoBinding
 private const val TAG = "VideoFragment"
 class VideoFragment : Fragment() {
 
-    //todo no estoy segura de que esto haya que hacerlo asi
     private val binding by lazy(LazyThreadSafetyMode.NONE) {
         FragmentVideoBinding.inflate(layoutInflater)
     }
-    private var player: ExoPlayer? = null
+
+    //crear exoplayer
+    private var player: ExoPlayer ? =null
 
     //inicializar los botones para parar y reanudar el video
     private var playWhenReady = true //que empieze por defecto
@@ -47,13 +51,6 @@ class VideoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setUpView()
-    }
-
-    fun setUpView(){
-
-
         initializePlayer()
     }
 
@@ -65,43 +62,55 @@ class VideoFragment : Fragment() {
         //para priorizar la selección de pistas de video con resolución SD, en lugar de pistas con resoluciones superiores, como HD o 4K, si están disponibles.
         }
 
-        player = ExoPlayer.Builder(requireContext())
-            .setTrackSelector(trackSelector)
-            .build()
-            .also { exoPlayer ->
-                binding.videoView.player = exoPlayer
+        binding.apply{
+            player = ExoPlayer.Builder(requireContext())
+                .setTrackSelector(trackSelector)
+                .build()
+                .also{ player ->
+                    player.addListener(playbackStateListener)
 
-                //crear el elemento multimedia para pasarle el contenido que va a reproducir
-                // usaremos un builder personalizado para poder especificar mejor las propiedades del video
+                    //crear el elemento multimedia para pasarle el contenido que va a reproducir
+                    // usaremos un builder personalizado para poder especificar mejor las propiedades del video
 
-                val mediaItem = MediaItem.Builder()
-                    .setUri(getString(R.string.media_url_mp4))
-                    .setMediaMetadata(MediaMetadata.Builder()
-                        .setTitle(getString(R.string.titulo_video_1))
-                        .build())
-                    .build()
-                exoPlayer.setMediaItem(mediaItem)
+                    val mediaItem = MediaItem.Builder()
+                        .setUri(getString(R.string.media_url_mp4))
+                        .setMediaMetadata(MediaMetadata.Builder()
+                            .setTitle(getString(R.string.titulo_video_1))
+                            .build())
+                        .build()
+                    player.setMediaItem(mediaItem)
 
-                binding.tituloVideo.text = mediaItem.mediaMetadata.title
+                    tituloVideo.text = mediaItem.mediaMetadata.title
 
-                val secondMediaItem = MediaItem.Builder()
-                    .setUri(getString(R.string.media_url_mp3))
-                    .setMediaMetadata(MediaMetadata.Builder()
-                        .setTitle(getString(R.string.titulo_video_2))
-                        .build())
-                    .build()
-                exoPlayer.addMediaItem(secondMediaItem)
+                    val secondMediaItem = MediaItem.Builder()
+                        .setUri(getString(R.string.media_url_mp3))
+                        .setMediaMetadata(MediaMetadata.Builder()
+                            .setTitle(getString(R.string.titulo_video_2))
+                            .build())
+                        .build()
+                    player.addMediaItem(secondMediaItem)
 
-                //inicializar las variables
-                exoPlayer.playWhenReady = playWhenReady
-                exoPlayer.seekTo(currentItem, playbackPosition)
-                //añadir el listener
-                exoPlayer.addListener(playbackStateListener)
+                    //inicializar las variables
+                    player.playWhenReady = playWhenReady
+                    player.seekTo(currentItem, playbackPosition)
 
-                //cambiar los iconos de control de video TODO
+                    //hacer que la superficie en la que se muestre el video sea surfaceview
+                    surfaceView.addCallback(object : ZoomSurfaceView.Callback {
+                        override fun onZoomSurfaceCreated(view: ZoomSurfaceView) {
+                            player.setVideoSurface(view.surface)
+                        }
+                        override fun onZoomSurfaceDestroyed(view: ZoomSurfaceView) {}
+                    })
 
-                exoPlayer.prepare()
-            }
+                    playerControlView.player = player
+                    playerControlView.showTimeoutMs = 0
+                    playerControlView.show()
+
+                    //cambiar los iconos de control de video TODO
+
+                    player.prepare()
+                }
+        }
     }
 
 
@@ -119,7 +128,7 @@ class VideoFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         hideSystemUi()
-        if (Util.SDK_INT <= 23 || player == null) {
+       if (Util.SDK_INT <= 23 || player == null) {
             initializePlayer()
         }
     }
@@ -143,7 +152,7 @@ class VideoFragment : Fragment() {
     @SuppressLint("InlinedApi")
     private fun hideSystemUi() {
         WindowCompat.setDecorFitsSystemWindows(requireActivity().window,false)
-        WindowInsetsControllerCompat(requireActivity().window, binding.videoView).let{ controller ->
+        WindowInsetsControllerCompat(requireActivity().window, binding.playerControlView).let{ controller ->
             controller.hide(WindowInsetsCompat.Type.systemBars())
             controller.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_SWIPE
@@ -161,29 +170,18 @@ class VideoFragment : Fragment() {
         }
     }
 
-    //imprimir el estado actual del player
+    /*---------------------------
+    LISTENER
+     ----------------------------*/
     private fun playbackStateListener()= object: Player.Listener{
-        override fun onPlaybackStateChanged(playbackState: Int) {
-            val stateString: String = when (playbackState) {
-                ExoPlayer.STATE_IDLE -> "ExoPlayer.STATE_IDLE" //el player ha sido creado pero no preparado
-                ExoPlayer.STATE_BUFFERING -> "Exoplayer.STATE_BUFFERING" //cargando
-                ExoPlayer.STATE_READY -> "Exoplayer.STATE_READY" //preparado para iniciar a reproducir desde la posicion actual
-                ExoPlayer.STATE_ENDED -> "Exoplayer.STATE_ENDED" //el video a terminado
-                else -> "UNKNOWN STATE"
-            }
-            Log.d(TAG, "changed state to $stateString")
-        }
-
-        //para saber si se esta reproduciendo o no
-        override fun onIsPlayingChanged(isPlaying: Boolean) {
-            val playingString: String = if (isPlaying) "PLAYING" else "NOT PLAYING"
-            Log.d(TAG, "player is currently $playingString")
-        }
-
         //actualizar el titulo del video
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
             val newTitle = mediaItem?.mediaMetadata?.title
             binding.tituloVideo.text = newTitle
+        }
+        //para que el zoom funcione correctamente
+        override fun onVideoSizeChanged(videoSize: VideoSize) {
+            binding.surfaceView.setContentSize(videoSize.width.toFloat(), videoSize.height.toFloat())
         }
     }
 }

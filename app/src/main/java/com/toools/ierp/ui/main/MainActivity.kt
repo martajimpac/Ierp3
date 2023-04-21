@@ -149,10 +149,8 @@ class MainActivity : BaseActivity(), MenuListener {
                     this@MainActivity, ConstantHelper.SeccionMenu.values().toMutableList(),
                     prefs.getBoolean(ConstantHelper.sendNotificacion, true), this@MainActivity
                 )
-
                 recyclerMenu.adapter = adapterMenu
             }
-
         }
     }
 

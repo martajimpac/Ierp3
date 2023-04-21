@@ -51,9 +51,6 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        //ocultar la vista
-        binding.dialogEmpleados.containerDialogEmpleados.visibility = View.GONE
-
         super.onViewCreated(view, savedInstanceState)
 
         val layoutManager = LinearLayoutManager(requireActivity())
@@ -116,6 +113,7 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
             }
         }
     }
+
     override fun clickAddTarea(proyecto: Proyecto) {
 
         if (dialogAddTarea == null) {
@@ -175,7 +173,6 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
             if (BuildConfig.DEBUG)
                 Log.e(TAG, "proyectos: {${response.status}}")
 
-
             when (response.status) {
                 Resource.Status.LOADING -> {
                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
@@ -189,7 +186,6 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
                             adapterProyectos?.setList(listProyectos) ?: run {
                                 adapterProyectos = AdapterProyectos(requireActivity(), listProyectos, this)
                             }
-
                             binding.proyectosRecyclerView.adapter = adapterProyectos
                         }
                 }
@@ -201,12 +197,13 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
                             viewModel.proyectos()
-                        })
+                        }
+                    )
                 }
             }
         }
 
-        viewModel.proyectosLiveData.observe(viewLifecycleOwner) { response ->
+        viewModel.insertarTareaLiveData.observe(viewLifecycleOwner) { response ->
             if (BuildConfig.DEBUG)
                 Log.e(TAG, "addTarea: {${response.status}}")
             when (response.status) {
@@ -215,14 +212,14 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
                 }
                 Resource.Status.SUCCESS -> {
                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-
                     DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
                         title = R.string.tarea_insertada,
                         text = R.string.desc_tarea_insertada,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
                             findNavController().navigate(R.id.tareasAsignadasFragment)
-                        })
+                        }
+                    )
                 }
                 Resource.Status.ERROR -> {
                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
@@ -232,7 +229,8 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
 
-                        })
+                        }
+                    )
                 }
             }
         }

@@ -103,7 +103,7 @@ dependencies {
     implementation 'com.google.gms:google-services:4.3.15'
     implementation 'com.google.firebase:firebase-core:21.1.1'
     implementation 'com.google.firebase:firebase-crashlytics-ktx:18.3.6'
-    implementation 'com.google.firebase:firebase-analytics-ktx:21.2.1'
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.2.2'
     implementation 'com.google.firebase:firebase-messaging:23.1.2'
 
     //material dialogs

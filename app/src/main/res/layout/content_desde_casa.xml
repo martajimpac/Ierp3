@@ -7,6 +7,7 @@
         android:clickable="true"
         android:focusable="true"
         android:elevation="@dimen/pm20"
+        android:visibility="gone"
         android:id="@+id/container_casa" android:background="#FFBCBE">
 
     <androidx.cardview.widget.CardView

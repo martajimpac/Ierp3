@@ -55,12 +55,10 @@ class AdapterProyectos (context: Context, listProyectos: MutableList<Proyecto>, 
 
         holder.headerConstraintLayout.setOnClickListener {
 
-            /* TODO PORQUE ESTO NO FUNCIONA
             holderSelec?.let{
                 if (it.absoluteAdapterPosition != holder.absoluteAdapterPosition && it.expandable.isExpanded)
                     it.expandable.toggle(true)
             }
-             */
 
             holder.expandable.toggle(true)
 

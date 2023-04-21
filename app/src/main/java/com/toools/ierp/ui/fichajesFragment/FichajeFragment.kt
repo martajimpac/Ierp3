@@ -105,9 +105,6 @@ class FichajeFragment : BaseFragment() {
     @SuppressLint("MissingPermission", "SetTextI18n")
     fun setUpView(){
 
-        // Oculta la vista contentDesdeCasa
-        binding.contentDesdeCasa.containerCasa.visibility = View.GONE
-
         binding.apply{
 
             //comprobar si existen acciones y cargar el recicler.
@@ -138,7 +135,7 @@ class FichajeFragment : BaseFragment() {
 
             contentCalendar.setOnClickListener {
                 DatePickerDialog(
-                    activity as Context, R.style.DatePickerDialogTheme,
+                    requireContext(), R.style.DatePickerDialogTheme,
                     { _, year, month, dayOfMonth ->
 
                         anyo = year

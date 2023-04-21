@@ -280,7 +280,6 @@ class LoginActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
 
             DialogHelper.getInstance().showLoadingAlert(this, null, false)
-            DialogHelper.getInstance().showLoadingAlert(this, null, false)
 
             Repository.usuario = usuario
 
@@ -297,7 +296,7 @@ class LoginActivity : AppCompatActivity() {
                 val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this@LoginActivity, *pairs)
                 startActivity(intent, options.toBundle())
             }
-        }, 1000)
+        }, 500)
     }
 
     private val PERMISSION_ID = 42

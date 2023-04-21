@@ -51,22 +51,22 @@
 
     <!--Fuentes-->
     <style name="fontWhiteBold"> <!--TODO SIEMPRE DA UN ERROR PORQUE LA FUENTE NO CARGA fontPath?? -->
-        <item name="font">@string/title_font</item>
+        <item name="fontPath">fonts/bold.ttf</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="fontBlackBold">
-        <item name="font">@string/title_font</item>
+        <item name="fontPath">fonts.regular.ttf</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
 
     <style name="fontWhite">
-        <item name="font">@string/default_font</item>
+        <item name="fontPath">fonts.regular.ttf</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="fontBlack">
-        <item name="font">@string/default_font</item>
+        <item name="fontPath">fonts.regular.ttf</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
 

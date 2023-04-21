@@ -93,8 +93,7 @@ class DialogHelper {
             AppCompatResources.getDrawable(activity, icon)?.let { drawable ->
 
                 val draw = drawable.mutate()
-                //todo deprecated
-                draw.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary), PorterDuff.Mode.SRC_IN)
+                draw.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(ContextCompat.getColor(context, R.color.colorPrimary), BlendModeCompat.SRC_ATOP)
                 icon(drawable = draw)
             } ?: icon(icon)
 

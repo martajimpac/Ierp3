@@ -12,12 +12,6 @@ import com.toools.ierp.R
 
 abstract class BaseFragment: Fragment() {
 
-    override fun onResume() {
-
-        super.onResume()
-
-    }
-
     private var lottieLoadingContainerView: RelativeLayout? = null
     fun showLottieLoading(context: Context, containerView: ViewGroup, show: Boolean = true) {
 

@@ -41,13 +41,11 @@ data class Soporte (
 
             fecha?.let { fecha ->
                 val date = format.parse(fecha)
-                return formatResult.format(date)?.let {
-                    it
-                } ?: run {
+                return formatResult.format(date.run{//todo ver si esto sigue funcionado TODO
                     ""
-                }
+                })
             }
-        }catch (exception: Exception){
+        }catch (_: Exception){
 
         }
 

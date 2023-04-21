@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.util.DisplayMetrics
 import android.view.View
 import com.toools.ierp.R
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 
@@ -111,8 +112,8 @@ object ConstantHelper {
 
     fun getWidhtScreen(context: Context): Int {
         val displayMetrics = DisplayMetrics()
-        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
-        //val height = displayMetrics.heightPixels
+
+        //(context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)  TODO ESTO NO FUNCIONA
         return displayMetrics.widthPixels
     }
 

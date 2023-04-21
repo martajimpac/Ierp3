@@ -1,7 +1,5 @@
 package com.toools.ierp.ui.soportesFragment
 
-import androidx.fragment.app.Fragment
-
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
@@ -9,8 +7,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -25,7 +24,8 @@ import com.toools.ierp.core.DialogHelper
 import com.toools.ierp.core.ErrorHelper
 import com.toools.ierp.core.Resource
 import com.toools.ierp.data.ConstantHelper
-import com.toools.ierp.data.model.*
+import com.toools.ierp.data.model.Proyecto
+import com.toools.ierp.data.model.Soporte
 import com.toools.ierp.databinding.FragmentSoportesBinding
 import com.toools.ierp.ui.adapter.AdapterProyectoGeneral
 import com.toools.ierp.ui.main.MainActivity
@@ -80,6 +80,12 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
         binding.segmentView.onSegmentItemSelectedListener = null;
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Activity)
+            act = context
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpObservers()
@@ -98,6 +104,7 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
             (proyectosRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
             //calcular el padding para centrar los items
+            // todo solucionar padding
             val padding = ConstantHelper.getWidhtScreen(requireContext()) / 2 - ConstantHelper.dpToPx(requireContext(), 41)
             proyectosRecyclerView.setPadding(padding,0,padding,0)
             proyectosRecyclerView.clipToPadding = false
@@ -210,9 +217,7 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
     }
 
     private fun toRespuestas(soporte: Soporte) {
-        val extras = FragmentNavigatorExtras(
-
-        )
+        val extras = FragmentNavigatorExtras()
         val action = SoportesFragmentDirections.navToRespuestasFragment(soporte)
         findNavController().navigate(action, extras)
     }
@@ -269,48 +274,44 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                 Log.e(TAG, "proyectos: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    act?.let {
-                        DialogHelper.getInstance().showLoadingAlert(it, null, true)
-                    }
-
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    act?.let {
+                    Log.e(TAG, "${response.data}")
 
-                        (response.data?.proyectos?.sortedBy{ proyecto -> proyecto.nombre })?.toMutableList()?.let { listProyectos ->
+                    (response.data?.proyectos?.sortedBy{ proyecto -> proyecto.nombre })?.toMutableList()?.let { listProyectos ->
 
-                            val todos = Proyecto("-1", "TODOS", null, null, null, "TODOS", mutableListOf())
-                            listProyectos.add(0, todos)
+                        //TODO NO ENTRTA AQUI porque proyectos es null tendria que decir status ok
+                        val todos = Proyecto("-1", "TODOS", null, null, null, "TODOS", mutableListOf())
+                        listProyectos.add(0, todos)
 
-                            this.listProyectos = listProyectos
+                        this.listProyectos = listProyectos
 
-                            adapterProyectos?.setList(listProyectos) ?: run {
+                        adapterProyectos?.setList(listProyectos) ?: run {
 
-                                adapterProyectos = AdapterProyectoGeneral(it, listProyectos) { position ->
-                                    binding.proyectosRecyclerView.smoothScrollToPosition(position)
-                                }
+                            adapterProyectos = AdapterProyectoGeneral(requireContext(), listProyectos) { position ->
+                                binding.proyectosRecyclerView.smoothScrollToPosition(position)
                             }
-
-                            binding.proyectosRecyclerView.adapter = adapterProyectos
-
-                            viewModel.soportes()
-
                         }
+
+                        binding.proyectosRecyclerView.adapter = adapterProyectos
+
+                        viewModel.soportes()
+                    }.run{
+                        Toasty.warning(requireContext(), "NO TIENES NINGUN PROYECTO", Toast.LENGTH_LONG).show() //TODO
                     }
                 }
                 Resource.Status.ERROR -> {
-                    act?.let {
-                        DialogHelper.getInstance().showLoadingAlert(it, null, false)
-                        DialogHelper.getInstance().showOKAlert(
-                            activity = it,
-                            title = R.string.ups,
-                            text = response.exception ?: ErrorHelper.proyectosError,
-                            icon = R.drawable.ic_toools_rellena,
-                            completion = {
-                                DialogHelper.getInstance().showLoadingAlert(it, null, true)
-                                viewModel.proyectos()
-                            })
-                    }
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showOKAlert(
+                        activity = requireActivity(),
+                        title = R.string.ups,
+                        text = response.exception ?: ErrorHelper.proyectosError,
+                        icon = R.drawable.ic_toools_rellena,
+                        completion = {
+                            DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                            viewModel.proyectos()
+                        })
                 }
             }
         }
@@ -320,45 +321,40 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                 Log.e(TAG, "soportes: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    act?.let {
-                        DialogHelper.getInstance().showLoadingAlert(it, null, true)
-                    }
-
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    act?.let {
-                        DialogHelper.getInstance().showLoadingAlert(it, null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
 
-                        listSoportes = response.data?.soportes?.let{ lista ->
-                            lista.toMutableList()
-                        } ?: run { mutableListOf<Soporte>()}
+                    listSoportes = response.data?.soportes?.let{ lista ->
+                        lista.toMutableList()
+                    } ?: run { mutableListOf<Soporte>()}
 
-                        idProyectoSelected?.let{ idProyecto ->
+                    idProyectoSelected?.let{ idProyecto ->
 
-                            val index = listProyectos.indexOfFirst { proyecto -> proyecto.id == idProyecto }
-                            binding.proyectosRecyclerView.scrollToPosition(index)
-                            adapterProyectos?.let { adapterProyectos ->
-                                adapterProyectos.setPositionSelected(index)
-                            }
-                            filterSoportes(idProyectoSelected, tiposSelected)
-                        } ?: run {
-                            filterSoportes(idProyectoSelected, tiposSelected)
+                        val index = listProyectos.indexOfFirst { proyecto -> proyecto.id == idProyecto }
+                        binding.proyectosRecyclerView.scrollToPosition(index)
+                        adapterProyectos?.let { adapterProyectos ->
+                            adapterProyectos.setPositionSelected(index)
                         }
+                        filterSoportes(idProyectoSelected, tiposSelected)
+                    } ?: run {
+                        filterSoportes(idProyectoSelected, tiposSelected)
                     }
+
                 }
                 Resource.Status.ERROR -> {
-                    act?.let {
-                        DialogHelper.getInstance().showLoadingAlert(it, null, false)
-                        DialogHelper.getInstance().showOKAlert(
-                            activity = it,
-                            title = R.string.ups,
-                            text = response.exception ?: ErrorHelper.soportesError,
-                            icon = R.drawable.ic_toools_rellena,
-                            completion = {
-                                DialogHelper.getInstance().showLoadingAlert(it, null, true)
-                                viewModel.soportes()
-                            })
-                    }
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showOKAlert(
+                        activity = requireActivity(),
+                        title = R.string.ups,
+                        text = response.exception ?: ErrorHelper.soportesError,
+                        icon = R.drawable.ic_toools_rellena,
+                        completion = {
+                            DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                            viewModel.soportes()
+                        }
+                    )
                 }
             }
         }
@@ -368,37 +364,30 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                 Log.e(TAG, "asignarSoporte: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    act?.let {
-                        DialogHelper.getInstance().showLoadingAlert(it, null, true)
-                    }
-
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    act?.let {
-                        DialogHelper.getInstance().showLoadingAlert(it, null, false)
-
-                        Toasty.success(it,getString(R.string.soporte_asignado)).show()
-                        //toRestpuestas
-                        soporteSelected?.let { soporte ->
-                            toRespuestas(soporte)
-                        }
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    Toasty.success(requireContext(),getString(R.string.soporte_asignado)).show()
+                    //toRestpuestas
+                    soporteSelected?.let { soporte ->
+                        toRespuestas(soporte)
                     }
                 }
                 Resource.Status.ERROR -> {
-                    act?.let {
-                        DialogHelper.getInstance().showLoadingAlert(it, null, false)
-                        DialogHelper.getInstance().showOKAlert(
-                            activity = it,
-                            title = R.string.ups,
-                            text = response.exception ?: ErrorHelper.asignarSoporteError,
-                            icon = R.drawable.ic_toools_rellena,
-                            completion = {
-                                soporteSelected?.idIncidencia?.let { idSoporte ->
-                                    DialogHelper.getInstance().showLoadingAlert(it, null, true)
-                                    viewModel.asignarSoportes(idSoporte)
-                                }
-                            })
-                    }
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showOKAlert(
+                        activity = requireActivity(),
+                        title = R.string.ups,
+                        text = response.exception ?: ErrorHelper.asignarSoporteError,
+                        icon = R.drawable.ic_toools_rellena,
+                        completion = {
+                            soporteSelected?.idIncidencia?.let { idSoporte ->
+                                DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                                viewModel.asignarSoportes(idSoporte)
+                            }
+                        }
+                    )
                 }
             }
         }
