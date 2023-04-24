@@ -3,10 +3,5 @@ ver video de firebase,
 crear sesion manager
 quita activity si se puede de onback...
 
-añade el token en el repositorio
-
 importar context en adapter?
-comprueba que funciona lo de cuando etas lejor y quita el icono de ierp de content_desde_casa
 mira a ver si puedes abrir los dialogos igual que abres los dialogos de error
-
-por defecto visibility hacer que sea gone en conten-desde_casa y dialogos

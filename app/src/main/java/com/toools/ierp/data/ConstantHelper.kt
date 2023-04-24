@@ -47,7 +47,6 @@ object ConstantHelper {
     const val client = "client"
     const val centroTrabajo = "centroTrabajo"
 
-
     //name services
     const val IERP_LOGIN = "login"
     const val IERP_MOMENTOS = "momentos"
@@ -72,43 +71,6 @@ object ConstantHelper {
     const val firebaseApplicationID = "1:943624393880:android:80e288528be67e58"
     const val firebaseApiKey = "AIzaSyCJJmQ-34NOO4IgCe0Q5rrEZk9kaJ8pP08"
     const val firebaseAppName = "IERP"
-
-    //BROADCASTS
-    const val broadCastFragmentIndexChange = "broadCastFragmentIndexChange"
-    const val backToRoot = "backToRoot"
-
-    //BUNDLE EXTRAS
-    const val type = "type"
-
-    fun urlEncode(s: String?): String {
-
-        return if (s == null) {
-            ""
-        } else {
-
-            try {
-
-                URLEncoder.encode(s, "UTF8")
-            } catch (var2: UnsupportedEncodingException) {
-
-                throw RuntimeException(var2.message, var2)
-            }
-        }
-    }
-
-
-    fun getScreenShot(view: View): Bitmap {
-
-        val returnedBitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(returnedBitmap)
-        val bgDrawable = view.background
-        if (bgDrawable != null)
-            bgDrawable.draw(canvas)
-        else
-            canvas.drawColor(Color.WHITE)
-        view.draw(canvas)
-        return returnedBitmap
-    }
 
     fun getWidhtScreen(context: Context): Int {
         val displayMetrics = DisplayMetrics()

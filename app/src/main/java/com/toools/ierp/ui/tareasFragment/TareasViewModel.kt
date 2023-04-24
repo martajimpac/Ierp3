@@ -1,6 +1,5 @@
 package com.toools.ierp.ui.tareasFragment
 
-
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +10,7 @@ import com.toools.ierp.data.model.BaseResponse
 import com.toools.ierp.data.model.ProyectosResponse
 import com.toools.ierp.data.model.TareasResponse
 import com.toools.ierp.domain.CambioEstadoTareaUserCase
+import com.toools.ierp.domain.InsertarTareaUserCase
 import com.toools.ierp.domain.ProyectosUserCase
 import com.toools.ierp.domain.TareasUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,11 +18,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TareasViewModel @Inject constructor(private val tareasUserCase: TareasUserCase, private val proyectosUserCase: ProyectosUserCase, private val cambioEstadoTareaUserCase: CambioEstadoTareaUserCase): ViewModel() {
+class TareasViewModel @Inject constructor(private val tareasUserCase: TareasUserCase, private val proyectosUserCase: ProyectosUserCase,
+                                          private val cambioEstadoTareaUserCase: CambioEstadoTareaUserCase,private val insertarTareaUserCase: InsertarTareaUserCase): ViewModel() {
 
     val tareasLiveData: MutableLiveData<Resource<TareasResponse>> = MutableLiveData()
     val proyectosLiveData: MutableLiveData<Resource<ProyectosResponse>> = MutableLiveData()
-    val cambiarEstadoTareaLiveData: MutableLiveData<Resource<BaseResponse>> = MutableLiveData()
+    val cambioEstadoTareaLiveData: MutableLiveData<Resource<BaseResponse>> = MutableLiveData()
     val insertarTareaLiveData: MutableLiveData<Resource<BaseResponse>> = MutableLiveData()
 
     fun tareas(){
@@ -65,11 +66,43 @@ class TareasViewModel @Inject constructor(private val tareasUserCase: TareasUser
         }
     }
 
-    fun cambiarEstadoTarea(idEstado: String, idTarea: String, observacion: String){
-        
+    fun cambioEstadoTarea(idEstado: String, idTarea: String, observacion: String){
+        viewModelScope.launch {
+            cambioEstadoTareaLiveData.value = Resource.loading()
+            Repository.usuario?.token?.let{ token ->
+                val response = cambioEstadoTareaUserCase.invoke(token,idEstado,idTarea,observacion)
+                if (response != null) {
+                    if (response.isOK()) {
+                        cambioEstadoTareaLiveData.value = Resource.success(response)
+                    } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                        cambioEstadoTareaLiveData.value = Resource.success(response)
+                    } else {
+                        cambioEstadoTareaLiveData.value = Resource.error(ErrorHelper.cambioEstadoTareaError)
+                    }
+                } else {
+                    cambioEstadoTareaLiveData.value = Resource.error(ErrorHelper.cambioEstadoTareaError)
+                }
+            }
+        }
     }
 
     fun insertarTarea(idProyecto: String, idEmpleado: String, titulo: String, descripcion: String, plazo: String){
-        
+        viewModelScope.launch {
+            insertarTareaLiveData.value = Resource.loading()
+            Repository.usuario?.token?.let{ token ->
+                val response = insertarTareaUserCase.invoke(token,idProyecto,idEmpleado, titulo, descripcion, plazo)
+                if (response != null) {
+                    if (response.isOK()) {
+                        insertarTareaLiveData.value = Resource.success(response)
+                    } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                        insertarTareaLiveData.value = Resource.success(response)
+                    } else {
+                        insertarTareaLiveData.value = Resource.error(ErrorHelper.insertarTareaError)
+                    }
+                } else {
+                    insertarTareaLiveData.value = Resource.error(ErrorHelper.insertarTareaError)
+                }
+            }
+        }
     }
 }

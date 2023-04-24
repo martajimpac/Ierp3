@@ -11,7 +11,8 @@
         android:id="@+id/dialog_observaciones"
         layout="@layout/dialog_observaciones"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
     <View
             android:id="@+id/view12"

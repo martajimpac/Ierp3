@@ -27,7 +27,6 @@ class ProyectosViewModel @Inject constructor(private val proyectosUserCase: Proy
     val proyectosLiveData: MutableLiveData<Resource<ProyectosResponse>> = MutableLiveData()
     val insertarTareaLiveData: MutableLiveData<Resource<BaseResponse>> = MutableLiveData()
 
-
     fun proyectos() {
         viewModelScope.launch {
             proyectosLiveData.value = Resource.loading()

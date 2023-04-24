@@ -1,5 +1,7 @@
 package com.toools.ierp.ui.proyectosFragment
 
+import android.app.Activity
+import android.content.Context
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.util.Log
@@ -14,12 +16,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.google.gson.Gson
 import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
 import com.toools.ierp.core.*
-import com.toools.ierp.data.ConstantHelper
-import com.toools.ierp.data.model.LoginResponse
 import com.toools.ierp.data.model.Proyecto
 import com.toools.ierp.databinding.FragmentProyectosBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +27,7 @@ const val TAG = "ProyectosFragment"
 @AndroidEntryPoint
 class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener {
 
+    private var act: Activity? = null
     private var adapterProyectos: AdapterProyectos? = null
     private var adapterEmpleados: AdapterEmpleados? = null
     private var dialogAddTarea: AddTareaDialog? = null
@@ -47,6 +47,12 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
     override fun onResume() {
         super.onResume()
         onLoadView()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Activity)
+            act = context
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -179,15 +185,12 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
                 }
                 Resource.Status.SUCCESS -> {
                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-
-                    (response.data?.proyectos?.sortedBy { proyecto -> proyecto.nombre })?.toMutableList()
-                        ?.let { listProyectos ->
-
-                            adapterProyectos?.setList(listProyectos) ?: run {
-                                adapterProyectos = AdapterProyectos(requireActivity(), listProyectos, this)
-                            }
-                            binding.proyectosRecyclerView.adapter = adapterProyectos
+                    (response.data?.proyectos?.sortedBy { proyecto -> proyecto.nombre })?.toMutableList()?.let { listProyectos ->
+                        adapterProyectos?.setList(listProyectos) ?: run {
+                            adapterProyectos = AdapterProyectos(requireActivity(), listProyectos, this)
                         }
+                        binding.proyectosRecyclerView.adapter = adapterProyectos
+                    }
                 }
                 Resource.Status.ERROR -> {
                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
@@ -205,7 +208,7 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
 
         viewModel.insertarTareaLiveData.observe(viewLifecycleOwner) { response ->
             if (BuildConfig.DEBUG)
-                Log.e(TAG, "addTarea: {${response.status}}")
+                Log.e(TAG, "insertar_tarea: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)

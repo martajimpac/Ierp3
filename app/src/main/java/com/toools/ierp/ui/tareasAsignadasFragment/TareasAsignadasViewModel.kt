@@ -1,96 +1,105 @@
 package com.toools.ierp.ui.tareasAsignadasFragment
 
-/*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.toools.ierp.entities.Resource
-import com.toools.ierp.entities.RestBaseObject
-import com.toools.ierp.entities.ierp.ProyectosResponse
-import com.toools.ierp.entities.ierp.TareasAsignadasResponse
-import com.toools.ierp.helpers.rest.AppException
-import com.toools.ierp.helpers.rest.RestApiCallback
-import com.toools.ierp.helpers.rest.RestRepository
+import androidx.lifecycle.viewModelScope
+import com.toools.ierp.core.ErrorHelper
+import com.toools.ierp.core.Resource
+import com.toools.ierp.data.Repository
+import com.toools.ierp.data.model.BaseResponse
+import com.toools.ierp.data.model.ProyectosResponse
+import com.toools.ierp.data.model.TareasAsignadasResponse
+import com.toools.ierp.domain.*
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TareasAsignadasViewModel : ViewModel() {
+@HiltViewModel
+class TareasAsignadasViewModel @Inject constructor(private val tareasAsignadasUserCase: TareasAsignadasUserCase, private val proyectosUserCase: ProyectosUserCase,
+                                                   private val cambioEstadoTareaUserCase: CambioEstadoTareaUserCase, private val insertarTareaUserCase: InsertarTareaUserCase): ViewModel() {
 
-    val tareasRecived: MutableLiveData<Resource<TareasAsignadasResponse>> = MutableLiveData()
-    val proyectosRecived: MutableLiveData<Resource<ProyectosResponse>> = MutableLiveData()
-    val cambioTareaRecived: MutableLiveData<Resource<RestBaseObject>> = MutableLiveData()
-    val addTareaRecived: MutableLiveData<Resource<RestBaseObject>> = MutableLiveData()
+    val tareasAsignadasLiveData: MutableLiveData<Resource<TareasAsignadasResponse>> = MutableLiveData()
+    val proyectosLiveData: MutableLiveData<Resource<ProyectosResponse>> = MutableLiveData()
+    val cambioEstadoTareaLiveData: MutableLiveData<Resource<BaseResponse>> = MutableLiveData()
+    val insertarTareaLiveData: MutableLiveData<Resource<BaseResponse>> = MutableLiveData()
 
-    fun callTareas(){
-
-        RestRepository.getInstance().usuario?.token?.let { token ->
-
-            RestRepository.getInstance().tareasAsignadas(token, object: RestApiCallback<TareasAsignadasResponse> {
-
-                override fun onSuccess(response: TareasAsignadasResponse) {
-                    tareasRecived.value = Resource.success(response)
+    fun tareasAsignadas(){
+        viewModelScope.launch {
+            tareasAsignadasLiveData.value = Resource.loading()
+            Repository.usuario?.token?.let{ token ->
+                val response = tareasAsignadasUserCase.invoke(token)
+                if (response != null) {
+                    if (response.isOK()) {
+                        tareasAsignadasLiveData.value = Resource.success(response)
+                    } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                        tareasAsignadasLiveData.value = Resource.success(response)
+                    } else {
+                        tareasAsignadasLiveData.value = Resource.error(ErrorHelper.tareasError)
+                    }
+                } else {
+                    tareasAsignadasLiveData.value = Resource.error(ErrorHelper.tareasError)
                 }
-
-                override fun onFailure(throwable: Throwable) {
-                    tareasRecived.value =
-                        Resource.error(AppException(string = if (throwable.localizedMessage.isNullOrEmpty()) throwable.toString() else throwable.localizedMessage))
-
-                }
-            })
+            }
         }
     }
 
-    fun callProyectos(){
-
-        RestRepository.getInstance().usuario?.token?.let { token ->
-
-            RestRepository.getInstance().proyectos(token, object:
-                RestApiCallback<ProyectosResponse> {
-
-                override fun onSuccess(response: ProyectosResponse) {
-                    proyectosRecived.value = Resource.success(response)
+    fun proyectos(){
+        viewModelScope.launch {
+            proyectosLiveData.value = Resource.loading()
+            Repository.usuario?.token?.let{ token ->
+                val response = proyectosUserCase.invoke(token)
+                if (response != null) {
+                    if (response.isOK()) {
+                        proyectosLiveData.value = Resource.success(response)
+                    } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                        proyectosLiveData.value = Resource.success(response)
+                    } else {
+                        proyectosLiveData.value = Resource.error(ErrorHelper.proyectosError)
+                    }
+                } else {
+                    proyectosLiveData.value = Resource.error(ErrorHelper.proyectosError)
                 }
-
-                override fun onFailure(throwable: Throwable) {
-                    proyectosRecived.value = Resource.error(AppException(string = if (throwable.localizedMessage.isNullOrEmpty()) throwable.toString() else throwable.localizedMessage))
-
-                }
-            })
+            }
         }
     }
 
-    fun cambiarEstadoTarea(idEstado: String, idTarea: String, observacion: String){
-
-        RestRepository.getInstance().usuario?.token?.let { token ->
-
-            RestRepository.getInstance().cambioEstadoTarea(token, idTarea, idEstado, observacion, object:
-                RestApiCallback<RestBaseObject> {
-
-                override fun onSuccess(response: RestBaseObject) {
-                    cambioTareaRecived.value = Resource.success(response)
+    fun cambioEstadoTarea(idEstado: String, idTarea: String, observacion: String){
+        viewModelScope.launch {
+            cambioEstadoTareaLiveData.value = Resource.loading()
+            Repository.usuario?.token?.let{ token ->
+                val response = cambioEstadoTareaUserCase.invoke(token,idEstado,idTarea,observacion)
+                if (response != null) {
+                    if (response.isOK()) {
+                        cambioEstadoTareaLiveData.value = Resource.success(response)
+                    } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                        cambioEstadoTareaLiveData.value = Resource.success(response)
+                    } else {
+                        cambioEstadoTareaLiveData.value = Resource.error(ErrorHelper.cambioEstadoTareaError)
+                    }
+                } else {
+                    cambioEstadoTareaLiveData.value = Resource.error(ErrorHelper.cambioEstadoTareaError)
                 }
-
-                override fun onFailure(throwable: Throwable) {
-                    cambioTareaRecived.value = Resource.error(AppException(string = if (throwable.localizedMessage.isNullOrEmpty()) throwable.toString() else throwable.localizedMessage))
-
-                }
-            })
+            }
         }
     }
 
-    fun addTarea(idProyecto: String, idEmpleado: String, titulo: String, descripcion: String, plazo: String){
-
-        RestRepository.getInstance().usuario?.token?.let { token ->
-
-            RestRepository.getInstance().insertarTarea(token, idProyecto, idEmpleado, titulo, descripcion, plazo, object : RestApiCallback<RestBaseObject> {
-
-                override fun onSuccess(response: RestBaseObject) {
-                    addTareaRecived.value = Resource.success(response)
+    fun insertarTarea(idProyecto: String, idEmpleado: String, titulo: String, descripcion: String, plazo: String){
+        viewModelScope.launch {
+            insertarTareaLiveData.value = Resource.loading()
+            Repository.usuario?.token?.let{ token ->
+                val response = insertarTareaUserCase.invoke(token,idProyecto,idEmpleado, titulo, descripcion, plazo)
+                if (response != null) {
+                    if (response.isOK()) {
+                        insertarTareaLiveData.value = Resource.success(response)
+                    } else if (response.error != null && Integer.parseInt(response.error) == ErrorHelper.SESSION_EXPIRED) {
+                        insertarTareaLiveData.value = Resource.success(response)
+                    } else {
+                        insertarTareaLiveData.value = Resource.error(ErrorHelper.insertarTareaError)
+                    }
+                } else {
+                    insertarTareaLiveData.value = Resource.error(ErrorHelper.insertarTareaError)
                 }
-
-                override fun onFailure(throwable: Throwable) {
-                    addTareaRecived.value =
-                        Resource.error(AppException(string = if (throwable.localizedMessage.isNullOrEmpty()) throwable.toString() else throwable.localizedMessage))
-
-                }
-            })
+            }
         }
     }
-}*/
+}

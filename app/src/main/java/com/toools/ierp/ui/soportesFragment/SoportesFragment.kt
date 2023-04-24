@@ -18,12 +18,14 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.transition.TransitionInflater
+import com.bumptech.glide.Glide
 import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
 import com.toools.ierp.core.DialogHelper
 import com.toools.ierp.core.ErrorHelper
 import com.toools.ierp.core.Resource
 import com.toools.ierp.data.ConstantHelper
+import com.toools.ierp.data.Repository
 import com.toools.ierp.data.model.Proyecto
 import com.toools.ierp.data.model.Soporte
 import com.toools.ierp.databinding.FragmentSoportesBinding
@@ -72,12 +74,12 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
 
     override fun onStart() {
         super.onStart()
-        binding.segmentView.onSegmentItemSelectedListener = this;
+        binding.segmentView.onSegmentItemSelectedListener = this
     }
 
     override fun onStop() {
         super.onStop()
-        binding.segmentView.onSegmentItemSelectedListener = null;
+        binding.segmentView.onSegmentItemSelectedListener = null
     }
 
     override fun onAttach(context: Context) {
@@ -145,23 +147,16 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
     }
 
     private fun onLoadView(){
-        act?.let {
-            viewModel.proyectos()
-        }
+        viewModel.proyectos()
     }
 
     //*************************
     //Class Metodos
     //*************************
-    var emptryView: View? = null
+
+    //funcion para manejar los eventos de segmented view
     private fun filterSoportes(idProyecto: String?, tipo: ConstantHelper.Tipos){
-        // todo no se que es lo que hace esta funcion
-        /*act?.let { context ->
-
-            emptryView?.let {
-                emptyViewConstraintLayout.removeView(it)
-            }
-
+        binding.apply{
             listSoportes.filter { soporte -> soporte.idProyecto == idProyecto || idProyecto == "-1" }.toMutableList().let { aux ->
 
                 var lista = mutableListOf<Soporte>()
@@ -170,19 +165,10 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                     emptyViewConstraintLayout.visibility = View.VISIBLE
                     soportesRecyclerView.visibility = View.GONE
 
-                    if (emptryView == null) {
-                        val inflater = LayoutInflater.from(act)
-                        emptryView = inflater.inflate(R.layout.empty_view, soportesConstraintLayout, false)
-                    }
+                    emptyView.tituloEmptyTextView.text = getString(R.string.sin_soportes)
+                    emptyView.descripcionEmptyTextView.text = getString(R.string.sin_soportes_desc)
 
-                    emptryView?.let { emptryView ->
-                        emptyViewConstraintLayout.addView(emptryView)
-
-                        emptryView.tituloEmptyTextView.text = getString(R.string.sin_soportes)
-                        emptryView.descripcionEmptyTextView.text = getString(R.string.sin_soportes_desc)
-
-                        Glide.with(context).load(R.drawable.not_soportes).into(emptryView.emptyImageView)
-                    }
+                    Glide.with(requireContext()).load(R.drawable.not_soportes).into(emptyView.emptyImageView)
 
                 } else {
 
@@ -195,7 +181,7 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                                 lista = aux.filter { soporte -> soporte.estado == Soporte.sinAsignar }.toMutableList()
                             }
                             ConstantHelper.Tipos.propios.idTipo -> {
-                                RestRepository.getInstance().usuario?.userId?.let { userId ->
+                                Repository.usuario?.userId?.let { userId ->
                                     lista = aux.filter { soporte -> soporte.idUsuario == userId }.toMutableList()
                                 }
                             }
@@ -204,16 +190,13 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                     emptyViewConstraintLayout.visibility = View.GONE
                     soportesRecyclerView.visibility = View.VISIBLE
 
-                    adapterSoportes?.let {
-                        it.setList(lista)
-                    } ?: run {
-                        adapterSoportes = AdapterSoportes(context, lista, this)
+                    adapterSoportes?.setList(lista) ?: run {
+                        adapterSoportes = AdapterSoportes(requireContext(), lista, this@SoportesFragment)
                     }
-
                     soportesRecyclerView.adapter = adapterSoportes
                 }
             }
-        }*/
+        }
     }
 
     private fun toRespuestas(soporte: Soporte) {
@@ -228,14 +211,14 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
 
         if (index != tiposSelected.idTipo) {
             when (index) {
-                ConstantHelper.Tipos.sinAbrir.idTipo -> {
-                    tiposSelected = ConstantHelper.Tipos.sinAbrir
-                }
                 ConstantHelper.Tipos.todos.idTipo -> {
                     tiposSelected = ConstantHelper.Tipos.todos
                 }
                 ConstantHelper.Tipos.propios.idTipo -> {
                     tiposSelected = ConstantHelper.Tipos.propios
+                }
+                ConstantHelper.Tipos.sinAbrir.idTipo -> {
+                    tiposSelected = ConstantHelper.Tipos.sinAbrir
                 }
             }
 
@@ -278,10 +261,10 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                 }
                 Resource.Status.SUCCESS -> {
                     Log.e(TAG, "${response.data}")
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
 
                     (response.data?.proyectos?.sortedBy{ proyecto -> proyecto.nombre })?.toMutableList()?.let { listProyectos ->
 
-                        //TODO NO ENTRTA AQUI porque proyectos es null tendria que decir status ok
                         val todos = Proyecto("-1", "TODOS", null, null, null, "TODOS", mutableListOf())
                         listProyectos.add(0, todos)
 
@@ -326,17 +309,13 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                 Resource.Status.SUCCESS -> {
                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
 
-                    listSoportes = response.data?.soportes?.let{ lista ->
-                        lista.toMutableList()
-                    } ?: run { mutableListOf<Soporte>()}
+                    listSoportes = response.data?.soportes?.toMutableList() ?: run { mutableListOf<Soporte>()}
 
                     idProyectoSelected?.let{ idProyecto ->
 
                         val index = listProyectos.indexOfFirst { proyecto -> proyecto.id == idProyecto }
                         binding.proyectosRecyclerView.scrollToPosition(index)
-                        adapterProyectos?.let { adapterProyectos ->
-                            adapterProyectos.setPositionSelected(index)
-                        }
+                        adapterProyectos?.setPositionSelected(index)
                         filterSoportes(idProyectoSelected, tiposSelected)
                     } ?: run {
                         filterSoportes(idProyectoSelected, tiposSelected)

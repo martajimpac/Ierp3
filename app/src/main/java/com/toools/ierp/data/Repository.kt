@@ -68,7 +68,7 @@ class Repository @Inject constructor(private val ispotService: IspotService, pri
         return ierpService.asignarSoporte(token,idSoporte)
     }
 
-    suspend fun tareas(token: String): BaseResponse? {
+    suspend fun tareas(token: String): TareasResponse? {
         return ierpService.tareas(token)
     }
 

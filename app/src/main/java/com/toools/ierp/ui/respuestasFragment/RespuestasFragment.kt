@@ -39,28 +39,12 @@ class RespuestasFragment : Fragment() {
 
     private val args: RespuestasFragmentArgs by navArgs()
 
-    private var act: Activity? = null
     private var soporte: Soporte? = null
     private var adapterRespuestas: AdapterRespuestas? = null
 
     private lateinit var binding: FragmentRespuestasBinding
 
     private val viewModel: RespuestasViewModel by viewModels()
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is Activity)
-            act = context
-    } //todo terminar de quitar esto
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {}
-        viewModel.respuestasRecived.observe(this, respuestasObserver)
-        viewModel.asignarSoportesRecived.observe(this, asignarSoporteObserver)
-        viewModel.cerrarSoportesRecived.observe(this, cerrarSoporteObserver)
-        viewModel.nuevaRespuestaRecived.observe(this, nuevaRespuestaObserver)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentRespuestasBinding.inflate(inflater, container,false)
@@ -91,7 +75,7 @@ class RespuestasFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        act?.let {//todo esto es lo que no se como quitar
+        activity?.let {
             (it as MainActivity).showIconBack(true)
         }
     }
@@ -120,191 +104,158 @@ class RespuestasFragment : Fragment() {
             rightBtnCardView.setOnClickListener {
                 args.soporte.idIncidencia?.let { idSoporte ->
                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
-                    viewModel.cerrarSoportes(idSoporte)
+                    viewModel.cerrarSoporte(idSoporte)
                 }
             }
 
             DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
             args.soporte.idIncidencia?.let{ idSoporte ->
                 DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
-                viewModel.callRespuestas(idSoporte)
+                viewModel.respuestas(idSoporte)
             }
         }
     }
 
     fun nuevaRespuesta(idSoporte: String) {
-        /*
+
         binding.apply {
             //mostrar la modal de observaciones
-            val inflater = LayoutInflater.from(requireActivity())
-            val modalObservaciones =
-                inflater.inflate(R.layout.dialog_observaciones, respuestasConstraintLayout, false)
 
-            respuestasConstraintLayout.addView(modalObservaciones)
+            dialogObservaciones.containerObservaciones.visibility = View.VISIBLE
 
-            modalObservaciones.emailTextView.text = getString(R.string.nueva_respuesta)
-            modalObservaciones.descripcionObsercacionTextView.text = getString(R.string.desc_respuesta)
-            modalObservaciones.observacionesEditText.hint = getString(R.string.texto_respuesta)
+            dialogObservaciones.emailTextView.text = getString(R.string.nueva_respuesta)
+            dialogObservaciones.descripcionObsercacionTextView.text = getString(R.string.desc_respuesta)
+            dialogObservaciones.observacionesEditText.hint = getString(R.string.texto_respuesta)
 
-            modalObservaciones.cancelarContraintLayout.setOnClickListener {
-                respuestasConstraintLayout.removeView(modalObservaciones)
+            dialogObservaciones.cancelarContraintLayout.setOnClickListener {
+                dialogObservaciones.containerObservaciones.visibility = View.INVISIBLE
             }
 
-            modalObservaciones.aceptarContraintLayout.setOnClickListener {
-                respuestasConstraintLayout.removeView(modalObservaciones)
-                DialogHelper.getInstance().showLoadingAlert(act, null, true)
-                viewModel.sendNuevaRespuesta(
+            dialogObservaciones.aceptarContraintLayout.setOnClickListener {
+                dialogObservaciones.containerObservaciones.visibility = View.INVISIBLE
+                DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                viewModel.sendRespuesta(
                     idSoporte,
-                    modalObservaciones.observacionesEditText.text.toString()
+                    dialogObservaciones.observacionesEditText.text.toString()
                 )
             }
-        }*/
+        }
     }
 
     //*************************
     //Observers
     //*************************
-    private val respuestasObserver = Observer<Resource<RespuestasResponse>> { response ->
 
-        if (BuildConfig.DEBUG)
-            Log.e(TAG, "proyectos: {${response.status}}")
-        when (response.status) {
-            Resource.Status.LOADING -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, true)
+    fun setUpObservers() {
+        viewModel.respuestasLiveData.observe(viewLifecycleOwner) { response ->
+            if (BuildConfig.DEBUG)
+                Log.e(TAG, "respuestas: {${response.status}}")
+            when (response.status) {
+                Resource.Status.LOADING -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                 }
-            }
-            Resource.Status.SUCCESS -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
+                Resource.Status.SUCCESS -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
 
                     response.data?.respuestas?.toMutableList()?.let { list ->
                         adapterRespuestas?.let { adapter ->
                             adapter.setList(list)
                         } ?: run {
-                            adapterRespuestas = AdapterRespuestas(it, list)
+                            adapterRespuestas = AdapterRespuestas(requireContext(), list)
                         }
-
                         binding.respuestasRecyclerView.adapter = adapterRespuestas
                     }
                 }
-            }
-            Resource.Status.ERROR -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
+                Resource.Status.ERROR -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
                     DialogHelper.getInstance().showOKAlert(
-                        activity = it,
+                        activity = requireActivity(),
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.respuestasError,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
-                            args.soporte.idIncidencia?.let{ idSoporte ->
-                                viewModel.callRespuestas(idSoporte)
+                            args.soporte.idIncidencia?.let { idSoporte ->
+                                viewModel.respuestas(idSoporte)
                             }
-                        })
+                        }
+                    )
                 }
             }
         }
-    }
-
-    private val asignarSoporteObserver = Observer<Resource<BaseResponse>> { response ->
-
-        if (BuildConfig.DEBUG)
-            Log.e(TAG, "asignarSoporte: {${response.status}}")
-        when (response.status) {
-            Resource.Status.LOADING -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, true)
+        viewModel.asignarSoportesLiveData.observe(viewLifecycleOwner) { response ->
+            if (BuildConfig.DEBUG)
+                Log.e(TAG, "asignarSoporte: {${response.status}}")
+            when (response.status) {
+                Resource.Status.LOADING -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                 }
-
-            }
-            Resource.Status.SUCCESS -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
-
-                    Toasty.success(it,getString(R.string.soporte_asignado)).show()
+                Resource.Status.SUCCESS -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    Toasty.success(requireContext(),getString(R.string.soporte_asignado)).show()
                     args.soporte.estado = "1"
                     onLoadView()
                 }
-            }
-            Resource.Status.ERROR -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = it,
+                Resource.Status.ERROR -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.asignarSoporteError,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
                             args.soporte.idIncidencia?.let { idSoporte ->
-                                DialogHelper.getInstance().showLoadingAlert(it, null, true)
+                                DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                                 viewModel.asignarSoportes(idSoporte)
                             }
-                        })
+                        }
+                    )
                 }
             }
         }
-    }
-
-    private val cerrarSoporteObserver = Observer<Resource<BaseResponse>> { response ->
-
-        if (BuildConfig.DEBUG)
-            Log.e(TAG, "cerrarSoporte: {${response.status}}")
-        when (response.status) {
-            Resource.Status.LOADING -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, true)
+        viewModel.cerrarSoporteLiveData.observe(viewLifecycleOwner) { response ->
+            if (BuildConfig.DEBUG)
+                Log.e(TAG, "cerrarSoporte: {${response.status}}")
+            when (response.status) {
+                Resource.Status.LOADING -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                 }
-
-            }
-            Resource.Status.SUCCESS -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
-
-                    Toasty.success(it,getString(R.string.cerrar_soporte)).show()
+                Resource.Status.SUCCESS -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    Toasty.success(requireContext(),getString(R.string.cerrar_soporte)).show()
                     findNavController().popBackStack()
                 }
-            }
-            Resource.Status.ERROR -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = it,
+                Resource.Status.ERROR -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.cerrarSoporteError,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
                             args.soporte.idIncidencia?.let { idSoporte ->
-                                DialogHelper.getInstance().showLoadingAlert(it, null, true)
-                                viewModel.cerrarSoportes(idSoporte)
+                                DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                                viewModel.cerrarSoporte(idSoporte)
                             }
-                        })
+                        }
+                    )
+
                 }
             }
         }
-    }
-
-    private val nuevaRespuestaObserver = Observer<Resource<BaseResponse>> { response ->
-
-        if (BuildConfig.DEBUG)
-            Log.e(TAG, "nuevaRespuesta: {${response.status}}")
-        when (response.status) {
-            Resource.Status.LOADING -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, true)
+        viewModel.sendRespuestaLiveData.observe(viewLifecycleOwner) { response ->
+            if (BuildConfig.DEBUG)
+                Log.e(TAG, "sendRespuesta: {${response.status}}")
+            when (response.status) {
+                Resource.Status.LOADING -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                 }
-
-            }
-            Resource.Status.SUCCESS -> {
-                act?.let {
-                    Toasty.success(it,getString(R.string.send_repuesta_ok)).show()
+                Resource.Status.SUCCESS -> {
+                    Toasty.success(requireContext(),getString(R.string.send_repuesta_ok)).show()
                     args.soporte.idIncidencia?.let { idSoporte ->
-                        viewModel.callRespuestas(idSoporte)
+                        viewModel.respuestas(idSoporte)
                     }
                 }
-            }
-            Resource.Status.ERROR -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = it,
+                Resource.Status.ERROR -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.sendRespuestaError,
                         icon = R.drawable.ic_toools_rellena,

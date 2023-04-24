@@ -9,8 +9,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.*
@@ -157,22 +157,16 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
     }
 
     private fun onLoadView(){
-        act?.let {
-            DialogHelper.getInstance().showLoadingAlert(it, null, true)
-            viewModel.proyectos()
-        }
+        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+        viewModel.proyectos()
     }
 
     //*************************
     //Class Metodos
     //*************************
-    var emptryView: View? = null
+
     private fun filterTareas(idProyecto: String?){
         binding.apply {
-
-            emptryView?.let {
-                emptyViewConstraintLayout.removeView(it)
-            }
 
             listTareas.filter { tarea -> tarea.idProyecto == idProyecto || idProyecto == "-1" }.toMutableList().let { lista ->
                 if (lista.isEmpty()) {
@@ -180,20 +174,10 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
                     emptyViewConstraintLayout.visibility = View.VISIBLE
                     tareasRecyclerView.visibility = View.GONE
 
-                    if (emptryView == null) {
-                        val inflater = LayoutInflater.from(act)
-                        emptryView =
-                            inflater.inflate(R.layout.empty_view, tareasConstraintLayout, false)
-                    }
+                    emptyView.tituloEmptyTextView.text = getString(R.string.sin_tareas)
+                    emptyView.descripcionEmptyTextView.text = getString(R.string.sin_tareas_desc)
 
-                    emptryView?.let { emptryView ->
-                        emptyViewConstraintLayout.addView(emptryView)
-
-                        emptryView.tituloEmptyTextView.text = getString(R.string.sin_tareas)
-                        emptryView.descripcionEmptyTextView.text = getString(R.string.sin_tareas_desc)
-
-                        Glide.with(requireContext()).load(R.drawable.not_tareas).into(emptryView.emptyImageView)
-                    }
+                    Glide.with(requireContext()).load(R.drawable.not_tareas).into(emptyView.emptyImageView)
 
                 } else {
 
@@ -225,7 +209,7 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
         binding.tareasConstraintLayout.removeView(dialogAddTarea)
 
         DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
-        viewModel.addTarea(idProyecto = idProyecto, idEmpleado = idEmpleado, titulo = titulo, descripcion = descripcion, plazo = plazo)
+        viewModel.insertarTarea(idProyecto = idProyecto, idEmpleado = idEmpleado, titulo = titulo, descripcion = descripcion, plazo = plazo)
     }
 
     override fun clickCancelTarea() {
@@ -255,7 +239,7 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
                 //llamar a aceptar tarea
 
                 tarea.idTarea?.let {
-                    viewModel.cambiarEstadoTarea(
+                    viewModel.cambioEstadoTarea(
                         ConstantHelper.Estados.abierta.idEstado,
                         tarea.idTarea,
                         observacionesEditText.text.toString()
@@ -281,7 +265,7 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
             aceptarContraintLayout.setOnClickListener {
                 containerObservaciones.visibility = View.GONE
                 tarea.idTarea?.let {
-                    viewModel.cambiarEstadoTarea(
+                    viewModel.cambioEstadoTarea(
                         estado.idEstado,
                         tarea.idTarea,
                         observacionesEditText.text.toString()
@@ -301,46 +285,38 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
                 Log.e(TAG, "proyectos: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    act?.let {
-                        DialogHelper.getInstance().showLoadingAlert(it, null, true)
-                    }
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    act?.let {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    (response.data?.proyectos?.sortedBy{ proyecto -> proyecto.nombre })?.toMutableList()?.let { listProyectos ->
+                        val todos = Proyecto("-1", "TODOS", null, null, null, "TODOS", mutableListOf())
+                        listProyectos.add(0, todos)
 
-                        (response.data?.proyectos?.sortedBy{ proyecto -> proyecto.nombre })?.toMutableList()?.let { listProyectos ->
+                        this.listProyectos = listProyectos
 
-                            val todos = Proyecto("-1", "TODOS", null, null, null, "TODOS", mutableListOf())
-                            listProyectos.add(0, todos)
-
-                            this.listProyectos = listProyectos
-
-                            adapterProyectos?.setList(listProyectos) ?: run {
-
-                                adapterProyectos = AdapterProyectoGeneral(it, listProyectos) { position ->
-                                    binding.proyectosRecyclerView.smoothScrollToPosition(position)
-                                }
+                        adapterProyectos?.setList(listProyectos) ?: run {
+                            adapterProyectos = AdapterProyectoGeneral(requireContext(), listProyectos) { position ->
+                                binding.proyectosRecyclerView.smoothScrollToPosition(position)
                             }
-
-                            binding.proyectosRecyclerView.adapter = adapterProyectos
-
-                            viewModel.tareas()
-
                         }
 
+                        binding.proyectosRecyclerView.adapter = adapterProyectos
+                        viewModel.tareas()
+
+                    }.run{
+                        Toasty.warning(requireContext(), "NO TIENES NINGUN PROYECTO", Toast.LENGTH_LONG).show() //TODO
                     }
                 }
                 Resource.Status.ERROR -> {
-                    act?.let {
-                        DialogHelper.getInstance().showLoadingAlert(it, null, false)
-                        DialogHelper.getInstance().showOKAlert(activity = it,
-                            title = R.string.ups,
-                            text = response.exception ?: ErrorHelper.proyectosError,
-                            icon = R.drawable.ic_toools_rellena,
-                            completion = {
-                                viewModel.proyectos()
-                            })
-                    }
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                        title = R.string.ups,
+                        text = response.exception ?: ErrorHelper.proyectosError,
+                        icon = R.drawable.ic_toools_rellena,
+                        completion = {
+                            viewModel.proyectos()
+                        })
                 }
             }
         }
@@ -370,21 +346,19 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
                     }
                 }
                 Resource.Status.ERROR -> {
-                    act?.let {
-                        DialogHelper.getInstance().showLoadingAlert(it, null, false)
-                        DialogHelper.getInstance().showOKAlert(activity = it,
-                            title = R.string.ups,
-                            text = response.exception?: ErrorHelper.tareasError,
-                            icon = R.drawable.ic_toools_rellena,
-                            completion = {
-                                viewModel.tareas()
-                            }
-                        )
-                    }
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                        title = R.string.ups,
+                        text = response.exception?: ErrorHelper.tareasError,
+                        icon = R.drawable.ic_toools_rellena,
+                        completion = {
+                            viewModel.tareas()
+                        }
+                    )
                 }
             }
         }
-        viewModel.cambiarEstadoTareaLiveData.observe(viewLifecycleOwner) { response ->
+        viewModel.cambioEstadoTareaLiveData.observe(viewLifecycleOwner) { response ->
             if (BuildConfig.DEBUG)
                 Log.e(TAG, "cambiar_estado_tarea: {${response.status}}")
             when (response.status) {
@@ -425,15 +399,13 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
                         })
                 }
                 Resource.Status.ERROR -> {
-                    act?.let {
-                        DialogHelper.getInstance().showLoadingAlert(it, null, false)
-                        DialogHelper.getInstance().showOKAlert(activity = it,
-                            title = R.string.ups,
-                            text = response.exception ?: ErrorHelper.insertarTareaError,
-                            icon = R.drawable.ic_toools_rellena,
-                            completion = {}
-                        )
-                    }
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                        title = R.string.ups,
+                        text = response.exception ?: ErrorHelper.insertarTareaError,
+                        icon = R.drawable.ic_toools_rellena,
+                        completion = {}
+                    )
                 }
             }
         }

@@ -65,14 +65,6 @@ class FichajeFragment : BaseFragment() {
     var fusedLocationClient: FusedLocationProviderClient? = null
     var locationUpdates: LocationCallback? = null
 
-    /* he actualizado esto que estaba deprecated
-    val reqSetting: LocationRequest = LocationRequest.create().apply {
-        fastestInterval = 1000
-        interval = 1000
-        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        smallestDisplacement = 1.0f
-    }*/
-
     private var timeInterval: Long = 800
     private var minimalDistance: Float = 1.0f
 
@@ -558,7 +550,7 @@ class FichajeFragment : BaseFragment() {
 
             cardVolver.setOnClickListener {
                 // muestra la vista content desde casa
-                containerCasa.visibility = View.GONE
+                containerCasa.visibility = View.INVISIBLE
             }
         }
 

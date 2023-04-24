@@ -71,6 +71,5 @@ class FirebaseMessagingService : FirebaseMessagingService() {
 
     companion object {
         const val NOTIFICATION_ID = 1
-        private const val message = "message" //NON-NLS
     }
 }

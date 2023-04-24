@@ -44,7 +44,6 @@ class AdapterRespuestas(context: Context, listRespuestas: MutableList<Respuesta>
 
     override fun onBindViewHolder(holder: RespuestaHolder, position: Int) {
         holder.bind(listRespuestas[position])
-
     }
 
     class RespuestaHolder(val binding: RecyclerRespuestasBinding) : RecyclerView.ViewHolder(binding.root) {

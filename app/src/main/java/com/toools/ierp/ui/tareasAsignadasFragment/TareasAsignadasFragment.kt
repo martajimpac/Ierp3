@@ -1,18 +1,16 @@
 package com.toools.ierp.ui.tareasAsignadasFragment
 
 import androidx.fragment.app.Fragment
-class TareasAsignadasFragment : Fragment(){ }
-/*
+import androidx.fragment.app.viewModels
+import com.toools.ierp.data.ConstantHelper
+import com.toools.ierp.databinding.FragmentTareasAsignadasBinding
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -20,25 +18,15 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
 import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
-import com.toools.ierp.custom.AddTareaDialog
-import com.toools.ierp.custom.AddTareaDialogListener
-import com.toools.ierp.entities.Resource
-import com.toools.ierp.entities.RestBaseObject
-import com.toools.ierp.entities.ierp.*
-import com.toools.ierp.helpers.ConstantsHelper
-import com.toools.ierp.helpers.DialogHelper
-import com.toools.ierp.helpers.rest.ErrorHelper
+import com.toools.ierp.core.*
+import com.toools.ierp.data.model.*
 import com.toools.ierp.ui.adapter.AdapterProyectoGeneral
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.dialog_observaciones.view.*
-import kotlinx.android.synthetic.main.empty_view.view.*
-import kotlinx.android.synthetic.main.fragment_tareas_asignadas.*
-import kotlinx.android.synthetic.main.fragment_tareas_asignadas.addTareaFloatingActionButton
-import kotlinx.android.synthetic.main.fragment_tareas_asignadas.emptyViewConstraintLayout
-import kotlinx.android.synthetic.main.fragment_tareas_asignadas.proyectosRecyclerView
 
 const val TAG = "TareasAsignadasFragment"
 
+@AndroidEntryPoint
 class TareasAsignadasFragment : Fragment(), AddTareaDialogListener {
 
     private var act: Activity? = null
@@ -50,19 +38,9 @@ class TareasAsignadasFragment : Fragment(), AddTareaDialogListener {
     private var idProyectoSelected: String? = null
     private var dialogAddTarea: AddTareaDialog? = null
 
-    private val viewModel: TareasAsignadasViewModel by lazy {
-        ViewModelProvider(this, this.defaultViewModelProviderFactory)[TareasAsignadasViewModel::class.java]
-    }
+    private lateinit var binding: FragmentTareasAsignadasBinding
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {}
-        viewModel.proyectosRecived.observe(this, proyectosObserver)
-        viewModel.tareasRecived.observe(this, tareasObserver)
-        viewModel.cambioTareaRecived.observe(this, cambioEstadoObserver)
-        viewModel.addTareaRecived.observe(this, insertarTareaObserver)
-    }
+    private val viewModel: TareasAsignadasViewModel by viewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -74,22 +52,26 @@ class TareasAsignadasFragment : Fragment(), AddTareaDialogListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tareas_asignadas, container, false)
+        binding = FragmentTareasAsignadasBinding.inflate(inflater, container,false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        act?.let {
-            var layoutManager = LinearLayoutManager(it)
+        setUpView()
+        setUpObservers()
+    }
+    
+    fun setUpView(){
+        binding.apply {
+            var layoutManager = LinearLayoutManager(requireContext())
             layoutManager.orientation = RecyclerView.HORIZONTAL
             proyectosRecyclerView.layoutManager = layoutManager
             proyectosRecyclerView.setHasFixedSize(true)
             (proyectosRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
             //calcular el padding para centrar los items
-            val padding = ConstantsHelper.getWidhtScreen(it) / 2 - ConstantsHelper.dpToPx(it, 41)
+            val padding = ConstantHelper.getWidhtScreen(requireContext()) / 2 - ConstantHelper.dpToPx(requireContext(), 41)
             proyectosRecyclerView.setPadding(padding,0,padding,0)
             proyectosRecyclerView.clipToPadding = false
 
@@ -112,7 +94,7 @@ class TareasAsignadasFragment : Fragment(), AddTareaDialogListener {
                 proyectosRecyclerView.addOnScrollListener(listener)
             }
 
-            layoutManager = LinearLayoutManager(it)
+            layoutManager = LinearLayoutManager(requireContext())
             layoutManager.orientation = RecyclerView.VERTICAL
             tareasAsignadasRecyclerView.layoutManager = layoutManager
             tareasAsignadasRecyclerView.setHasFixedSize(true)
@@ -145,7 +127,7 @@ class TareasAsignadasFragment : Fragment(), AddTareaDialogListener {
 
                             val proyecto = listProyectos.first { proyecto -> proyecto.id == idProyectoSelected }
 
-                            dialog.setAddClickListener(this)
+                            dialog.setAddClickListener(this@TareasAsignadasFragment)
                             dialog.setProyecto(proyecto)
                             dialog.setTitulo(
                                 getString(
@@ -170,22 +152,15 @@ class TareasAsignadasFragment : Fragment(), AddTareaDialogListener {
     }
 
     private fun onLoadView(){
-        act?.let {
-            DialogHelper.getInstance().showLoadingAlert(it, null, true)
-            viewModel.callProyectos()
-        }
+        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+        viewModel.proyectos()
     }
 
     //*************************
     //Class Metodos
     //*************************
-    var emptryView: View? = null
     private fun filterTareas(idProyecto: String?){
-        act?.let { context ->
-
-            emptryView?.let {
-                emptyViewConstraintLayout.removeView(it)
-            }
+        binding.apply {
 
             listTareas.filter { tarea -> tarea.idProyecto == idProyecto || idProyecto == "-1" }.toMutableList().let { lista ->
                 if (lista.isEmpty()) {
@@ -193,63 +168,49 @@ class TareasAsignadasFragment : Fragment(), AddTareaDialogListener {
                     emptyViewConstraintLayout.visibility = View.VISIBLE
                     tareasAsignadasRecyclerView.visibility = View.GONE
 
-                    if (emptryView == null) {
-                        val inflater = LayoutInflater.from(act)
-                        emptryView =
-                            inflater.inflate(R.layout.empty_view, tareasAsignadasConstraintLayout, false)
-                    }
+                    emptyView.tituloEmptyTextView.text = getString(R.string.sin_tareas)
+                    emptyView.descripcionEmptyTextView.text = getString(R.string.sin_tareas_desc)
 
-                    emptryView?.let { emptryView ->
-                        emptyViewConstraintLayout.addView(emptryView)
-
-                        emptryView.tituloEmptyTextView.text = getString(R.string.sin_tareas)
-                        emptryView.descripcionEmptyTextView.text = getString(R.string.sin_tareas_desc)
-
-                        Glide.with(context).load(R.drawable.not_tareas).into(emptryView.emptyImageView)
-                    }
+                    Glide.with(requireContext()).load(R.drawable.not_tareas).into(emptyView.emptyImageView)
 
                 } else {
 
                     emptyViewConstraintLayout.visibility = View.GONE
                     tareasAsignadasRecyclerView.visibility = View.VISIBLE
 
-                    adapterTareas?.let {
-                        it.setList(lista)
-                    } ?: run {
-                        adapterTareas = AdapterTareasAsignadas(context, lista) { tarea ->
-                            cambiarEstadoTarea(tarea, ConstantsHelper.Estados.completada)
+                    adapterTareas?.setList(lista) ?: run {
+                        adapterTareas = AdapterTareasAsignadas(requireContext(), lista) { tarea ->
+                            cambiarEstadoTarea(tarea, ConstantHelper.Estados.completada)
                         }
                     }
-
                     tareasAsignadasRecyclerView.adapter = adapterTareas
                 }
             }
         }
     }
 
-    fun cambiarEstadoTarea(tarea: TareaAsignada, estado: ConstantsHelper.Estados) {
+    fun cambiarEstadoTarea(tarea: TareaAsignada, estado: ConstantHelper.Estados) {
 
-        //mostrar la modal de observaciones
-        val inflater = LayoutInflater.from(act)
-        val modalObservaciones = inflater.inflate(R.layout.dialog_observaciones, tareasAsignadasConstraintLayout, false)
+        binding.apply {
+            //mostrar la modal de observaciones
+            dialogObservaciones.containerObservaciones.visibility = View.VISIBLE
+            
+            dialogObservaciones.emailTextView.text = getString(R.string.title_observacion)
+            dialogObservaciones.descripcionObsercacionTextView.text = getString(R.string.desc_observacion)
 
-        tareasAsignadasConstraintLayout.addView(modalObservaciones)
+            dialogObservaciones.cancelarContraintLayout.setOnClickListener {
+                dialogObservaciones.containerObservaciones.visibility = View.INVISIBLE
+            }
 
-        modalObservaciones.emailTextView.text = getString(R.string.title_observacion)
-        modalObservaciones.descripcionObsercacionTextView.text = getString(R.string.desc_observacion)
-
-        modalObservaciones.cancelarContraintLayout.setOnClickListener {
-            tareasAsignadasConstraintLayout.removeView(modalObservaciones)
-        }
-
-        modalObservaciones.aceptarContraintLayout.setOnClickListener {
-            tareasAsignadasConstraintLayout.removeView(modalObservaciones)
-            tarea.idTarea?.let {
-                viewModel.cambiarEstadoTarea(
-                    estado.idEstado,
-                    tarea.idTarea,
-                    modalObservaciones.observacionesEditText.text.toString()
-                )
+            dialogObservaciones.aceptarContraintLayout.setOnClickListener {
+                dialogObservaciones.containerObservaciones.visibility = View.INVISIBLE
+                tarea.idTarea?.let {
+                    viewModel.cambioEstadoTarea(
+                        estado.idEstado,
+                        tarea.idTarea,
+                        dialogObservaciones.observacionesEditText.text.toString()
+                    )
+                }
             }
         }
     }
@@ -264,88 +225,33 @@ class TareasAsignadasFragment : Fragment(), AddTareaDialogListener {
         descripcion: String,
         plazo: String
     ) {
-        addTareaFloatingActionButton.visibility = View.VISIBLE
-        tareasAsignadasConstraintLayout.removeView(dialogAddTarea)
-        act?.let {
-            DialogHelper.getInstance().showLoadingAlert(it, null, true)
-            viewModel.addTarea(idProyecto = idProyecto, idEmpleado = idEmpleado, titulo = titulo, descripcion = descripcion, plazo = plazo)
-        }
+        binding.addTareaFloatingActionButton.visibility = View.VISIBLE
+        binding.tareasAsignadasConstraintLayout.removeView(dialogAddTarea)
+        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+        viewModel.insertarTarea(idProyecto = idProyecto, idEmpleado = idEmpleado, titulo = titulo, descripcion = descripcion, plazo = plazo)
     }
 
     override fun clickCancelTarea() {
-        addTareaFloatingActionButton.visibility = View.VISIBLE
-        tareasAsignadasConstraintLayout.removeView(dialogAddTarea)
+        binding.addTareaFloatingActionButton.visibility = View.VISIBLE
+        binding.tareasAsignadasConstraintLayout.removeView(dialogAddTarea)
     }
 
     //*************************
     //Observers
     //*************************
-    private val proyectosObserver = Observer<Resource<ProyectosResponse>> { resource ->
+    fun setUpObservers(){
+        viewModel.tareasAsignadasLiveData.observe(viewLifecycleOwner) { response ->
+            if (BuildConfig.DEBUG)
+                Log.e(com.toools.ierp.ui.tareasFragment.TAG, "tareas_asignadas: {${response.status}}")
+            when (response.status) {
+                Resource.Status.LOADING -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
 
-        if (BuildConfig.DEBUG)
-            Log.e(com.toools.ierp.ui.tareasFragment.TAG, "proyectos: {${resource.status}}")
-        when (resource.status) {
-            Resource.Status.LOADING -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, true)
                 }
+                Resource.Status.SUCCESS -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
 
-            }
-            Resource.Status.SUCCESS -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
-
-                    (resource.data?.proyectos?.sortedBy{ proyecto -> proyecto.nombre })?.toMutableList()?.let { listProyectos ->
-
-                        val todos = Proyecto("-1", "TODOS", null, null, null, "TODOS", mutableListOf())
-                        listProyectos.add(0, todos)
-
-                        this.listProyectos = listProyectos
-
-                        adapterProyectos?.setList(listProyectos) ?: run {
-
-                            adapterProyectos = AdapterProyectoGeneral(it, listProyectos) { position ->
-                                proyectosRecyclerView.smoothScrollToPosition(position)
-                            }
-                        }
-
-                        proyectosRecyclerView.adapter = adapterProyectos
-
-                        viewModel.callTareas()
-
-                    }
-                }
-            }
-            Resource.Status.ERROR -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = it,
-                        title = R.string.ups,
-                        text = resource.exception?.message() ?: ErrorHelper.proyectosError,
-                        icon = R.drawable.ic_toools_rellena,
-                        completion = {
-                            viewModel.callProyectos()
-                        })
-                }
-            }
-        }
-    }
-
-    private val tareasObserver = Observer<Resource<TareasAsignadasResponse>> { resource ->
-
-        if (BuildConfig.DEBUG)
-            Log.e(com.toools.ierp.ui.tareasFragment.TAG, "proyectos: {${resource.status}}")
-        when (resource.status) {
-            Resource.Status.LOADING -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, true)
-                }
-            }
-            Resource.Status.SUCCESS -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
-
-                    resource.data?.tareas?.let{ listTareas ->
+                    response.data?.tareas?.let{ listTareas ->
                         this.listTareas = listTareas.toMutableList()
                     }
 
@@ -354,88 +260,116 @@ class TareasAsignadasFragment : Fragment(), AddTareaDialogListener {
                     } ?: run {
                         filterTareas(idProyecto = listProyectos[0].id)
                     }
+
                 }
-            }
-            Resource.Status.ERROR -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = it,
+                Resource.Status.ERROR -> {
+
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
                         title = R.string.ups,
-                        text = resource.exception?.message() ?: ErrorHelper.tareasError,
+                        text = response.exception ?: ErrorHelper.tareasError,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
-                            viewModel.callTareas()
-                        })
+                            viewModel.tareasAsignadas()
+                        }
+                    )
                 }
             }
         }
-    }
-
-    private val cambioEstadoObserver = Observer<Resource<RestBaseObject>> { resource ->
-
-        if (BuildConfig.DEBUG)
-            Log.e(com.toools.ierp.ui.tareasFragment.TAG, "proyectos: {${resource.status}}")
-        when (resource.status) {
-            Resource.Status.LOADING -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, true)
+        viewModel.proyectosLiveData.observe(viewLifecycleOwner) { response ->
+            if (BuildConfig.DEBUG)
+                Log.e(com.toools.ierp.ui.tareasFragment.TAG, "proyectos: {${response.status}}")
+            when (response.status) {
+                Resource.Status.LOADING -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                 }
+                Resource.Status.SUCCESS -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
 
-            }
-            Resource.Status.SUCCESS -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
+                    (response.data?.proyectos?.sortedBy{ proyecto -> proyecto.nombre })?.toMutableList()?.let { listProyectos ->
 
-                    Toasty.success(it, resources.getString(R.string.cambio_tarea_ok)).show()
+                        val todos = Proyecto("-1", "TODOS", null, null, null, "TODOS", mutableListOf())
+                        listProyectos.add(0, todos)
 
-                    viewModel.callTareas()
+                        this.listProyectos = listProyectos
+
+                        adapterProyectos?.setList(listProyectos) ?: run {
+                            adapterProyectos = AdapterProyectoGeneral(requireContext(), listProyectos) { position ->
+                                binding.proyectosRecyclerView.smoothScrollToPosition(position)
+                            }
+                        }
+
+                        binding.proyectosRecyclerView.adapter = adapterProyectos
+                        viewModel.tareasAsignadas()
+
+                    }
+
                 }
-            }
-            Resource.Status.ERROR -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = it,
-                        title = R.string.ups,
-                        text = resource.exception?.message() ?: ErrorHelper.cambioEstadoTareaError,
-                        icon = R.drawable.ic_toools_rellena,
-                        completion = {
-
-                        })
+                Resource.Status.ERROR -> {
+                    act?.let {
+                        DialogHelper.getInstance().showLoadingAlert(it, null, false)
+                        DialogHelper.getInstance().showOKAlert(activity = it,
+                            title = R.string.ups,
+                            text = response.exception ?: ErrorHelper.proyectosError,
+                            icon = R.drawable.ic_toools_rellena,
+                            completion = {
+                                viewModel.proyectos()
+                            })
+                    }
                 }
             }
         }
-    }
 
-    private val insertarTareaObserver = Observer<Resource<RestBaseObject>> { resource ->
-
-        if (BuildConfig.DEBUG)
-            Log.e(com.toools.ierp.ui.tareasFragment.TAG, "addTarea: {${resource.status}}")
-        when (resource.status) {
-            Resource.Status.LOADING -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, true)
+        viewModel.cambioEstadoTareaLiveData.observe(viewLifecycleOwner) { response ->
+            if (BuildConfig.DEBUG)
+                Log.e(com.toools.ierp.ui.tareasFragment.TAG, "proyectos: {${response.status}}")
+            when (response.status) {
+                Resource.Status.LOADING -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                 }
+                Resource.Status.SUCCESS -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
 
+                    Toasty.success(requireContext(), resources.getString(R.string.cambio_tarea_ok)).show()
+
+                    viewModel.tareasAsignadas()
+                }
+                Resource.Status.ERROR -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                        title = R.string.ups,
+                        text = response.exception ?: ErrorHelper.cambioEstadoTareaError,
+                        icon = R.drawable.ic_toools_rellena,
+                        completion = {}
+                    )
+                }
             }
-            Resource.Status.SUCCESS -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
+        }
 
-                    DialogHelper.getInstance().showOKAlert(activity = it,
+        viewModel.insertarTareaLiveData.observe(viewLifecycleOwner) { response ->
+            if (BuildConfig.DEBUG)
+                Log.e(com.toools.ierp.ui.tareasFragment.TAG, "addTarea: {${response.status}}")
+            when (response.status) {
+                Resource.Status.LOADING -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                }
+                Resource.Status.SUCCESS -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
                         title = R.string.tarea_insertada,
                         text = R.string.desc_tarea_insertada,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
                             onLoadView()
                         })
+
                 }
-            }
-            Resource.Status.ERROR -> {
-                act?.let {
-                    DialogHelper.getInstance().showLoadingAlert(it, null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = it,
+                Resource.Status.ERROR -> {
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
                         title = R.string.ups,
-                        text = resource.exception?.message() ?: ErrorHelper.insertarTareaError,
+                        text = response.exception ?: ErrorHelper.insertarTareaError,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
 
@@ -444,4 +378,4 @@ class TareasAsignadasFragment : Fragment(), AddTareaDialogListener {
             }
         }
     }
-}*/
+}
