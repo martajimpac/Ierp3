@@ -1,7 +1,5 @@
 package com.toools.ierp.ui.tareasFragment
 
-import androidx.fragment.app.Fragment
-import com.toools.ierp.BuildConfig
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
@@ -9,13 +7,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.*
 import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
+import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
 import com.toools.ierp.core.*
 import com.toools.ierp.data.ConstantHelper
@@ -70,8 +69,8 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
             (proyectosRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
             //calcular el padding para centrar los items
-            //todo solucionar padding PROBAR A PASAR ACTIVITY?
-            val padding = ConstantHelper.getWidhtScreen(requireContext()) / 2 - ConstantHelper.dpToPx(requireContext(), 41)
+            val padding = ConstantHelper.getWidhtScreen(requireActivity()) / 2 - ConstantHelper.dpToPx(requireContext(), 41)
+
             proyectosRecyclerView.setPadding(padding, 0, padding, 0)
             proyectosRecyclerView.clipToPadding = false
 
@@ -220,28 +219,27 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
     //*************************
     //Tareas listener
     //*************************
+    //llamamos a estas funciones desde el adapter
     override fun aceptarTarea(tarea: Tarea) {
         //mostrar la modal de observaciones
-
         binding.dialogObservaciones.apply{
 
-            containerObservaciones.visibility = View.VISIBLE
+            binding.modalObservacionesTareas.visibility = View.VISIBLE
 
             emailTextView.text = getString(R.string.title_observacion)
             descripcionObsercacionTextView.text = getString(R.string.desc_observacion)
-
             cancelarContraintLayout.setOnClickListener {
-                containerObservaciones.visibility = View.GONE
+                binding.modalObservacionesTareas.visibility = View.GONE
             }
 
             aceptarContraintLayout.setOnClickListener {
-                containerObservaciones.visibility = View.GONE
+                binding.modalObservacionesTareas.visibility = View.GONE
                 //llamar a aceptar tarea
 
                 tarea.idTarea?.let {
                     viewModel.cambioEstadoTarea(
-                        ConstantHelper.Estados.abierta.idEstado,
                         tarea.idTarea,
+                        ConstantHelper.Estados.abierta.idEstado,
                         observacionesEditText.text.toString()
                     )
                 }
@@ -253,21 +251,21 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
         //mostrar la modal de observaciones
         binding.dialogObservaciones.apply{
 
-            containerObservaciones.visibility = View.VISIBLE
+            binding.modalObservacionesTareas.visibility = View.VISIBLE
 
             emailTextView.text = getString(R.string.title_observacion)
             descripcionObsercacionTextView.text = getString(R.string.desc_observacion)
 
             cancelarContraintLayout.setOnClickListener {
-                containerObservaciones.visibility = View.GONE
+                binding.modalObservacionesTareas.visibility = View.GONE
             }
 
             aceptarContraintLayout.setOnClickListener {
-                containerObservaciones.visibility = View.GONE
+                binding.modalObservacionesTareas.visibility = View.GONE
                 tarea.idTarea?.let {
                     viewModel.cambioEstadoTarea(
-                        estado.idEstado,
                         tarea.idTarea,
+                        estado.idEstado,
                         observacionesEditText.text.toString()
                     )
                 }
@@ -304,8 +302,6 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
                         binding.proyectosRecyclerView.adapter = adapterProyectos
                         viewModel.tareas()
 
-                    }.run{
-                        Toasty.warning(requireContext(), "NO TIENES NINGUN PROYECTO", Toast.LENGTH_LONG).show() //TODO
                     }
                 }
                 Resource.Status.ERROR -> {

@@ -138,12 +138,8 @@ class FichajeFragment : BaseFragment() {
                         DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
 
                         usuario?.token?.let {
-                            if (BuildConfig.DEBUG)
-                                Log.e(TAG, "vamos a momentos")
                             viewModel.momentosDia(it, dia, mes, anyo)
                         } ?: run {
-                            if (BuildConfig.DEBUG)
-                                Log.e(TAG, "vamos a momentos PERO EL USUARIO ES NULO")
                             viewModel.momentosDia("", dia, mes, anyo)
                         }
 
@@ -475,6 +471,9 @@ class FichajeFragment : BaseFragment() {
 
             // muestra la vista content desde casa
             containerCasa.visibility = View.VISIBLE
+            activity?.let {
+                (it as MainActivity).mostrarToolbar(false)
+            }
 
             if (isEntrar) {
                 txtDescCasa.text =
@@ -491,7 +490,6 @@ class FichajeFragment : BaseFragment() {
             }
             contentBtncasa.setOnClickListener {
                 if (isEntrar) {
-                    if (BuildConfig.DEBUG)
                     DialogHelper.getInstance().showEditTextAlert(
                         requireActivity(),
                         resources.getString(R.string.insert_code_title),
@@ -546,11 +544,18 @@ class FichajeFragment : BaseFragment() {
                         )
                     }
                 }
+                containerCasa.visibility = View.GONE
+                activity?.let {
+                    (it as MainActivity).mostrarToolbar(true)
+                }
             }
 
             cardVolver.setOnClickListener {
-                // muestra la vista content desde casa
-                containerCasa.visibility = View.INVISIBLE
+                // oculta la vista content desde casa
+                containerCasa.visibility = View.GONE
+                activity?.let {
+                    (it as MainActivity).mostrarToolbar(true)
+                }
             }
         }
 
@@ -647,7 +652,8 @@ class FichajeFragment : BaseFragment() {
                             title = R.string.ups,
                             text = response.exception ?: ErrorHelper.addEventError,
                             icon = R.drawable.ic_toools_rellena,
-                            completion = {})
+                            completion = {}
+                        )
                 }
             }
         }

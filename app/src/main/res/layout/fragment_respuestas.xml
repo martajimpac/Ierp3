@@ -7,12 +7,24 @@
         android:layout_height="match_parent"
         tools:context=".ui.respuestasFragment.RespuestasFragment">
 
-    <include
-        android:id="@+id/dialog_observaciones"
-        layout="@layout/dialog_observaciones"
+    <FrameLayout
+        android:id="@+id/modalObservacionesRespuestas"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="4dp"> <!-- Para que se muestre por encima de las otras vistas-->
+
+        <include
+            android:id="@+id/dialog_observaciones"
+            layout="@layout/dialog_observaciones"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <View
             android:id="@+id/view12"

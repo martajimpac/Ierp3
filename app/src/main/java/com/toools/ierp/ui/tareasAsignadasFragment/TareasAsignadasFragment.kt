@@ -71,7 +71,8 @@ class TareasAsignadasFragment : Fragment(), AddTareaDialogListener {
             (proyectosRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
             //calcular el padding para centrar los items
-            val padding = ConstantHelper.getWidhtScreen(requireContext()) / 2 - ConstantHelper.dpToPx(requireContext(), 41)
+            val padding = ConstantHelper.getWidhtScreen(requireActivity()) / 2 - ConstantHelper.dpToPx(requireContext(), 41)
+
             proyectosRecyclerView.setPadding(padding,0,padding,0)
             proyectosRecyclerView.clipToPadding = false
 
@@ -191,24 +192,25 @@ class TareasAsignadasFragment : Fragment(), AddTareaDialogListener {
 
     fun cambiarEstadoTarea(tarea: TareaAsignada, estado: ConstantHelper.Estados) {
 
-        binding.apply {
-            //mostrar la modal de observaciones
-            dialogObservaciones.containerObservaciones.visibility = View.VISIBLE
-            
-            dialogObservaciones.emailTextView.text = getString(R.string.title_observacion)
-            dialogObservaciones.descripcionObsercacionTextView.text = getString(R.string.desc_observacion)
+        binding.dialogObservaciones.apply {
 
-            dialogObservaciones.cancelarContraintLayout.setOnClickListener {
-                dialogObservaciones.containerObservaciones.visibility = View.INVISIBLE
+            //mostrar la modal de observaciones
+            binding.modalObservacionesTareasAsignadas.visibility = View.VISIBLE
+            
+            emailTextView.text = getString(R.string.title_observacion)
+            descripcionObsercacionTextView.text = getString(R.string.desc_observacion)
+
+            cancelarContraintLayout.setOnClickListener {
+                binding.modalObservacionesTareasAsignadas.visibility = View.INVISIBLE
             }
 
-            dialogObservaciones.aceptarContraintLayout.setOnClickListener {
-                dialogObservaciones.containerObservaciones.visibility = View.INVISIBLE
+            aceptarContraintLayout.setOnClickListener {
+                binding.modalObservacionesTareasAsignadas.visibility = View.INVISIBLE
                 tarea.idTarea?.let {
                     viewModel.cambioEstadoTarea(
                         estado.idEstado,
                         tarea.idTarea,
-                        dialogObservaciones.observacionesEditText.text.toString()
+                        observacionesEditText.text.toString()
                     )
                 }
             }

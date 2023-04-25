@@ -45,7 +45,7 @@ class VideoFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return binding.root
     }
 
@@ -59,7 +59,7 @@ class VideoFragment : Fragment() {
         //se encarga de elegir las pistas en base a una serie de cirterios como la resolucion, tasa de bits..
         val trackSelector = DefaultTrackSelector(requireContext()).apply{
             setParameters(buildUponParameters().setMaxVideoSizeSd())
-        //para priorizar la selección de pistas de video con resolución SD, en lugar de pistas con resoluciones superiores, como HD o 4K, si están disponibles.
+            //para priorizar la selección de pistas de video con resolución SD, en lugar de pistas con resoluciones superiores, como HD o 4K, si están disponibles.
         }
 
         binding.apply{
@@ -106,46 +106,29 @@ class VideoFragment : Fragment() {
                     playerControlView.showTimeoutMs = 0
                     playerControlView.show()
 
-                    //cambiar los iconos de control de video TODO
-
                     player.prepare()
                 }
         }
     }
 
-
-
     override fun onStart() {
-
-        //si la version del api es mayor soportan multiples ventanas, por lo que deberiamos inicializar el player aqui
         super.onStart()
-        if (Util.SDK_INT > 23) {
-            initializePlayer()
-        }
+        initializePlayer()
     }
 
 
     override fun onResume() {
         super.onResume()
         hideSystemUi()
-       if (Util.SDK_INT <= 23 || player == null) {
+        if (player == null) {
             initializePlayer()
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        if (Util.SDK_INT <= 23) {
-            releasePlayer()
-        }
-    }
 
     override fun onStop() {
         super.onStop()
-        //antes de api 23 no hay garantia de que se va a llamar a onstop, por lo que liberamos los recursos en onPause
-        if (Util.SDK_INT > 23) {
-            releasePlayer()
-        }
+        releasePlayer()
     }
 
     //permitir que se vea en pantalla completa
@@ -172,7 +155,7 @@ class VideoFragment : Fragment() {
 
     /*---------------------------
     LISTENER
-     ----------------------------*/
+    -----------------------------*/
     private fun playbackStateListener()= object: Player.Listener{
         //actualizar el titulo del video
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {

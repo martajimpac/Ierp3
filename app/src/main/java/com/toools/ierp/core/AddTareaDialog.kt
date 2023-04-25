@@ -12,13 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
 import com.toools.ierp.data.ConstantHelper
 import com.toools.ierp.data.model.Proyecto
 import com.toools.ierp.data.model.Usuario
 import com.toools.ierp.databinding.DialogAddTareaBinding
+import com.toools.ierp.ui.main.MainActivity
 import java.util.*
+
 
 class AddTareaDialog @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0, defStyleRes: Int = 0):
     ConstraintLayout(context, attrs, defStyle, defStyleRes) {
@@ -102,8 +103,10 @@ class AddTareaDialog @JvmOverloads constructor(context: Context, attrs: Attribut
             empleadosRecyclerView.setHasFixedSize(true)
             (empleadosRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
-            //calcular el padding para centrar los items
-            val padding = ConstantHelper.getWidhtScreen(context) / 2 - ConstantHelper.dpToPx(context, 57)
+            //calcular el padding para centrar los items TODO ver si esto funciona deberia ser 417
+            val padding = ConstantHelper.getWidhtScreen(activity = MainActivity.getInstance()) / 2 - ConstantHelper.dpToPx(context, 41)
+            Log.e("dialogadd", "padding"+ padding)
+
             empleadosRecyclerView.setPadding(padding,0,padding,0)
             empleadosRecyclerView.clipToPadding = false
 
@@ -168,6 +171,7 @@ class AddTareaDialog @JvmOverloads constructor(context: Context, attrs: Attribut
             }
         }
     }
+
 }
 
 interface AddTareaDialogListener {

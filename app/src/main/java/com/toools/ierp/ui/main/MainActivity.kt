@@ -154,7 +154,6 @@ class MainActivity : BaseActivity(), MenuListener {
         }
     }
 
-    //a esta funcion se la llama desde otros fragment
     fun showIconBack(show: Boolean) {
         if (show) {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -163,6 +162,15 @@ class MainActivity : BaseActivity(), MenuListener {
         }
         showingBack = show
     }
+
+    fun mostrarToolbar(show: Boolean) {
+        if(show){
+            binding.toolbar.setVisibility(View.VISIBLE);
+        }else{
+            binding.toolbar.setVisibility(View.GONE);
+        }
+    }
+
 
     //DRAWER LAYOUT
     private val simpleDrawerListener = object : DrawerLayout.SimpleDrawerListener() {
@@ -338,5 +346,12 @@ class MainActivity : BaseActivity(), MenuListener {
         editor.apply()
 
         onBackToLogin()
+    }
+
+    companion object {
+        lateinit var app: MainActivity
+        fun getInstance(): MainActivity {
+            return app
+        }
     }
 }

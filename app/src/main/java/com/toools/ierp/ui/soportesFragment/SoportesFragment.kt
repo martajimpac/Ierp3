@@ -3,6 +3,7 @@ package com.toools.ierp.ui.soportesFragment
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -60,7 +61,7 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
         sharedElementEnterTransition = context?.let { TransitionInflater.from(it).inflateTransition(android.R.transition.move) }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSoportesBinding.inflate(inflater, container,false)
         return binding.root
     }
@@ -105,9 +106,8 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
             proyectosRecyclerView.setHasFixedSize(true)
             (proyectosRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
-            //calcular el padding para centrar los items
-            // todo solucionar padding
-            val padding = ConstantHelper.getWidhtScreen(requireContext()) / 2 - ConstantHelper.dpToPx(requireContext(), 41)
+            val padding = ConstantHelper.getWidhtScreen(requireActivity()) / 2 - ConstantHelper.dpToPx(requireContext(), 41)
+
             proyectosRecyclerView.setPadding(padding,0,padding,0)
             proyectosRecyclerView.clipToPadding = false
 
@@ -161,9 +161,8 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
 
                 var lista = mutableListOf<Soporte>()
                 if (aux.isEmpty()) {
-
                     emptyViewConstraintLayout.visibility = View.VISIBLE
-                    soportesRecyclerView.visibility = View.GONE
+                    soportesRecyclerView.visibility = View.INVISIBLE
 
                     emptyView.tituloEmptyTextView.text = getString(R.string.sin_soportes)
                     emptyView.descripcionEmptyTextView.text = getString(R.string.sin_soportes_desc)
@@ -280,8 +279,6 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                         binding.proyectosRecyclerView.adapter = adapterProyectos
 
                         viewModel.soportes()
-                    }.run{
-                        Toasty.warning(requireContext(), "NO TIENES NINGUN PROYECTO", Toast.LENGTH_LONG).show() //TODO
                     }
                 }
                 Resource.Status.ERROR -> {

@@ -2,15 +2,12 @@ package com.toools.ierp.data
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
+import android.graphics.Insets
+import android.os.Build
 import android.util.DisplayMetrics
-import android.view.View
+import android.view.WindowInsets
 import com.toools.ierp.R
-import dagger.hilt.android.AndroidEntryPoint
-import java.io.UnsupportedEncodingException
-import java.net.URLEncoder
+
 
 object ConstantHelper {
 
@@ -72,12 +69,21 @@ object ConstantHelper {
     const val firebaseApiKey = "AIzaSyCJJmQ-34NOO4IgCe0Q5rrEZk9kaJ8pP08"
     const val firebaseAppName = "IERP"
 
-    fun getWidhtScreen(context: Context): Int {
-        val displayMetrics = DisplayMetrics()
 
-        //(context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)  TODO ESTO NO FUNCIONA
-        return displayMetrics.widthPixels
+    fun getWidhtScreen(activity: Activity): Int {
+        //a partir de api 30 se puede usar esta opcion
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            val windowMetrics = activity.windowManager.currentWindowMetrics
+            val insets: Insets = windowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            return windowMetrics.bounds.width() - insets.left - insets.right
+        }else{
+            val displayMetrics = DisplayMetrics()
+            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            return displayMetrics.widthPixels
+        }
     }
+
 
     fun dpToPx(context: Context, dp: Int): Int {
         val scale: Float = context.resources.displayMetrics.density

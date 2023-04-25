@@ -70,6 +70,7 @@ class RespuestasFragment : Fragment() {
             (respuestasRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
             onLoadView()
+            setUpObservers()
         }
     }
 
@@ -118,25 +119,25 @@ class RespuestasFragment : Fragment() {
 
     fun nuevaRespuesta(idSoporte: String) {
 
-        binding.apply {
+        binding.dialogObservaciones.apply {
             //mostrar la modal de observaciones
 
-            dialogObservaciones.containerObservaciones.visibility = View.VISIBLE
+            binding.modalObservacionesRespuestas.visibility = View.VISIBLE
 
-            dialogObservaciones.emailTextView.text = getString(R.string.nueva_respuesta)
-            dialogObservaciones.descripcionObsercacionTextView.text = getString(R.string.desc_respuesta)
-            dialogObservaciones.observacionesEditText.hint = getString(R.string.texto_respuesta)
+            emailTextView.text = getString(R.string.nueva_respuesta)
+            descripcionObsercacionTextView.text = getString(R.string.desc_respuesta)
+            observacionesEditText.hint = getString(R.string.texto_respuesta)
 
-            dialogObservaciones.cancelarContraintLayout.setOnClickListener {
-                dialogObservaciones.containerObservaciones.visibility = View.INVISIBLE
-            }
+           cancelarContraintLayout.setOnClickListener {
+               binding.modalObservacionesRespuestas.visibility = View.GONE
+           }
 
-            dialogObservaciones.aceptarContraintLayout.setOnClickListener {
-                dialogObservaciones.containerObservaciones.visibility = View.INVISIBLE
+            aceptarContraintLayout.setOnClickListener {
+                binding.modalObservacionesRespuestas.visibility = View.GONE
                 DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
                 viewModel.sendRespuesta(
                     idSoporte,
-                    dialogObservaciones.observacionesEditText.text.toString()
+                    observacionesEditText.text.toString()
                 )
             }
         }

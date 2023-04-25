@@ -66,11 +66,11 @@ class TareasViewModel @Inject constructor(private val tareasUserCase: TareasUser
         }
     }
 
-    fun cambioEstadoTarea(idEstado: String, idTarea: String, observacion: String){
+    fun cambioEstadoTarea(idTarea: String,idEstado: String,  observacion: String){
         viewModelScope.launch {
             cambioEstadoTareaLiveData.value = Resource.loading()
             Repository.usuario?.token?.let{ token ->
-                val response = cambioEstadoTareaUserCase.invoke(token,idEstado,idTarea,observacion)
+                val response = cambioEstadoTareaUserCase.invoke(token,idTarea,idEstado,observacion)
                 if (response != null) {
                     if (response.isOK()) {
                         cambioEstadoTareaLiveData.value = Resource.success(response)
