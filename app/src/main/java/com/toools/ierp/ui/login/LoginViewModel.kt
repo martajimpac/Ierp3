@@ -18,7 +18,6 @@ import javax.inject.Inject
 class LoginViewModel  @Inject constructor(private val loginUserCase: LoginUserCase,private val addTokenFirebaseUserCase: AddTokenFirebaseUserCase): ViewModel() {
 
     val loginLiveData: MutableLiveData<Resource<LoginResponse>> = MutableLiveData()
-    //val momentosLiveData: MutableLiveData<Resource<MomentosResponse>> = MutableLiveData() todo quitar
     val addTokenFirebaseLiveData: MutableLiveData<Resource<BaseResponse>> = MutableLiveData()
 
     fun login(client: String, user: String, password: String){

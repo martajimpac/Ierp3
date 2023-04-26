@@ -6,6 +6,7 @@ import androidx.multidex.MultiDexApplication
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.toools.ierp.data.ConstantHelper
+//import com.toools.tooolsdialog.DialogHelper
 import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor
 import io.github.inflationx.viewpump.ViewPump
@@ -38,6 +39,9 @@ class IerpApp : MultiDexApplication() {
             )
                 .build()
         )
+        //TODO IMPORTA ESTO
+        //DialogHelper.getInstance().initDefaultValues(R.drawable.ic_toools_rellena, R.color.green_app, null,
+           // R.color.green_app, R.color.green_app, R.color.green_app, buttonTextColor = R.color.white)
     }
 
     //region STATIC ACCESS

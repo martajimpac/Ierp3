@@ -1,8 +1,10 @@
 package com.toools.ierp.ui.main
 
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -128,7 +130,13 @@ class MainActivity : BaseActivity(), MenuListener {
 
             //añadir los datos de la version
             try {
-                val pInfo = packageManager.getPackageInfo(packageName, 0)
+                val pInfo: PackageInfo
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    pInfo = packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0.toLong()))
+                } else {
+                    @Suppress("DEPRECATION")
+                    pInfo = packageManager.getPackageInfo(packageName, 0)
+                }
                 menuLayout.appVersionTextView.text =
                     String.format(getString(R.string.app_name_with_version), pInfo.versionName)
 
@@ -261,9 +269,6 @@ class MainActivity : BaseActivity(), MenuListener {
                 }
                 ConstantHelper.SeccionMenu.soportes -> {
                     id = R.id.soportesFragment
-                }
-                ConstantHelper.SeccionMenu.video -> {
-                    id = R.id.videoFragment
                 }
                 ConstantHelper.SeccionMenu.notificaciones -> {
                 }

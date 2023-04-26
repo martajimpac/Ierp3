@@ -22,6 +22,7 @@ import com.toools.ierp.core.*
 import com.toools.ierp.data.model.Proyecto
 import com.toools.ierp.databinding.FragmentProyectosBinding
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 
 const val TAG = "ProyectosFragment"
 @AndroidEntryPoint
@@ -95,6 +96,8 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
     }
 
     override fun clickEmpleados(proyecto: Proyecto) {
+        //mostrar la vista
+        binding.modalEmpleadosProyectos.visibility = View.VISIBLE
         binding.dialogEmpleados.apply{
 
             val gridLayoutManager = GridLayoutManager(requireActivity(), 3)
@@ -103,9 +106,7 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
             empleadosRecyclerView.setHasFixedSize(true)
             (empleadosRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
-            adapterEmpleados?.let { adapter ->
-                adapter.setList(proyecto.usuarios.toMutableList())
-            } ?: run {
+            adapterEmpleados?.setList(proyecto.usuarios.toMutableList()) ?: run {
                 adapterEmpleados = AdapterEmpleados(requireActivity(), proyecto.usuarios.toMutableList())
             }
 
@@ -115,12 +116,13 @@ class ProyectosFragment : Fragment(), ProyectosListener, AddTareaDialogListener 
 
             //ocultar vista
             aceptarContraintLayout.setOnClickListener {
-                containerDialogEmpleados.visibility = View.GONE
+                binding.modalEmpleadosProyectos.visibility = View.GONE
             }
         }
     }
 
     override fun clickAddTarea(proyecto: Proyecto) {
+        //TODO ESTO NO FUNCIONA
 
         if (dialogAddTarea == null) {
             dialogAddTarea = AddTareaDialog(requireContext())

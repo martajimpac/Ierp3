@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="pm5">5dp</dimen>
+    <dimen name="pm10">10dp</dimen>
+    <dimen name="pm15">15dp</dimen>
+    <dimen name="pm20">20dp</dimen>
+    <dimen name="pm50">50dp</dimen>
+
+
+    <dimen name="ts8">8sp</dimen>
+    <dimen name="ts10">10sp</dimen>
+    <dimen name="ts12">12sp</dimen>
+    <dimen name="ts15">15sp</dimen>
+    <dimen name="ts18">18sp</dimen>
+    <dimen name="ts20">20sp</dimen>
+    <dimen name="ts25">25sp</dimen>
+    <dimen name="ts35">35sp</dimen>
+    <dimen name="ts40">40sp</dimen>
+    <dimen name="ts50">50sp</dimen>
+
+
+</resources>

@@ -2,11 +2,14 @@ package com.toools.ierp.ui.splash
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
@@ -33,6 +36,7 @@ class SplashActivity : AppCompatActivity() {
     private lateinit var tokenFirebase: String
     private var isLoad: Boolean = true
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
@@ -41,7 +45,13 @@ class SplashActivity : AppCompatActivity() {
 
         binding.apply{
             try {
-                val pInfo = packageManager.getPackageInfo(packageName, 0) //todo quitar deprecated
+                val pInfo: PackageInfo
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    pInfo = packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0.toLong()))
+                } else {
+                    @Suppress("DEPRECATION")
+                    pInfo = packageManager.getPackageInfo(packageName, 0)
+                }
                 txtVersionApp.text =
                     String.format(getString(R.string.app_name_with_version), pInfo.versionName)
 

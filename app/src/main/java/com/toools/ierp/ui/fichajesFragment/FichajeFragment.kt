@@ -116,10 +116,8 @@ class FichajeFragment : BaseFragment() {
             //BUSCAR LA UBICACION DEL USUARIO
             locationUpdates = object : LocationCallback() {
                 override fun onLocationResult(lr: LocationResult) {
-                    //longitud = lr.lastLocation?.longitude
-                    //latitud = lr.lastLocation?.latitude
-                    longitud = 41.475005
-                    latitud = -4.710115
+                    longitud = lr.lastLocation?.longitude
+                    latitud = lr.lastLocation?.latitude
                 }
             }
 

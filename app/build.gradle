@@ -63,12 +63,12 @@ dependencies {
     androidTestImplementation 'tools.fastlane:screengrab:2.1.0'
 
     //fragment
-    implementation "androidx.fragment:fragment-ktx:1.5.6"
+    implementation "androidx.fragment:fragment-ktx:1.5.7"
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
     // Activity
-    implementation "androidx.activity:activity-ktx:1.7.0"
+    implementation "androidx.activity:activity-ktx:1.7.1"
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
     // LiveData
@@ -133,15 +133,17 @@ dependencies {
     implementation 'com.github.trinnguyen:Android-SegmentView:master-SNAPSHOT'
 
     //Exoplayer
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.5'
-    implementation 'com.google.android.exoplayer:exoplayer-dash:2.18.5'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.5'
-    implementation 'com.google.android.exoplayer:exoplayer-hls:2.18.5'
-    implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.5'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.6'
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.18.6'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.6'
+    implementation 'com.google.android.exoplayer:exoplayer-hls:2.18.6'
+    implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.6'
 
     //ZoomLayout
     implementation("com.otaliastudios:zoomlayout:1.9.0")
 
+    //dialog
+    implementation project(path: ':tooolsdialog')
 
     constraints { //solucionar lo de clases duplicadas
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {

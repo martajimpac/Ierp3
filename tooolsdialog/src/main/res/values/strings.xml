@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">isquadSportWear</string>
+    <string name="default_title">Titulo por defecto</string>
+    <string name="default_desc">No se puede editar la equipación seleccionada.</string>
+
+    <string name="default_titulo_color">Seleccione el color</string>
+    <string name="color_selecionado">Color seleccionado:</string>
+
+    <!--Alerts-->
+    <string name="loading">Cargando…</string>
+    <string name="next">Siguiente</string>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">OK</string>
+    <string name="ups">Ups…</string>
+    <string name="retry">Reintentar</string>
+    <string name="yes">Sí</string>
+    <string name="not_now">Más adelante</string>
+    <string name="see">Ver</string>
+    <string name="shortly_available">Próximamente</string>
+    <string name="no">No</string>
+
+
+    <string name="cencerro">Cencerro inicia el dialog.</string>
+
+</resources>

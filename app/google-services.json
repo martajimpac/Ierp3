@@ -1,282 +1,34 @@
 {
   "project_info": {
-    "project_number": "943624393880",
-    "firebase_url": "https://balmy-gearing-92214.firebaseio.com",
-    "project_id": "balmy-gearing-92214",
-    "storage_bucket": "balmy-gearing-92214.appspot.com"
+    "project_number": "938016632466",
+    "project_id": "ierpapp-cbe8c",
+    "storage_bucket": "ierpapp-cbe8c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:943624393880:android:6a80f398006e924be92ced",
-        "android_client_info": {
-          "package_name": "com.toools.chollomaton"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "943624393880-djcc0kktboh71euh3panqta1b7qr50nr.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.toools.chollomaton",
-            "certificate_hash": "b4e8e5cce7c678da46905be2b42a1e7584ff2f7b"
-          }
-        },
-        {
-          "client_id": "943624393880-hvdpq5f2use2akbvut8npgq3k19gp64t.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.toools.chollomaton",
-            "certificate_hash": "b7e167ea9f5924ec42c89c604e57a58c9adf4ac5"
-          }
-        },
-        {
-          "client_id": "943624393880-u5cgeoa30jnte0cd7rco4rj4pj8i6hn0.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.toools.chollomaton",
-            "certificate_hash": "e7121813bccbb54ab493db3a23158cfa3a9cc983"
-          }
-        },
-        {
-          "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyACT_2HxqV1bT2agVWkwfD7s1gmuHzWfA4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "943624393880-6k8dlqjsn0tb4nsdbb8sq1nc54g0fush.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.toools.VERXUX"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:943624393880:android:7b1134c96e986bd1e92ced",
-        "android_client_info": {
-          "package_name": "com.toools.coslada"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyACT_2HxqV1bT2agVWkwfD7s1gmuHzWfA4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "943624393880-6k8dlqjsn0tb4nsdbb8sq1nc54g0fush.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.toools.VERXUX"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:943624393880:android:810c996d4873a82fe92ced",
-        "android_client_info": {
-          "package_name": "com.toools.ggich"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyACT_2HxqV1bT2agVWkwfD7s1gmuHzWfA4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "943624393880-6k8dlqjsn0tb4nsdbb8sq1nc54g0fush.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.toools.VERXUX"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:943624393880:android:80e288528be67e58",
+        "mobilesdk_app_id": "1:938016632466:android:2d15e6812cd6fa0fbcc04b",
         "android_client_info": {
           "package_name": "com.toools.ierp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
+          "client_id": "938016632466-fi5q6r8cpv2s2s3bbi3aq4n5u06it656.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyACT_2HxqV1bT2agVWkwfD7s1gmuHzWfA4"
+          "current_key": "AIzaSyDH7emkmW6mE-Os305JAcZsPNx9Afc7y8c"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
+              "client_id": "938016632466-fi5q6r8cpv2s2s3bbi3aq4n5u06it656.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "943624393880-6k8dlqjsn0tb4nsdbb8sq1nc54g0fush.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.toools.VERXUX"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:943624393880:android:4a4bcf54608fef90e92ced",
-        "android_client_info": {
-          "package_name": "com.toools.tribuna"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyACT_2HxqV1bT2agVWkwfD7s1gmuHzWfA4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "943624393880-6k8dlqjsn0tb4nsdbb8sq1nc54g0fush.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.toools.VERXUX"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:943624393880:android:de46abcccdee7a8be92ced",
-        "android_client_info": {
-          "package_name": "com.toools.vallastore"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyACT_2HxqV1bT2agVWkwfD7s1gmuHzWfA4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "943624393880-6k8dlqjsn0tb4nsdbb8sq1nc54g0fush.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.toools.VERXUX"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:943624393880:android:dd0508c05489aef9e92ced",
-        "android_client_info": {
-          "package_name": "io.ionic.starter"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyACT_2HxqV1bT2agVWkwfD7s1gmuHzWfA4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "943624393880-im5lgm16j826kbefp1t164lm79tsvsnt.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "943624393880-6k8dlqjsn0tb4nsdbb8sq1nc54g0fush.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.toools.VERXUX"
-              }
             }
           ]
         }

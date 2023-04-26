@@ -97,7 +97,6 @@ object ConstantHelper {
         tareas(R.string.tareas, R.drawable.ic_tareas),
         tareasAsignadas(R.string.tareas_asignadas, R.drawable.ic_tareas_autor),
         soportes(R.string.soportes, R.drawable.ic_soportes),
-        video(R.string.video, R.drawable.ic_video),
         notificaciones(R.string.notificaciones, R.drawable.notifications_on)
     }
 

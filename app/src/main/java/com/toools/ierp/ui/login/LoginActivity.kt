@@ -3,7 +3,9 @@ package com.toools.ierp.ui.login
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -52,7 +54,13 @@ class LoginActivity : AppCompatActivity() {
 
         binding.apply{
             try {
-                val pInfo = packageManager.getPackageInfo(packageName, 0)
+                val pInfo: PackageInfo
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    pInfo = packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0.toLong()))
+                } else {
+                    @Suppress("DEPRECATION")
+                    pInfo = packageManager.getPackageInfo(packageName, 0)
+                }
                 txtVersionApp.text =
                     String.format(getString(R.string.app_name_with_version), pInfo.versionName)
 
@@ -106,6 +114,7 @@ class LoginActivity : AppCompatActivity() {
                 prefs.getString(ConstantHelper.usuarioLogin, null),
                 LoginResponse::class.java
             )
+
             //comprobar que el token firebase esta insertado y insertarlo si no lo esta
             if (!prefs.getBoolean(ConstantHelper.addTokenFirebase, false)){
                 usuario?.token?.let {
@@ -190,7 +199,6 @@ class LoginActivity : AppCompatActivity() {
                                 //insertar el token de firebase
                                 fcmToken.addOnCompleteListener(this@LoginActivity) { instanceIdResult ->
                                     viewModel.addTokenFirebase(token, instanceIdResult.toString())
-                                    Log.e("TAG", token)
                                 }
                             }
                             toMain(usuario!!)
@@ -224,7 +232,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        //momentos
+        //momentos //todo quitar SOLO LLAMA A MOMENTOS PARA COMPROBAR SI LA SESION HA EXPIRADO PERO CREO QUE NO ES NECESARIO, PQ EN MAIN TBN lo comprueba con otros servicios
         /*viewModel.momentosLiveData.observe(this) { response ->
             if (BuildConfig.DEBUG)
                 Log.e(TAG, "momentos: {${response.status}}")

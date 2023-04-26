@@ -53,7 +53,7 @@ fun String.capitalizeEachWord(): String {
 
         if (!it.contains(".") && !it.contains("'"))
             it.lowercase(Locale.ROOT)
-                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }//TODO: actualizar deprecated
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
         else
             it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
     }
@@ -72,7 +72,7 @@ fun ConstraintSet.match(view: View, parentView: View) {
     this.connect(view.id, ConstraintSet.END, parentView.id, ConstraintSet.END)
 }
 
-class doAsync(val handler: () -> Unit) : AsyncTask<Void, Void, Void>() { //todo deprecated
+class doAsync(val handler: () -> Unit) : AsyncTask<Void, Void, Void>() {
 
     override fun doInBackground(vararg params: Void?): Void? {
         handler()

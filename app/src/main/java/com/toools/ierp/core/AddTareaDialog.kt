@@ -1,6 +1,7 @@
 package com.toools.ierp.core
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Context
 import android.util.AttributeSet
@@ -41,8 +42,8 @@ class AddTareaDialog @JvmOverloads constructor(context: Context, attrs: Attribut
     init {
 
         // todo no estoy segura si aqui se pone this
-        val inflater = LayoutInflater.from(this.context)
-        binding = DialogAddTareaBinding.inflate(inflater, this,false)
+        val inflater = LayoutInflater.from(context)
+        binding = DialogAddTareaBinding.inflate(inflater,this,false)
 
         addView(binding.root)
 
@@ -65,6 +66,7 @@ class AddTareaDialog @JvmOverloads constructor(context: Context, attrs: Attribut
         this.proyecto = proyecto
 
         adapterEmpleados?.let {
+            it.setList(listEmpleados)
             it.setList(listEmpleados)
         } ?: run {
             adapterEmpleados = AdapterEmpleadosDialog(context, listEmpleados)  { position ->
