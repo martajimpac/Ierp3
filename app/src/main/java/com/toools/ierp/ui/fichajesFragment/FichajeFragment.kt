@@ -27,7 +27,6 @@ import com.toools.ierp.core.*
 import com.toools.ierp.data.ConstantHelper
 import com.toools.ierp.data.Repository
 import com.toools.ierp.data.model.LoginResponse
-import com.toools.ierp.databinding.ContentDesdeCasaBinding
 import com.toools.ierp.databinding.FragmentFichajeBinding
 import com.toools.ierp.ui.base.BaseFragment
 import com.toools.ierp.ui.main.MainActivity

@@ -143,7 +143,7 @@ dependencies {
     implementation("com.otaliastudios:zoomlayout:1.9.0")
 
     //dialog
-    implementation project(path: ':tooolsdialog')
+    //implementation project(path: ':tooolsdialog')
 
     constraints { //solucionar lo de clases duplicadas
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {

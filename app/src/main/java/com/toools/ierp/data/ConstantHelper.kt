@@ -12,8 +12,8 @@ import com.toools.ierp.R
 object ConstantHelper {
 
     //Rest constants
-    const val iSpotBaseURL = "http://www.ispot.es/ws/"
-    const val ierpBaseUrl = "http://www.ierp.es/ws/"
+    const val iSpotBaseURL = "https://www.ispot.es/ws/"
+    const val ierpBaseUrl = "https://www.ierp.es/ws/"
 
     const val pushIdREST = "id_push"
     const val os = "so"

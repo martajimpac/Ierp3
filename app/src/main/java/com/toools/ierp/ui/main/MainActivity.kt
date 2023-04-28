@@ -227,11 +227,12 @@ class MainActivity : BaseActivity(), MenuListener {
         }
     }
 
+    //TODO DEPRECATED
     override fun onBackPressed() {
         if (binding.contentFragment.findNavController().currentDestination?.id == R.id.fichajeFragment) {
             moveTaskToBack(true)
         } else {
-            super.onBackPressedDispatcher.onBackPressed()
+            super.onBackPressed()
         }
     }
 
