@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +18,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
 import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
-import com.toools.ierp.core.DialogHelper
+import com.toools.ierp.core.EditTextDialog
 import com.toools.ierp.core.EditTextDialogListener
 import com.toools.ierp.core.ErrorHelper
 import com.toools.ierp.core.Resource
@@ -28,6 +29,7 @@ import com.toools.ierp.databinding.FragmentGuardiasBinding
 import com.toools.ierp.ui.base.BaseFragment
 import com.toools.ierp.ui.main.MainActivity
 import com.toools.ierp.ui.login.TAG
+import com.toools.tooolsdialog.DialogHelper
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import java.text.SimpleDateFormat
@@ -102,7 +104,7 @@ class GuardiasFragment : BaseFragment() {
                         mes = month + 1
                         dia = dayOfMonth
 
-                        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                        DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
 
                         usuario?.token?.let {
                             viewModel.guardias(it, dia, mes, anyo)
@@ -184,13 +186,14 @@ class GuardiasFragment : BaseFragment() {
             contentBtnGuar.setOnClickListener {
 
                 if(isEntrar){
-                    DialogHelper.getInstance().showTwoButtonsAlert(requireActivity(),
+                    DialogHelper.getInstance().showTwoButtonsAlert(
+                        requireActivity() as AppCompatActivity,
                         resources.getString(R.string.guardias),
                         resources.getString(R.string.warn_guardias),
                         R.drawable.ic_toools_rellena,
                         resources.getString(R.string.yes),
                         completion1 = {
-                            DialogHelper.getInstance().showEditTextAlert(
+                            EditTextDialog.getInstance().showEditTextAlert(
                                 requireActivity(),
                                 resources.getString(R.string.descripcion),
                                 resources.getString(R.string.desc_aler_desc),
@@ -236,14 +239,14 @@ class GuardiasFragment : BaseFragment() {
                 Log.e(TAG, "guardias: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
 
                 }
                 Resource.Status.SUCCESS -> {
 
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
                     if (response.data?.error != null && Integer.parseInt(response.data.error) == ErrorHelper.SESSION_EXPIRED) {
-                        DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                        DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                             title = R.string.not_session,
                             text = R.string.desc_not_session,
                             icon = R.drawable.ic_toools_rellena,
@@ -260,8 +263,8 @@ class GuardiasFragment : BaseFragment() {
                 }
                 Resource.Status.ERROR -> {
 
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.momentosError,
                         icon = R.drawable.ic_toools_rellena,
@@ -283,13 +286,13 @@ class GuardiasFragment : BaseFragment() {
                 Log.e(TAG, "addGuardias: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
 
                     if (response.data?.error != null && Integer.parseInt(response.data.error) == ErrorHelper.SESSION_EXPIRED) {
-                        DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                        DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                             title = R.string.not_session,
                             text = R.string.desc_not_session,
                             icon = R.drawable.ic_toools_rellena,
@@ -302,7 +305,7 @@ class GuardiasFragment : BaseFragment() {
                         Repository.usuario!!.zonaHoraria = response.data!!.timeZone!!
                         cargarGuardias(response.data.actuaciones, response.data.timeZone!!)
 
-                        DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                        DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                             title = R.string.guardias,
                             text = R.string.guardias_correcta,
                             icon = R.drawable.ic_toools_rellena,
@@ -312,8 +315,8 @@ class GuardiasFragment : BaseFragment() {
 
                 }
                 Resource.Status.ERROR -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.momentosError,
                         icon = R.drawable.ic_toools_rellena,

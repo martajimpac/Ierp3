@@ -2,7 +2,6 @@ package com.toools.ierp.ui.fichajesFragment
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
-import android.content.Context
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -12,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +30,7 @@ import com.toools.ierp.data.model.LoginResponse
 import com.toools.ierp.databinding.FragmentFichajeBinding
 import com.toools.ierp.ui.base.BaseFragment
 import com.toools.ierp.ui.main.MainActivity
+import com.toools.tooolsdialog.DialogHelper
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import java.text.SimpleDateFormat
@@ -122,6 +123,7 @@ class FichajeFragment : BaseFragment() {
 
             fusedLocationClient?.requestLocationUpdates(reqSetting(), locationUpdates!!, null)
 
+
             contentCalendar.setOnClickListener {
                 DatePickerDialog(
                     requireContext(), R.style.DatePickerDialogTheme,
@@ -132,7 +134,7 @@ class FichajeFragment : BaseFragment() {
                         dia = dayOfMonth
 
                         //creo que se queda parado aqui
-                        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                        DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
 
                         usuario?.token?.let {
                             viewModel.momentosDia(it, dia, mes, anyo)
@@ -279,7 +281,7 @@ class FichajeFragment : BaseFragment() {
                         break
                     } else {
                         DialogHelper.getInstance().showTwoButtonsAlert(
-                            activity = requireActivity(),
+                            activity = requireActivity() as AppCompatActivity,
                             title = R.string.distinto_centro,
                             text = R.string.centro_no_asignado,
                             icon = R.drawable.ic_toools_rellena,
@@ -475,7 +477,7 @@ class FichajeFragment : BaseFragment() {
             if (isEntrar) {
                 txtDescCasa.text =
                     resources.getString(R.string.txt_entrar_casa, distancia, centro)
-                Glide.with(this@FichajeFragment).load(resources.getDrawable(R.drawable.start, null))
+                Glide.with(this@FichajeFragment).load(resources.getDrawable(R.drawable.start, null)) //TODO SUPRESS WARNING
                     .into(imgAccionCasa)
                 txtBtnAccionCasa.text = resources.getString(R.string.start_accion)
             } else {
@@ -487,7 +489,7 @@ class FichajeFragment : BaseFragment() {
             }
             contentBtncasa.setOnClickListener {
                 if (isEntrar) {
-                    DialogHelper.getInstance().showEditTextAlert(
+                    EditTextDialog.getInstance().showEditTextAlert(
                         requireActivity(),
                         resources.getString(R.string.insert_code_title),
                         resources.getString(R.string.insert_code_description),
@@ -496,7 +498,7 @@ class FichajeFragment : BaseFragment() {
                         object : EditTextDialogListener {
                             override fun editTextDialogDismissed(value: String) {
 
-                                DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                                DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
 
                                 usuario?.token?.let {
                                     viewModel.entradaSalida(
@@ -521,7 +523,7 @@ class FichajeFragment : BaseFragment() {
                         hint = resources.getString(R.string.descripcion)
                     )
                 } else {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity() ,null,true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity,null,true)
 
                     usuario?.token?.let {
                         viewModel.entradaSalida(
@@ -567,13 +569,14 @@ class FichajeFragment : BaseFragment() {
 
             when (response.status) {
                 Resource.Status.LOADING -> {
-                     DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                     DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
 
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
                     if (response.data?.error != null && Integer.parseInt(response.data.error) == ErrorHelper.SESSION_EXPIRED) {
-                        DialogHelper.getInstance().showOKAlert(requireActivity(),
+                        DialogHelper.getInstance().showOKAlert(
+                            requireActivity() as AppCompatActivity,
                             title = R.string.not_session,
                             text = R.string.desc_not_session,
                             icon = R.drawable.ic_toools_rellena,
@@ -588,19 +591,16 @@ class FichajeFragment : BaseFragment() {
                     }
                 }
                 Resource.Status.ERROR -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                    DialogHelper.getInstance().showOKAlert(requireActivity(),
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
+                    DialogHelper.getInstance().showOKAlert(
+                        requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.momentosError,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
                             usuario?.token?.let {
-                                if (BuildConfig.DEBUG)
-                                    Log.e(TAG, "vamos a momentos DESDE MOMENTOS PORQUE ALGO FUE MAL")
                                 viewModel.momentosDia(it, dia, mes, anyo)
                             } ?: run {
-                                if (BuildConfig.DEBUG)
-                                    Log.e(TAG, "vamos a momentos DESDE MOMENTOS PORQUE ALGO FUE MAL")
                                 viewModel.momentosDia("", dia, mes, anyo)
                             }
                         })
@@ -615,13 +615,13 @@ class FichajeFragment : BaseFragment() {
 
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
 
                     if (response.data?.error != null && Integer.parseInt(response.data.error) == ErrorHelper.SESSION_EXPIRED) {
-                        DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                        DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                             title = R.string.not_session,
                             text = R.string.desc_not_session,
                             icon = R.drawable.ic_toools_rellena,
@@ -638,14 +638,14 @@ class FichajeFragment : BaseFragment() {
 
                         }
                     }
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                     Handler(Looper.getMainLooper()).postDelayed({
-                            DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                            DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
                     }, 500)
                 }
                 Resource.Status.ERROR -> {
-                        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                        DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                        DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
+                        DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                             title = R.string.ups,
                             text = response.exception ?: ErrorHelper.addEventError,
                             icon = R.drawable.ic_toools_rellena,

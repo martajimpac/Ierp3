@@ -2,16 +2,14 @@ package com.toools.ierp.ui.respuestasFragment
 
 import androidx.fragment.app.Fragment
 
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,14 +18,12 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
 import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
-import com.toools.ierp.core.DialogHelper
 import com.toools.ierp.core.ErrorHelper
 import com.toools.ierp.core.Resource
-import com.toools.ierp.data.model.BaseResponse
-import com.toools.ierp.data.model.RespuestasResponse
 import com.toools.ierp.data.model.Soporte
 import com.toools.ierp.databinding.FragmentRespuestasBinding
 import com.toools.ierp.ui.main.MainActivity
+import com.toools.tooolsdialog.DialogHelper
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
@@ -46,7 +42,7 @@ class RespuestasFragment : Fragment() {
 
     private val viewModel: RespuestasViewModel by viewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentRespuestasBinding.inflate(inflater, container,false)
         return binding.root
     }
@@ -88,7 +84,7 @@ class RespuestasFragment : Fragment() {
                 leftBtnTextView.text = getString(R.string.asignarme_el_soporte)
                 leftBtnCardView.setOnClickListener {
                     args.soporte.idIncidencia?.let { idSoporte ->
-                        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                        DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                         viewModel.asignarSoportes(idSoporte)
                     }
                 }
@@ -104,14 +100,14 @@ class RespuestasFragment : Fragment() {
 
             rightBtnCardView.setOnClickListener {
                 args.soporte.idIncidencia?.let { idSoporte ->
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                     viewModel.cerrarSoporte(idSoporte)
                 }
             }
 
-            DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+            DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
             args.soporte.idIncidencia?.let{ idSoporte ->
-                DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 viewModel.respuestas(idSoporte)
             }
         }
@@ -134,7 +130,7 @@ class RespuestasFragment : Fragment() {
 
             aceptarContraintLayout.setOnClickListener {
                 binding.modalObservacionesRespuestas.visibility = View.GONE
-                DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 viewModel.sendRespuesta(
                     idSoporte,
                     observacionesEditText.text.toString()
@@ -153,24 +149,22 @@ class RespuestasFragment : Fragment() {
                 Log.e(TAG, "respuestas: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
 
                     response.data?.respuestas?.toMutableList()?.let { list ->
-                        adapterRespuestas?.let { adapter ->
-                            adapter.setList(list)
-                        } ?: run {
+                        adapterRespuestas?.setList(list) ?: run {
                             adapterRespuestas = AdapterRespuestas(requireContext(), list)
                         }
                         binding.respuestasRecyclerView.adapter = adapterRespuestas
                     }
                 }
                 Resource.Status.ERROR -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
                     DialogHelper.getInstance().showOKAlert(
-                        activity = requireActivity(),
+                        activity = requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.respuestasError,
                         icon = R.drawable.ic_toools_rellena,
@@ -188,23 +182,23 @@ class RespuestasFragment : Fragment() {
                 Log.e(TAG, "asignarSoporte: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
                     Toasty.success(requireContext(),getString(R.string.soporte_asignado)).show()
                     args.soporte.estado = "1"
                     onLoadView()
                 }
                 Resource.Status.ERROR -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                     DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
+                     DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.asignarSoporteError,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
                             args.soporte.idIncidencia?.let { idSoporte ->
-                                DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                                DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                                 viewModel.asignarSoportes(idSoporte)
                             }
                         }
@@ -217,22 +211,22 @@ class RespuestasFragment : Fragment() {
                 Log.e(TAG, "cerrarSoporte: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
                     Toasty.success(requireContext(),getString(R.string.cerrar_soporte)).show()
                     findNavController().popBackStack()
                 }
                 Resource.Status.ERROR -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.cerrarSoporteError,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
                             args.soporte.idIncidencia?.let { idSoporte ->
-                                DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                                DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                                 viewModel.cerrarSoporte(idSoporte)
                             }
                         }
@@ -246,7 +240,7 @@ class RespuestasFragment : Fragment() {
                 Log.e(TAG, "sendRespuesta: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
                     Toasty.success(requireContext(),getString(R.string.send_repuesta_ok)).show()
@@ -255,8 +249,8 @@ class RespuestasFragment : Fragment() {
                     }
                 }
                 Resource.Status.ERROR -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.sendRespuestaError,
                         icon = R.drawable.ic_toools_rellena,

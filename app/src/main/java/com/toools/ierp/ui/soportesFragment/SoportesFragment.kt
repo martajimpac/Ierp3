@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -22,7 +23,6 @@ import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
 import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
-import com.toools.ierp.core.DialogHelper
 import com.toools.ierp.core.ErrorHelper
 import com.toools.ierp.core.Resource
 import com.toools.ierp.data.ConstantHelper
@@ -32,6 +32,7 @@ import com.toools.ierp.data.model.Soporte
 import com.toools.ierp.databinding.FragmentSoportesBinding
 import com.toools.ierp.ui.adapter.AdapterProyectoGeneral
 import com.toools.ierp.ui.main.MainActivity
+import com.toools.tooolsdialog.DialogHelper
 import com.trinnguyen.SegmentView
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -236,7 +237,7 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
         //llamar a asignar soporte
         soporte.idIncidencia?.let { idSoporte ->
             soporteSelected = soporte
-            DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+            DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
             viewModel.asignarSoportes(idSoporte)
         }
     }
@@ -256,11 +257,11 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                 Log.e(TAG, "proyectos: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
                     Log.e(TAG, "${response.data}")
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
 
                     (response.data?.proyectos?.sortedBy{ proyecto -> proyecto.nombre })?.toMutableList()?.let { listProyectos ->
 
@@ -282,14 +283,14 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                     }
                 }
                 Resource.Status.ERROR -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
                     DialogHelper.getInstance().showOKAlert(
-                        activity = requireActivity(),
+                        activity = requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.proyectosError,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
-                            DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                            DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                             viewModel.proyectos()
                         })
                 }
@@ -301,10 +302,10 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                 Log.e(TAG, "soportes: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
 
                     listSoportes = response.data?.soportes?.toMutableList() ?: run { mutableListOf<Soporte>()}
 
@@ -320,14 +321,14 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
 
                 }
                 Resource.Status.ERROR -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
                     DialogHelper.getInstance().showOKAlert(
-                        activity = requireActivity(),
+                        activity = requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.soportesError,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
-                            DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                            DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                             viewModel.soportes()
                         }
                     )
@@ -340,10 +341,10 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                 Log.e(TAG, "asignarSoporte: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
                     Toasty.success(requireContext(),getString(R.string.soporte_asignado)).show()
                     //toRestpuestas
                     soporteSelected?.let { soporte ->
@@ -351,15 +352,15 @@ class SoportesFragment : Fragment(), SegmentView.OnSegmentItemSelectedListener, 
                     }
                 }
                 Resource.Status.ERROR -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
                     DialogHelper.getInstance().showOKAlert(
-                        activity = requireActivity(),
+                        activity = requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.asignarSoporteError,
                         icon = R.drawable.ic_toools_rellena,
                         completion = {
                             soporteSelected?.idIncidencia?.let { idSoporte ->
-                                DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                                DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                                 viewModel.asignarSoportes(idSoporte)
                             }
                         }

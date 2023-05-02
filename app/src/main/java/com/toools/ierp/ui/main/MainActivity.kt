@@ -18,13 +18,14 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
 import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
-import com.toools.ierp.core.DialogHelper
 import com.toools.ierp.core.prefs
 import com.toools.ierp.data.ConstantHelper
 import com.toools.ierp.data.Repository
 import com.toools.ierp.databinding.ActivityMainBinding
 import com.toools.ierp.ui.base.BaseActivity
 import com.toools.ierp.ui.login.LoginActivity
+import com.toools.tooolsdialog.DialogHelper
+//import com.toools.tooolsdialog.DialogHelper
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import java.util.*
@@ -227,12 +228,11 @@ class MainActivity : BaseActivity(), MenuListener {
         }
     }
 
-    //TODO DEPRECATED
     override fun onBackPressed() {
         if (binding.contentFragment.findNavController().currentDestination?.id == R.id.fichajeFragment) {
             moveTaskToBack(true)
         } else {
-            super.onBackPressed()
+            super.onBackPressed() //TODO PORQUE AHORA NO FUNCIONA
         }
     }
 

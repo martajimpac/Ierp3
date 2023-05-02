@@ -24,12 +24,15 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.toools.ierp.BuildConfig
 import com.toools.ierp.R
-import com.toools.ierp.core.*
+import com.toools.ierp.core.ErrorHelper
+import com.toools.ierp.core.Resource
+import com.toools.ierp.core.prefs
 import com.toools.ierp.data.ConstantHelper
 import com.toools.ierp.data.Repository
 import com.toools.ierp.data.model.LoginResponse
 import com.toools.ierp.databinding.ActivityLoginBinding
 import com.toools.ierp.ui.main.MainActivity
+import com.toools.tooolsdialog.DialogHelper
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
@@ -149,7 +152,6 @@ class LoginActivity : AppCompatActivity() {
                 ) {
                     Toasty.warning(this@LoginActivity, R.string.alert_user, Toast.LENGTH_LONG).show()
                 } else {
-                    DialogHelper.getInstance().showLoadingAlert(this@LoginActivity, null, true)
                     viewModel.login(
                         editClient.text.toString(),
                         editUsuario.text.toString(),
@@ -232,7 +234,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        //momentos //todo quitar SOLO LLAMA A MOMENTOS PARA COMPROBAR SI LA SESION HA EXPIRADO PERO CREO QUE NO ES NECESARIO, PQ EN MAIN TBN lo comprueba con otros servicios
+        //momentos
         /*viewModel.momentosLiveData.observe(this) { response ->
             if (BuildConfig.DEBUG)
                 Log.e(TAG, "momentos: {${response.status}}")
@@ -283,11 +285,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun toMain(usuario: LoginResponse) {
-        DialogHelper.getInstance().showLoadingAlert(this, null, true)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-
-            DialogHelper.getInstance().showLoadingAlert(this, null, false)
+            DialogHelper.getInstance().showLoadingAlert(this@LoginActivity, null, false)
 
             Repository.usuario = usuario
 
@@ -304,7 +303,6 @@ class LoginActivity : AppCompatActivity() {
                 val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this@LoginActivity, *pairs)
                 startActivity(intent, options.toBundle())
             }
-        }, 500)
     }
 
     private val PERMISSION_ID = 42

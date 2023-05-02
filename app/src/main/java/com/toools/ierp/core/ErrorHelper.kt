@@ -8,7 +8,7 @@ class ErrorHelper {
 
     companion object {
 
-        const val SESSION_EXPIRED = 302
+        const val SESSION_EXPIRED = 301 //TODO ASEGURARSE DE QUE ESTO FUNCIONA
 
         //ispot
 
