@@ -12,7 +12,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
-import androidx.viewbinding.BuildConfig
 import com.toools.ierp.R
 import com.toools.ierp.data.ConstantHelper
 import com.toools.ierp.ui.login.LoginActivity
@@ -56,8 +55,8 @@ class SplashActivity : AppCompatActivity() {
 
             } catch (e: PackageManager.NameNotFoundException) {
 
-                if (BuildConfig.DEBUG)
-                    e.printStackTrace()
+                /*if (BuildConfig.DEBUG)
+                    e.printStackTrace()*/
                 txtVersionApp.text = "${R.string.version_app}"
             }
         }

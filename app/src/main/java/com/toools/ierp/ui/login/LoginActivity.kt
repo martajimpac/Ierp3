@@ -73,8 +73,8 @@ class LoginActivity : AppCompatActivity() {
 
             if (BuildConfig.DEBUG) {
                 editClient.setText("toools")
-                editUsuario.setText("pmarta@toools.es")
-                editPassword.setText("4rfv5tgb")
+                editUsuario.setText("mjimenez@toools.es")
+                editPassword.setText("nalskd1A")
 
             }
         }

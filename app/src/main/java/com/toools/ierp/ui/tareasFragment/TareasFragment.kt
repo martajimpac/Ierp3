@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -21,6 +22,7 @@ import com.toools.ierp.data.ConstantHelper
 import com.toools.ierp.data.model.*
 import com.toools.ierp.databinding.FragmentTareasBinding
 import com.toools.ierp.ui.adapter.AdapterProyectoGeneral
+import com.toools.tooolsdialog.DialogHelper
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
@@ -111,7 +113,7 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
 
                 act?.let { act ->
                     if (idProyectoSelected == "-1") {
-                        DialogHelper.getInstance().showOKAlert(activity = act,
+                        DialogHelper.getInstance().showOKAlert(activity = act as AppCompatActivity,
                             title = R.string.add_tarea_sin_proyecto,
                             text = R.string.add_tarea_sin_proyecto_desc,
                             icon = R.drawable.ic_toools_rellena,
@@ -156,7 +158,7 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
     }
 
     private fun onLoadView(){
-        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+        DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
         viewModel.proyectos()
     }
 
@@ -207,7 +209,7 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
         binding.addTareaFloatingActionButton.visibility = View.VISIBLE
         binding.tareasConstraintLayout.removeView(dialogAddTarea)
 
-        DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+        DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
         viewModel.insertarTarea(idProyecto = idProyecto, idEmpleado = idEmpleado, titulo = titulo, descripcion = descripcion, plazo = plazo)
     }
 
@@ -283,10 +285,10 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
                 Log.e(TAG, "proyectos: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
                     (response.data?.proyectos?.sortedBy{ proyecto -> proyecto.nombre })?.toMutableList()?.let { listProyectos ->
                         val todos = Proyecto("-1", "TODOS", null, null, null, "TODOS", mutableListOf())
                         listProyectos.add(0, todos)
@@ -305,8 +307,8 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
                     }
                 }
                 Resource.Status.ERROR -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.proyectosError,
                         icon = R.drawable.ic_toools_rellena,
@@ -321,10 +323,10 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
                 Log.e(TAG, "tareas: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
 
                     response.data?.tareas?.let{ listTareas ->
                         this.listTareas = listTareas.toMutableList()
@@ -342,8 +344,8 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
                     }
                 }
                 Resource.Status.ERROR -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception?: ErrorHelper.tareasError,
                         icon = R.drawable.ic_toools_rellena,
@@ -359,16 +361,16 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
                 Log.e(TAG, "cambiar_estado_tarea: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
                     Toasty.success(requireContext(), resources.getString(R.string.cambio_tarea_ok)).show()
                     viewModel.tareas()
                 }
                 Resource.Status.ERROR -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.cambioEstadoTareaError,
                         icon = R.drawable.ic_toools_rellena,
@@ -382,11 +384,11 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
                 Log.e(TAG, "insertarTarea: {${response.status}}")
             when (response.status) {
                 Resource.Status.LOADING -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, true)
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, true)
                 }
                 Resource.Status.SUCCESS -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                         title = R.string.tarea_insertada,
                         text = R.string.desc_tarea_insertada,
                         icon = R.drawable.ic_toools_rellena,
@@ -395,8 +397,8 @@ class TareasFragment : Fragment(), TareaListener, AddTareaDialogListener {
                         })
                 }
                 Resource.Status.ERROR -> {
-                    DialogHelper.getInstance().showLoadingAlert(requireActivity(), null, false)
-                    DialogHelper.getInstance().showOKAlert(activity = requireActivity(),
+                    DialogHelper.getInstance().showLoadingAlert(requireActivity() as AppCompatActivity, null, false)
+                    DialogHelper.getInstance().showOKAlert(activity = requireActivity() as AppCompatActivity,
                         title = R.string.ups,
                         text = response.exception ?: ErrorHelper.insertarTareaError,
                         icon = R.drawable.ic_toools_rellena,
